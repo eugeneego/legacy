@@ -8,8 +8,8 @@
 
 import Foundation
 
-open class JSON {
-    open let value: Any?
+public struct Json {
+    public let value: Any?
 
     public init(value: Any?) {
         self.value = value
@@ -19,23 +19,27 @@ open class JSON {
         value = data.flatMap { try? JSONSerialization.jsonObject(with: $0, options: .allowFragments) }
     }
 
-    public convenience init(string: String?) {
-        self.init(data: string?.data(using: String.Encoding.utf8))
+    public init(string: String?) {
+        self.init(data: string?.data(using: .utf8))
     }
 
-    public convenience init(url: URL?) {
+    public init(url: URL?) {
         self.init(data: url.flatMap { try? Data(contentsOf: $0) })
     }
 
-    open var dictionary: [String: Any]? {
+    public var dictionary: [String: Any]? {
         return value as? [String: Any]
     }
 
-    open var array: [Any]? {
+    public var array: [Any]? {
         return value as? [Any]
     }
 
-    open var data: Data? {
+    public var data: Data? {
         return value.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
+    }
+
+    public var string: String? {
+        return data.flatMap { String(data: $0, encoding: .utf8) }
     }
 }
