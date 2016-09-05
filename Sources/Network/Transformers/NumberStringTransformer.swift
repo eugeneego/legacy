@@ -14,12 +14,12 @@ public struct NumberStringTransformer<Number: NumberConvertible>: Transformer wh
 
     private let numberTransformer = NumberTransformer<Number>()
 
-    public func fromAny(_ value: Any?) -> T? {
-        return numberTransformer.fromAny(value) ?? (value as? String).flatMap(T.init)
+    public func from(any value: Any?) -> T? {
+        return numberTransformer.from(any: value) ?? (value as? String).flatMap(T.init)
     }
 
-    public func toAny(_ value: T?) -> Any? {
-        return (numberTransformer.toAny(value) as? NSNumber)?.stringValue
+    public func to(any value: T?) -> Any? {
+        return (numberTransformer.to(any: value) as? NSNumber)?.stringValue
     }
 }
 

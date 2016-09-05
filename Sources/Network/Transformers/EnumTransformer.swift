@@ -9,11 +9,11 @@
 public struct EnumCastTransformer<Enum: RawRepresentable>: Transformer {
     public typealias T = Enum
 
-    public func fromAny(_ value: Any?) -> T? {
+    public func from(any value: Any?) -> T? {
         return (value as? T.RawValue).flatMap(T.init)
     }
 
-    public func toAny(_ value: T?) -> Any? {
+    public func to(any value: T?) -> Any? {
         return value?.rawValue
     }
 }
@@ -27,12 +27,12 @@ public struct EnumTransformer<Enum: RawRepresentable, RawTransformer: Transforme
         self.transformer = transformer
     }
 
-    public func fromAny(_ value: Any?) -> T? {
-        return transformer.fromAny(value).flatMap(T.init)
+    public func from(any value: Any?) -> T? {
+        return transformer.from(any: value).flatMap(T.init)
     }
 
-    public func toAny(_ value: T?) -> Any? {
-        return transformer.toAny(value?.rawValue)
+    public func to(any value: T?) -> Any? {
+        return transformer.to(any: value?.rawValue)
     }
 }
 
@@ -56,11 +56,11 @@ public struct DictionaryEnumTransformer<Enum: Hashable, ValueTransformer: Transf
         }
     }
 
-    public func fromAny(_ value: Any?) -> T? {
-        return transformer.fromAny(value).flatMap { valueEnumDictionary[$0] }
+    public func from(any value: Any?) -> T? {
+        return transformer.from(any: value).flatMap { valueEnumDictionary[$0] }
     }
 
-    public func toAny(_ value: T?) -> Any? {
-        return value.flatMap { enumValueDictionary[$0] }.flatMap(transformer.toAny)
+    public func to(any value: T?) -> Any? {
+        return value.flatMap { enumValueDictionary[$0] }.flatMap(transformer.to(any:))
     }
 }

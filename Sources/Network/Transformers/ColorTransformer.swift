@@ -15,11 +15,11 @@ import AppKit
 public struct ColorTransformer: Transformer {
     public typealias T = EEColor
 
-    public func fromAny(_ value: Any?) -> T? {
+    public func from(any value: Any?) -> T? {
         return (value as? String).flatMap(T.from(hex:))
     }
 
-    public func toAny(_ value: T?) -> Any? {
+    public func to(any value: T?) -> Any? {
         return value?.hexARGB
     }
 }

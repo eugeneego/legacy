@@ -12,11 +12,11 @@ import CoreGraphics
 public struct NumberTransformer<Number: NumberConvertible>: Transformer {
     public typealias T = Number
 
-    public func fromAny(_ value: Any?) -> T? {
+    public func from(any value: Any?) -> T? {
         return (value as? NSNumber).flatMap(T.fromNumber) ?? (value as? T)
     }
 
-    public func toAny(_ value: T?) -> Any? {
+    public func to(any value: T?) -> Any? {
         return value?.toNumber()
     }
 }

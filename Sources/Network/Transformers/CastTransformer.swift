@@ -9,11 +9,11 @@
 public struct CastTransformer<Object>: Transformer {
     public typealias T = Object
 
-    public func fromAny(_ value: Any?) -> T? {
+    public func from(any value: Any?) -> T? {
         return value as? T
     }
 
-    public func toAny(_ value: T?) -> Any? {
+    public func to(any value: T?) -> Any? {
         return value
     }
 }

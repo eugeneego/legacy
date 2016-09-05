@@ -20,10 +20,10 @@ public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer
     }
 
     public func serialize(_ value: Value?) -> Data? {
-        return transformer.toAny(value).flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
+        return transformer.to(any: value).flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
     }
 
     public func deserialize(_ data: Data?) -> Value? {
-        return transformer.fromAny(data.flatMap { try? JSONSerialization.jsonObject(with: $0, options: .allowFragments) })
+        return transformer.from(any: data.flatMap { try? JSONSerialization.jsonObject(with: $0, options: .allowFragments) })
     }
 }

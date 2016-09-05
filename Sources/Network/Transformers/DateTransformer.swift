@@ -13,16 +13,17 @@ public struct DateTransformer: Transformer {
 
     private let formatter: DateFormatter
 
-    public init(format: String) {
+    public init(format: String, locale: Locale = Locale(identifier: "en-US")) {
         formatter = DateFormatter()
+        formatter.locale = locale
         formatter.dateFormat = format
     }
 
-    public func fromAny(_ value: Any?) -> T? {
+    public func from(any value: Any?) -> T? {
         return (value as? String).flatMap(formatter.date(from:))
     }
 
-    public func toAny(_ value: T?) -> Any? {
+    public func to(any value: T?) -> Any? {
         return value.flatMap(formatter.string(from:))
     }
 }

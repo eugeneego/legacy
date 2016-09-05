@@ -11,11 +11,11 @@ import Foundation
 public struct UrlTransformer: Transformer {
     public typealias T = URL
 
-    public func fromAny(_ value: Any?) -> T? {
+    public func from(any value: Any?) -> T? {
         return (value as? String).flatMap(T.init)
     }
 
-    public func toAny(_ value: T?) -> Any? {
+    public func to(any value: T?) -> Any? {
         return value?.absoluteString
     }
 }

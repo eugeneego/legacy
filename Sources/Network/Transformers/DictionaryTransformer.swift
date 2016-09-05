@@ -18,12 +18,12 @@ public struct DictionaryTransformer
         self.valueTransformer = valueTransformer
     }
 
-    public func fromAny(_ value: Any?) -> T? {
+    public func from(any value: Any?) -> T? {
         guard let value = value as? [String: Any] else { return nil }
 
         let dict: T = value.reduce([:]) { result, kv in
             var result = result
-            if let key = keyTransformer.fromAny(kv.0), let value = valueTransformer.fromAny(kv.1) {
+            if let key = keyTransformer.from(any: kv.0), let value = valueTransformer.from(any: kv.1) {
                 result[key] = value
             }
             return result
@@ -32,12 +32,12 @@ public struct DictionaryTransformer
         return dict
     }
 
-    public func toAny(_ value: T?) -> Any? {
+    public func to(any value: T?) -> Any? {
         guard let value = value else { return nil }
 
         let dict: [String: Any] = value.reduce([:]) { result, kv in
             var result = result
-            if let key = keyTransformer.toAny(kv.0) as? String, let value = valueTransformer.toAny(kv.1) {
+            if let key = keyTransformer.to(any: kv.0) as? String, let value = valueTransformer.to(any: kv.1) {
                 result[key] = value
             }
             return result
