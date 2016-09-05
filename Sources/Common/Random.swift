@@ -8,12 +8,12 @@
 
 import Foundation
 
-open class Random {
+public enum Random {
     /**
      Generate a random unsigned integer number.
      - returns: An unsigned integer number in a [0, UInt32.max) range.
      */
-    open static func uint32() -> UInt32 {
+    public static func uint32() -> UInt32 {
         return arc4random_uniform(UInt32.max)
     }
 
@@ -22,7 +22,7 @@ open class Random {
      - parameter max: The maximum number, not inclusive.
      - returns: An integer number in a [0, max) range.
      */
-    open static func int(_ max: Int) -> Int {
+    public static func int(_ max: Int) -> Int {
         return Int(arc4random_uniform(UInt32(max)))
     }
 
@@ -32,7 +32,7 @@ open class Random {
      - parameter max: The maximum number, inclusive.
      - returns: An integer number in a [min, max] range.
      */
-    open static func int(min: Int, max: Int) -> Int {
+    public static func int(min: Int, max: Int) -> Int {
         return min + Int(arc4random_uniform(UInt32(max - min + 1)))
     }
 
@@ -41,7 +41,7 @@ open class Random {
      - parameter range: The range.
      - returns: An integer number in a given range.
      */
-    open static func int(_ range: Range<Int>) -> Int {
+    public static func int(_ range: Range<Int>) -> Int {
         return range.lowerBound + Int(arc4random_uniform(UInt32(range.upperBound - range.lowerBound + 1)))
     }
 
@@ -49,7 +49,7 @@ open class Random {
      Generate a random boolean vaue.
      - returns: *true* with 50% chance
      */
-    open static func bool() -> Bool {
+    public static func bool() -> Bool {
         return bool(chance: 50)
     }
 
@@ -58,7 +58,7 @@ open class Random {
      - parameter chance: The chance of *true*.
      - returns: *true* with a given chance (from 0% to 100%)
      */
-    open static func bool(chance: Int) -> Bool {
+    public static func bool(chance: Int) -> Bool {
         return arc4random_uniform(100) < UInt32(min(max(chance, 0), 100))
     }
 }
