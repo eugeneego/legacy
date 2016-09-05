@@ -9,11 +9,11 @@
 public struct VoidTransformer: Transformer {
     public typealias T = Void
 
-    public func fromAny(value: AnyObject?) -> T? {
+    public func fromAny(_ value: Any?) -> T? {
         return value.flatMap { _ in () }
     }
 
-    public func toAny(value: T?) -> AnyObject? {
+    public func toAny(_ value: T?) -> Any? {
         return nil
     }
 }

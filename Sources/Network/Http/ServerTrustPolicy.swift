@@ -12,25 +12,25 @@
 import Foundation
 
 public enum ServerTrustPolicy {
-    case Default(checkHost: Bool)
-    case Certificates(certificates: [SecCertificate], checkChain: Bool, checkHost: Bool)
-    case PublicKeys(keys: [SecKey], checkChain: Bool, checkHost: Bool)
-    case Disabled
-    case Custom((serverTrust: SecTrust, host: String) -> Bool)
+    case `default`(checkHost: Bool)
+    case certificates(certificates: [SecCertificate], checkChain: Bool, checkHost: Bool)
+    case publicKeys(keys: [SecKey], checkChain: Bool, checkHost: Bool)
+    case disabled
+    case custom((_ serverTrust: SecTrust, _ host: String) -> Bool)
 
-    public func evaluate(serverTrust serverTrust: SecTrust, host: String) -> Bool {
+    public func evaluate(serverTrust: SecTrust, host: String) -> Bool {
         switch self {
-            case .Default(let checkHost):
+            case .default(let checkHost):
                 let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
-                SecTrustSetPolicies(serverTrust, [ policy ])
+                SecTrustSetPolicies(serverTrust, policy)
 
                 return trustIsValid(serverTrust)
-            case .Certificates(let certificates, let checkChain, let checkHost):
+            case .certificates(let certificates, let checkChain, let checkHost):
                 if checkChain {
                     let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
-                    SecTrustSetPolicies(serverTrust, [ policy ])
+                    SecTrustSetPolicies(serverTrust, policy)
 
-                    SecTrustSetAnchorCertificates(serverTrust, certificates)
+                    SecTrustSetAnchorCertificates(serverTrust, certificates as CFArray)
                     SecTrustSetAnchorCertificatesOnly(serverTrust, true)
 
                     return trustIsValid(serverTrust)
@@ -48,10 +48,10 @@ public enum ServerTrustPolicy {
 
                     return false
                 }
-            case .PublicKeys(let keys, let checkChain, let checkHost):
+            case .publicKeys(let keys, let checkChain, let checkHost):
                 if checkChain {
                     let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
-                    SecTrustSetPolicies(serverTrust, [ policy ])
+                    SecTrustSetPolicies(serverTrust, policy)
 
                     if !trustIsValid(serverTrust) {
                         return false
@@ -67,31 +67,31 @@ public enum ServerTrustPolicy {
                 }
 
                 return false
-            case .Disabled:
+            case .disabled:
                 return true
-            case let .Custom(closure):
-                return closure(serverTrust: serverTrust, host: host)
+            case let .custom(closure):
+                return closure(serverTrust, host)
         }
     }
 
     // MARK: - Routines
 
-    private func trustIsValid(trust: SecTrust) -> Bool {
+    private func trustIsValid(_ trust: SecTrust) -> Bool {
         var isValid = false
 
-        var result = SecTrustResultType(kSecTrustResultInvalid)
+        var result = SecTrustResultType.invalid
         let status = SecTrustEvaluate(trust, &result)
 
         if status == errSecSuccess {
-            let unspecified = SecTrustResultType(kSecTrustResultUnspecified)
-            let proceed = SecTrustResultType(kSecTrustResultProceed)
+            let unspecified = SecTrustResultType.unspecified
+            let proceed = SecTrustResultType.proceed
             isValid = result == unspecified || result == proceed
         }
 
         return isValid
     }
 
-    private func dataForTrust(trust: SecTrust) -> [NSData] {
+    private func dataForTrust(_ trust: SecTrust) -> [Data] {
         var certificates: [SecCertificate] = []
 
         for index in 0 ..< SecTrustGetCertificateCount(trust) {
@@ -103,15 +103,15 @@ public enum ServerTrustPolicy {
         return dataForCertificates(certificates)
     }
 
-    private func dataForCertificates(certificates: [SecCertificate]) -> [NSData] {
-        return certificates.map { SecCertificateCopyData($0) as NSData }
+    private func dataForCertificates(_ certificates: [SecCertificate]) -> [Data] {
+        return certificates.map { SecCertificateCopyData($0) as Data }
     }
 
-    private func publicKeysForTrust(trust: SecTrust) -> [SecKey] {
+    private func publicKeysForTrust(_ trust: SecTrust) -> [SecKey] {
         var keys: [SecKey] = []
 
         for index in 0 ..< SecTrustGetCertificateCount(trust) {
-            if let cert = SecTrustGetCertificateAtIndex(trust, index), key = ServerTrustPolicy.publicKeyForCertificate(cert) {
+            if let cert = SecTrustGetCertificateAtIndex(trust, index), let key = ServerTrustPolicy.publicKeyForCertificate(cert) {
                 keys.append(key)
             }
         }
@@ -119,14 +119,14 @@ public enum ServerTrustPolicy {
         return keys
     }
 
-    private static func publicKeyForCertificate(certificate: SecCertificate) -> SecKey? {
+    private static func publicKeyForCertificate(_ certificate: SecCertificate) -> SecKey? {
         var key: SecKey?
 
         let policy = SecPolicyCreateBasicX509()
         var trust: SecTrust?
         let trustCreationStatus = SecTrustCreateWithCertificates(certificate, policy, &trust)
 
-        if let trust = trust where trustCreationStatus == errSecSuccess {
+        if let trust = trust, trustCreationStatus == errSecSuccess {
             key = SecTrustCopyPublicKey(trust)
         }
 
@@ -135,19 +135,21 @@ public enum ServerTrustPolicy {
 
     // MARK: - Loading
 
-    public static func certificate(path path: String) -> SecCertificate? {
-        return NSData(contentsOfFile: path).flatMap { SecCertificateCreateWithData(nil, $0) }
+    public static func certificate(path: String) -> SecCertificate? {
+        let data = try? Data(contentsOf: URL(fileURLWithPath: path))
+        return data.flatMap { SecCertificateCreateWithData(nil, $0 as CFData) }
     }
 
-    public static func certificate(url url: NSURL) -> SecCertificate? {
-        return NSData(contentsOfURL: url).flatMap { SecCertificateCreateWithData(nil, $0) }
+    public static func certificate(url: URL) -> SecCertificate? {
+        let data = try? Data(contentsOf: url)
+        return data.flatMap { SecCertificateCreateWithData(nil, $0 as CFData) }
     }
 
-    public static func publicKey(path path: String) -> SecKey? {
+    public static func publicKey(path: String) -> SecKey? {
         return certificate(path: path).flatMap(publicKeyForCertificate)
     }
 
-    public static func publicKey(url url: NSURL) -> SecKey? {
+    public static func publicKey(url: URL) -> SecKey? {
         return certificate(url: url).flatMap(publicKeyForCertificate)
     }
 }

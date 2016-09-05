@@ -8,34 +8,34 @@
 
 import Foundation
 
-public class JSON {
-    public let value: AnyObject?
+open class JSON {
+    open let value: Any?
 
-    public init(value: AnyObject?) {
+    public init(value: Any?) {
         self.value = value
     }
 
-    public init(data: NSData?) {
-        value = data.flatMap { try? NSJSONSerialization.JSONObjectWithData($0, options: .AllowFragments) }
+    public init(data: Data?) {
+        value = data.flatMap { try? JSONSerialization.jsonObject(with: $0, options: .allowFragments) }
     }
 
     public convenience init(string: String?) {
-        self.init(data: string?.dataUsingEncoding(NSUTF8StringEncoding))
+        self.init(data: string?.data(using: String.Encoding.utf8))
     }
 
-    public convenience init(url: NSURL?) {
-        self.init(data: url.flatMap(NSData.init))
+    public convenience init(url: URL?) {
+        self.init(data: url.flatMap { try? Data(contentsOf: $0) })
     }
 
-    public var dictionary: [String: AnyObject]? {
-        return value as? [String: AnyObject]
+    open var dictionary: [String: Any]? {
+        return value as? [String: Any]
     }
 
-    public var array: [AnyObject]? {
-        return value as? [AnyObject]
+    open var array: [Any]? {
+        return value as? [Any]
     }
 
-    public var data: NSData? {
-        return value.flatMap { try? NSJSONSerialization.dataWithJSONObject($0, options: []) }
+    open var data: Data? {
+        return value.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
     }
 }

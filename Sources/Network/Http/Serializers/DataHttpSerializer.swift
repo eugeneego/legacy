@@ -9,7 +9,7 @@
 import Foundation
 
 public struct DataHttpSerializer: HttpSerializer {
-    public typealias Value = NSData
+    public typealias Value = Data
 
     public let contentType: String
 
@@ -17,11 +17,11 @@ public struct DataHttpSerializer: HttpSerializer {
         self.contentType = contentType
     }
 
-    public func serialize(value: Value?) -> NSData? {
+    public func serialize(_ value: Value?) -> Data? {
         return value
     }
 
-    public func deserialize(data: NSData?) -> Value? {
+    public func deserialize(_ data: Data?) -> Value? {
         return data
     }
 }

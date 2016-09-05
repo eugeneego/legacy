@@ -9,13 +9,13 @@
 import UIKit
 
 public enum Reusable<CellType> {
-    case Class(id: String)
-    case Nib(id: String, name: String, bundle: NSBundle?)
+    case `class`(id: String)
+    case nib(id: String, name: String, bundle: Bundle?)
 
     public var id: String {
         switch self {
-            case .Class(let id): return id
-            case .Nib(let id, _, _): return id
+            case .class(let id): return id
+            case .nib(let id, _, _): return id
         }
     }
 }
@@ -23,49 +23,49 @@ public enum Reusable<CellType> {
 public extension UITableView {
     // Cell
 
-    public func registerReusableCell<CellType: UITableViewCell>(reusable: Reusable<CellType>) {
+    public func registerReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) {
         switch reusable {
-            case .Class(let id):
-                registerClass(CellType.self, forCellReuseIdentifier: id)
-            case .Nib(let id, let name, let bundle):
+            case .class(let id):
+                register(CellType.self, forCellReuseIdentifier: id)
+            case .nib(let id, let name, let bundle):
                 let nib = UINib(nibName: name, bundle: bundle)
-                registerNib(nib, forCellReuseIdentifier: id)
+                register(nib, forCellReuseIdentifier: id)
         }
     }
 
-    public func dequeueReusableCell<CellType: UITableViewCell>(reusable: Reusable<CellType>, indexPath: NSIndexPath) -> CellType {
-        return dequeueReusableCellWithIdentifier(reusable.id, forIndexPath: indexPath) as! CellType
+    public func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
+        return self.dequeueReusableCell(withIdentifier: reusable.id, for: indexPath) as! CellType
     }
 
     // Header/Footer
 
-    public func registerReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(reusable: Reusable<CellType>) {
+    public func registerReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) {
         switch reusable {
-            case .Class(let id):
-                registerClass(CellType.self, forHeaderFooterViewReuseIdentifier: id)
-            case .Nib(let id, let name, let bundle):
+            case .class(let id):
+                register(CellType.self, forHeaderFooterViewReuseIdentifier: id)
+            case .nib(let id, let name, let bundle):
                 let nib = UINib(nibName: name, bundle: bundle)
-                registerNib(nib, forHeaderFooterViewReuseIdentifier: id)
+                register(nib, forHeaderFooterViewReuseIdentifier: id)
         }
     }
 
-    public func dequeueReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(reusable: Reusable<CellType>) -> CellType {
-        return dequeueReusableHeaderFooterViewWithIdentifier(reusable.id) as! CellType
+    public func dequeueReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) -> CellType {
+        return dequeueReusableHeaderFooterView(withIdentifier: reusable.id) as! CellType
     }
 }
 
 public extension UICollectionView {
-    public func registerReusableCell<CellType: UICollectionViewCell>(reusable: Reusable<CellType>) {
+    public func registerReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>) {
         switch reusable {
-            case .Class(let id):
-                registerClass(CellType.self, forCellWithReuseIdentifier: id)
-            case .Nib(let id, let name, let bundle):
+            case .class(let id):
+                register(CellType.self, forCellWithReuseIdentifier: id)
+            case .nib(let id, let name, let bundle):
                 let nib = UINib(nibName: name, bundle: bundle)
-                registerNib(nib, forCellWithReuseIdentifier: id)
+                register(nib, forCellWithReuseIdentifier: id)
             }
     }
 
-    public func dequeueReusableCell<CellType: UICollectionViewCell>(reusable: Reusable<CellType>, indexPath: NSIndexPath) -> CellType {
-        return dequeueReusableCellWithReuseIdentifier(reusable.id, forIndexPath: indexPath) as! CellType
+    public func dequeueReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
+        return self.dequeueReusableCell(withReuseIdentifier: reusable.id, for: indexPath) as! CellType
     }
 }

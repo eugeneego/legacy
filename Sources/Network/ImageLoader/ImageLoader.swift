@@ -8,15 +8,15 @@
 
 import UIKit
 
-public typealias ImageLoaderCompletion = (id: String, url: NSURL, data: NSData?, image: UIImage?, error: ErrorType?) -> Void
+public typealias ImageLoaderCompletion = (_ id: String, _ url: URL, _ data: Data?, _ image: UIImage?, _ error: Error?) -> Void
 
 public enum ResizeMode {
-    case Fit
-    case Fill
-    case MinimumFit
+    case fit
+    case fill
+    case minimumFit
 }
 
 public protocol ImageLoader {
-    func load(url url: NSURL, size: CGSize, mode: ResizeMode, completion: ImageLoaderCompletion) -> String
-    func cancel(id id: String)
+    func load(url: URL, size: CGSize, mode: ResizeMode, completion: ImageLoaderCompletion) -> String
+    func cancel(id: String)
 }

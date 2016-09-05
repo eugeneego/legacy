@@ -9,16 +9,16 @@
 /**
  Simple dependency injection container
 */
-public class Odin: DependencyInjectionContainer {
-    public typealias Resolver = Any -> Void
+open class Odin: DependencyInjectionContainer {
+    public typealias Resolver = (Any) -> Void
 
     private var resolvers: [Resolver] = []
 
-    public func register(resolver: Resolver) {
+    open func register(_ resolver: Resolver) {
         resolvers.append(resolver)
     }
 
-    public func register<D>(resolver: (inout D) -> Void) {
+    open func register<D>(_ resolver: @escaping (inout D) -> Void) {
         register { object in
             guard var object = object as? D else { return }
 
@@ -26,7 +26,7 @@ public class Odin: DependencyInjectionContainer {
         }
     }
 
-    public func resolve(object: Any) {
+    open func resolve(_ object: Any) {
         resolvers.forEach { resolver in
             resolver(object)
         }

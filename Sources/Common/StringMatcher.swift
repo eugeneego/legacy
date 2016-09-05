@@ -7,27 +7,27 @@
 //
 
 public enum StringMatcher {
-    case Equal(String)
-    case Prefix(String)
-    case Suffix(String)
+    case equal(String)
+    case prefix(String)
+    case suffix(String)
 }
 
 public func ~= (pattern: StringMatcher, value: String) -> Bool {
     switch pattern {
-        case .Equal(let string):
+        case .equal(let string):
             return value == string
-        case .Prefix(let prefix):
+        case .prefix(let prefix):
             return value.hasPrefix(prefix)
-        case .Suffix(let suffix):
+        case .suffix(let suffix):
             return value.hasSuffix(suffix)
     }
 }
 
-public func ~=<T> (pattern: T -> Bool, value: T) -> Bool {
+public func ~=<T> (pattern: (T) -> Bool, value: T) -> Bool {
     return pattern(value)
 }
 
-public func hasPrefix(prefix: String) -> (String -> Bool) {
+public func hasPrefix(_ prefix: String) -> ((String) -> Bool) {
     return { value in
         value.hasPrefix(prefix)
     }

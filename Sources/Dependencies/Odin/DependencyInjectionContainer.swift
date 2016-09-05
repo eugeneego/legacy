@@ -7,5 +7,5 @@
 //
 
 public protocol DependencyInjectionContainer {
-    func resolve(object: Any)
+    func resolve(_ object: Any)
 }

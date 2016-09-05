@@ -8,44 +8,44 @@
 
 import UIKit
 
-public class ShadowView: UIView {
-    @IBInspectable public var shadowColor: UIColor = .blackColor() {
+open class ShadowView: UIView {
+    @IBInspectable open var shadowColor: UIColor = .black {
         didSet {
-            layer.shadowColor = shadowColor.CGColor
+            layer.shadowColor = shadowColor.cgColor
         }
     }
 
-    @IBInspectable public var shadowOffset: CGSize = CGSize(width: 3, height: 3) {
+    @IBInspectable open var shadowOffset: CGSize = CGSize(width: 3, height: 3) {
         didSet {
             layer.shadowOffset = shadowOffset
         }
     }
 
-    @IBInspectable public var shadowOpacity: Float = 0.5 {
+    @IBInspectable open var shadowOpacity: Float = 0.5 {
         didSet {
             layer.shadowOpacity = shadowOpacity
         }
     }
 
-    @IBInspectable public var shadowRadius: CGFloat = 5 {
+    @IBInspectable open var shadowRadius: CGFloat = 5 {
         didSet {
             layer.shadowRadius = shadowRadius
         }
     }
 
-    @IBInspectable public var shadowCornerRadius: CGFloat = 0 {
+    @IBInspectable open var shadowCornerRadius: CGFloat = 0 {
         didSet {
             updatePath()
         }
     }
 
-    public var shadowPath: UIBezierPath? {
+    open var shadowPath: UIBezierPath? {
         didSet {
             updatePath()
         }
     }
 
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
 
         updatePath()
@@ -53,6 +53,6 @@ public class ShadowView: UIView {
 
     private func updatePath() {
         let path = shadowPath ?? UIBezierPath(roundedRect: bounds, cornerRadius: shadowCornerRadius)
-        layer.shadowPath = path.CGPath
+        layer.shadowPath = path.cgPath
     }
 }

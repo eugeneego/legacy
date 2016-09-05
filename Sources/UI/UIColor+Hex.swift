@@ -50,8 +50,8 @@ public extension EEColor {
 
      - returns: A parsed color or nil if parsing is failed.
     */
-    public static func fromHex(hex: String) -> EEColor? {
-        return fromHexDefault(hex, def: nil)
+    public static func from(hex: String) -> EEColor? {
+        return from(hex: hex, optionalDefault: nil)
     }
 
     /**
@@ -64,12 +64,12 @@ public extension EEColor {
      - AARRGGBB
 
      - parameter hex: The string to parse, may be prefixed with #.
-     - parameter def: The default color for fallback.
+     - parameter default: The default color for fallback.
 
      - returns: A parsed color or a default value if parsing is failed.
     */
-    public static func fromHex(hex: String, def: EEColor) -> EEColor {
-        return fromHexDefault(hex, def: def)!
+    public static func from(hex: String, default: EEColor) -> EEColor {
+        return from(hex: hex, optionalDefault: `default`)!
     }
 
     /**
@@ -82,22 +82,22 @@ public extension EEColor {
      - AARRGGBB
 
      - parameter hex: The string to parse, may be prefixed with #.
-     - parameter def: The default color for fallback, nil by default.
+     - parameter optionalDefault: The default color for fallback, nil by default.
 
      - returns: A parsed color or a default value if parsing is failed.
     */
-    public static func fromHexDefault(hex: String, def: EEColor? = nil) -> EEColor? {
+    public static func from(hex: String, optionalDefault: EEColor? = nil) -> EEColor? {
         if hex.characters.count < 3 {
-            return def
+            return optionalDefault
         }
 
-        var s = hex.uppercaseString
+        var s = hex.uppercased()
         if s[s.startIndex] == "#" {
-            s.removeAtIndex(s.startIndex)
+            s.remove(at: s.startIndex)
         }
 
         guard let rgb = UInt32(s, radix: 16) else {
-            return def
+            return optionalDefault
         }
 
         let a, r, g, b: UInt32
@@ -111,7 +111,7 @@ public extension EEColor {
             case 8: // ARGB (32-bit) "AARRGGBB"
                 (a, r, g, b) = (rgb >> 24, rgb >> 16 & 0xFF, rgb >> 8 & 0xFF, rgb & 0xFF)
             default:
-                return def
+                return optionalDefault
         }
 
         return EEColor(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)

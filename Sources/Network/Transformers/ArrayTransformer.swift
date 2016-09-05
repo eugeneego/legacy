@@ -15,11 +15,11 @@ public struct ArrayTransformer<ElementTransformer: Transformer>: Transformer {
         self.transformer = transformer
     }
 
-    public func fromAny(value: AnyObject?) -> T? {
-        return (value as? [AnyObject])?.flatMap(transformer.fromAny)
+    public func fromAny(_ value: Any?) -> T? {
+        return (value as? [Any])?.flatMap(transformer.fromAny)
     }
 
-    public func toAny(value: T?) -> AnyObject? {
+    public func toAny(_ value: T?) -> Any? {
         return value?.flatMap(transformer.toAny)
     }
 }
