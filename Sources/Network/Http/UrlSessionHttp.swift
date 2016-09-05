@@ -80,7 +80,7 @@ open class UrlSessionHttp: Http {
 
         let urlResponse = response as? HTTPURLResponse
 
-        if logOnlyErrors && (error == nil && urlResponse?.statusCode < 400) {
+        if logOnlyErrors && (error == nil && (urlResponse?.statusCode ?? 1000) < 400) {
             return
         }
 
@@ -162,16 +162,5 @@ open class UrlSessionHttp: Http {
 
             completionHandler(disposition, credential)
         }
-    }
-}
-
-private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
-    switch (lhs, rhs) {
-        case let (l?, r?):
-            return l < r
-        case (nil, _?):
-            return true
-        default:
-            return false
     }
 }
