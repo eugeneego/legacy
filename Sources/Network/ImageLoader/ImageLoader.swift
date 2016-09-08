@@ -18,6 +18,6 @@ public enum ResizeMode {
 
 public protocol ImageLoader {
     @discardableResult
-    func load(url: URL, size: CGSize, mode: ResizeMode, completion: ImageLoaderCompletion) -> String
+    func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> String
     func cancel(id: String)
 }

@@ -11,7 +11,7 @@ import Foundation
 public typealias HttpCompletion = (HTTPURLResponse?, Data?, HttpError?) -> Void
 
 public protocol Http {
-    func data(request: URLRequest, completion: HttpCompletion)
+    func data(request: URLRequest, completion: @escaping HttpCompletion)
 
     func urlWithParameters(url: URL, parameters: [String: String]) -> URL
     func request(method: String, url: URL, urlParameters: [String: String],
@@ -57,7 +57,7 @@ public enum HttpMethod {
 public extension Http {
     public func data(
         method: HttpMethod, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?, completion: HttpCompletion
+        headers: [String: String], body: Data?, completion: @escaping HttpCompletion
     ) {
         let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
         data(request: req as URLRequest, completion: completion)

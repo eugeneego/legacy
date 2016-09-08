@@ -14,7 +14,7 @@ open class Odin: DependencyInjectionContainer {
 
     private var resolvers: [Resolver] = []
 
-    open func register(_ resolver: Resolver) {
+    open func register(_ resolver: @escaping Resolver) {
         resolvers.append(resolver)
     }
 

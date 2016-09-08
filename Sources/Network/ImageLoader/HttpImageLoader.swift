@@ -15,7 +15,7 @@ open class HttpImageLoader: ImageLoader {
         self.http = http
     }
 
-    open func load(url: URL, size: CGSize, mode: ResizeMode, completion: ImageLoaderCompletion) -> String {
+    open func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> String {
         let id = UUID().uuidString
 
         let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)

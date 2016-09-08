@@ -107,7 +107,7 @@ open class UrlSessionHttp: Http {
 
     // MARK: - Request
 
-    open func data(request: URLRequest, completion: HttpCompletion) {
+    open func data(request: URLRequest, completion: @escaping HttpCompletion) {
         let start = Date()
         log(request, date: start)
 
