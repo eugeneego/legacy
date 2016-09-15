@@ -9,17 +9,17 @@
 import Foundation
 import CoreGraphics
 
-public struct NumberStringTransformer<Number: NumberConvertible where Number: TransformerStringConvertible>: Transformer {
+public struct NumberStringTransformer<Number: NumberConvertible>: Transformer where Number: TransformerStringConvertible {
     public typealias T = Number
 
-    public let numberTransformer = NumberTransformer<Number>()
+    private let numberTransformer = NumberTransformer<Number>()
 
-    public func fromAny(value: AnyObject?) -> T? {
-        return numberTransformer.fromAny(value) ?? (value as? String).flatMap(T.init)
+    public func from(any value: Any?) -> T? {
+        return numberTransformer.from(any: value) ?? (value as? String).flatMap(T.init)
     }
 
-    public func toAny(value: T?) -> AnyObject? {
-        return (numberTransformer.toAny(value) as? NSNumber)?.stringValue
+    public func to(any value: T?) -> Any? {
+        return (numberTransformer.to(any: value) as? NSNumber)?.stringValue
     }
 }
 

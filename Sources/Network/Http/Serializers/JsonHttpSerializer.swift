@@ -9,15 +9,15 @@
 import Foundation
 
 public struct JsonHttpSerializer: HttpSerializer {
-    public typealias Value = AnyObject
+    public typealias Value = Any
 
     public let contentType = "application/json"
 
-    public func serialize(value: Value?) -> NSData? {
-        return value.flatMap { try? NSJSONSerialization.dataWithJSONObject($0, options: []) }
+    public func serialize(_ value: Value?) -> Data? {
+        return value.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
     }
 
-    public func deserialize(data: NSData?) -> Value? {
-        return data.flatMap { try? NSJSONSerialization.JSONObjectWithData($0, options: .AllowFragments) }
+    public func deserialize(_ data: Data?) -> Value? {
+        return data.flatMap { try? JSONSerialization.jsonObject(with: $0, options: .allowFragments) }
     }
 }

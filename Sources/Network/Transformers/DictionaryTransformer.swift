@@ -7,23 +7,23 @@
 //
 
 public struct DictionaryTransformer
-        <KeyTransformer: Transformer, ValueTransformer: Transformer where KeyTransformer.T: Hashable>: Transformer {
+        <KeyTransformer: Transformer, ValueTransformer: Transformer>: Transformer where KeyTransformer.T: Hashable {
     public typealias T = [KeyTransformer.T: ValueTransformer.T]
 
-    public let keyTransformer: KeyTransformer
-    public let valueTransformer: ValueTransformer
+    private let keyTransformer: KeyTransformer
+    private let valueTransformer: ValueTransformer
 
     public init(keyTransformer: KeyTransformer, valueTransformer: ValueTransformer) {
         self.keyTransformer = keyTransformer
         self.valueTransformer = valueTransformer
     }
 
-    public func fromAny(value: AnyObject?) -> T? {
-        guard let value = value as? [String: AnyObject] else { return nil }
+    public func from(any value: Any?) -> T? {
+        guard let value = value as? [String: Any] else { return nil }
 
         let dict: T = value.reduce([:]) { result, kv in
             var result = result
-            if let key = keyTransformer.fromAny(kv.0), value = valueTransformer.fromAny(kv.1) {
+            if let key = keyTransformer.from(any: kv.0), let value = valueTransformer.from(any: kv.1) {
                 result[key] = value
             }
             return result
@@ -32,12 +32,12 @@ public struct DictionaryTransformer
         return dict
     }
 
-    public func toAny(value: T?) -> AnyObject? {
+    public func to(any value: T?) -> Any? {
         guard let value = value else { return nil }
 
-        let dict: [String: AnyObject] = value.reduce([:]) { result, kv in
+        let dict: [String: Any] = value.reduce([:]) { result, kv in
             var result = result
-            if let key = keyTransformer.toAny(kv.0) as? String, value = valueTransformer.toAny(kv.1) {
+            if let key = keyTransformer.to(any: kv.0) as? String, let value = valueTransformer.to(any: kv.1) {
                 result[key] = value
             }
             return result

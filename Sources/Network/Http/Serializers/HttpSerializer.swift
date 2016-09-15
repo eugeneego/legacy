@@ -13,6 +13,6 @@ public protocol HttpSerializer {
 
     var contentType: String { get }
 
-    func serialize(value: Value?) -> NSData?
-    func deserialize(data: NSData?) -> Value?
+    func serialize(_ value: Value?) -> Data?
+    func deserialize(_ data: Data?) -> Value?
 }

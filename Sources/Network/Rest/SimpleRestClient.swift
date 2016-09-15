@@ -8,22 +8,22 @@
 
 import Foundation
 
-public class SimpleRestClient: RestClient {
-    public let http: Http
-    public let baseURL: NSURL
-    public let completionQueue: dispatch_queue_t
+open class SimpleRestClient: RestClient {
+    open let http: Http
+    open let baseURL: URL
+    open let completionQueue: DispatchQueue
 
-    public init(http: Http, baseURL: NSURL, completionQueue: dispatch_queue_t) {
+    public init(http: Http, baseURL: URL, completionQueue: DispatchQueue) {
         self.http = http
         self.baseURL = baseURL
         self.completionQueue = completionQueue
     }
 
-    public func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        method method: HttpMethod, path: String,
+    open func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+        method: HttpMethod, path: String,
         parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     ) {
         let requestSerializer = JsonModelTransformerHttpSerializer(transformer: requestTransformer)
         let responseSerializer = JsonModelTransformerHttpSerializer(transformer: responseTransformer)
@@ -36,16 +36,16 @@ public class SimpleRestClient: RestClient {
         )
     }
 
-    public func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
-        method method: HttpMethod, path: String,
+    open func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+        method: HttpMethod, path: String,
         parameters: [String: String], object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: (ResponseSerializer.Value?, ErrorType?) -> Void
+        completion: @escaping (ResponseSerializer.Value?, Error?) -> Void
     ) {
-        let pathUrl = NSURL(string: path)
-        let pathUrlIsFull = !(pathUrl?.scheme.isEmpty ?? true)
-        guard let url = pathUrlIsFull ? pathUrl : baseURL.URLByAppendingPathComponent(path) else {
-            completion(nil, HttpError.BadUrl)
+        let pathUrl = URL(string: path)
+        let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
+        guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else {
+            completion(nil, HttpError.badUrl)
             return
         }
 
@@ -56,10 +56,10 @@ public class SimpleRestClient: RestClient {
 
         let queue = self.completionQueue
 
-        http.data(request: request, serializer: responseSerializer) { response, object, error in
-            dispatch_async(queue) {
-                if let code = response?.statusCode where code >= 400 {
-                    completion(object, RestError.Http(code: code, error: error))
+        http.data(request: request as URLRequest, serializer: responseSerializer) { response, object, error in
+            queue.async {
+                if let code = response?.statusCode, code >= 400 {
+                    completion(object, RestError.http(code: code, error: error))
                 } else {
                     completion(object, error)
                 }
@@ -67,24 +67,24 @@ public class SimpleRestClient: RestClient {
         }
     }
 
-    private func pathWithId(path path: String, id: String?) -> String {
-        let path = (path.isEmpty || path[path.startIndex] != "/") ? path : path.substringFromIndex(path.startIndex.successor())
+    private func pathWithId(path: String, id: String?) -> String {
+        let path = (path.isEmpty || path[path.startIndex] != "/") ? path : path.substring(from: path.index(after: path.startIndex))
 
         if let id = id {
-            let delimiter = (!path.isEmpty && path[path.endIndex.predecessor()] != "/") ? "/" : ""
+            let delimiter = (!path.isEmpty && path[path.characters.index(before: path.endIndex)] != "/") ? "/" : ""
             return path + delimiter + id
         } else {
             return path
         }
     }
 
-    public func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        path path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+    open func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     ) {
         request(
-            method: .Post,
+            method: .post,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: object,
@@ -95,13 +95,13 @@ public class SimpleRestClient: RestClient {
         )
     }
 
-    public func create<ResponseTransformer: Transformer>(
-        path path: String, id: String?, data: NSData?, contentType: String, headers: [String: String],
+    open func create<ResponseTransformer: Transformer>(
+        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     ) {
         request(
-            method: .Post,
+            method: .post,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: data,
@@ -112,13 +112,13 @@ public class SimpleRestClient: RestClient {
         )
     }
 
-    public func read<ResponseTransformer: Transformer>(
-        path path: String, id: String?, parameters: [String: String], headers: [String: String],
+    open func read<ResponseTransformer: Transformer>(
+        path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     ) {
         request(
-            method: .Get,
+            method: .get,
             path: pathWithId(path: path, id: id),
             parameters: parameters,
             object: nil,
@@ -129,13 +129,13 @@ public class SimpleRestClient: RestClient {
         )
     }
 
-    public func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        path path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+    open func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     ) {
         request(
-            method: .Put,
+            method: .put,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: object,
@@ -146,13 +146,13 @@ public class SimpleRestClient: RestClient {
         )
     }
 
-    public func update<ResponseTransformer: Transformer>(
-        path path: String, id: String?, data: NSData?, contentType: String, headers: [String: String],
+    open func update<ResponseTransformer: Transformer>(
+        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     ) {
         request(
-            method: .Put,
+            method: .put,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: data,
@@ -163,12 +163,12 @@ public class SimpleRestClient: RestClient {
         )
     }
 
-    public func delete(
-        path path: String, id: String?, headers: [String: String],
-        completion: (Void?, ErrorType?) -> Void
+    open func delete(
+        path: String, id: String?, headers: [String: String],
+        completion: @escaping (Void?, Error?) -> Void
     ) {
         request(
-            method: .Delete,
+            method: .delete,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: nil,

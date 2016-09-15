@@ -8,13 +8,13 @@
 
 import Foundation
 
-public class UrlSessionHttp: Http {
-    public let session: NSURLSession
-    public let responseQueue: dispatch_queue_t
-    public var logging: Bool = false
-    public var logOnlyErrors: Bool = false
+open class UrlSessionHttp: Http {
+    open let session: URLSession
+    open let responseQueue: DispatchQueue
+    open var logging: Bool = false
+    open var logOnlyErrors: Bool = false
 
-    public var trustPolicies: [String: ServerTrustPolicy] {
+    open var trustPolicies: [String: ServerTrustPolicy] {
         get {
             return delegate.trustPolicies
         }
@@ -25,12 +25,12 @@ public class UrlSessionHttp: Http {
 
     private let delegate: Delegate
 
-    public init(configuration: NSURLSessionConfiguration, responseQueue: dispatch_queue_t) {
+    public init(configuration: URLSessionConfiguration, responseQueue: DispatchQueue) {
         delegate = Delegate()
-        session = NSURLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
         self.responseQueue = responseQueue
 
-        logDateFormatter = NSDateFormatter()
+        logDateFormatter = DateFormatter()
         logDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ"
     }
 
@@ -40,26 +40,26 @@ public class UrlSessionHttp: Http {
 
     // MARK: - Log
 
-    private func log(items: Any..., separator: String = " ", terminator: String = "\n") {
+    private func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
         items.forEach { print($0, separator: "", terminator: separator) }
         print("", separator: "", terminator: terminator)
     }
 
-    private let logDateFormatter: NSDateFormatter
+    private let logDateFormatter: DateFormatter
 
-    private func logFormatDate(date: NSDate) -> String {
-        return logDateFormatter.stringFromDate(date)
+    private func logFormatDate(_ date: Date) -> String {
+        return logDateFormatter.string(from: date)
     }
 
-    private func log(request: NSURLRequest, date: NSDate) {
+    private func log(_ request: URLRequest, date: Date) {
         if !logging || logOnlyErrors { return }
 
         let t = "←"
-        let s = request.HTTPBody.flatMap { String(data: $0, encoding: NSUTF8StringEncoding) }
+        let s = request.httpBody.flatMap { String(data: $0, encoding: String.Encoding.utf8) }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         log(
             "__ \(logFormatDate(date))",
-            "\(t) Request: \(ns(request.HTTPMethod)) \(ns(request.URL))",
+            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
             "\(t) Headers: \(ns(request.allHTTPHeaderFields))",
             "\(t) Body: \(ns(s))",
             "‾‾",
@@ -67,32 +67,35 @@ public class UrlSessionHttp: Http {
         )
     }
 
+    private func isText(type: String) -> Bool {
+        return type.contains("json") || type.contains("xml") || type.contains("text")
+    }
+
     private func log(
-        response: NSURLResponse?, _ request: NSURLRequest,
-        _ data: NSData?, _ error: NSError?,
-        time: NSTimeInterval, date: NSDate
+        _ response: URLResponse?, _ request: URLRequest,
+        _ data: Data?, _ error: NSError?,
+        time: TimeInterval, date: Date
     ) {
         if !logging { return }
 
-        let urlResponse = response as? NSHTTPURLResponse
+        let urlResponse = response as? HTTPURLResponse
 
-        if logOnlyErrors && (error == nil && urlResponse?.statusCode < 400) {
+        if logOnlyErrors && (error == nil && (urlResponse?.statusCode ?? 1000) < 400) {
             return
         }
 
         let t = "→"
         let s = data.flatMap { d -> String? in
-            if let type = urlResponse?.allHeaderFields["Content-Type"] as? String
-                where type.containsString("json") || type.containsString("xml") || type.containsString("text") {
-                return String(data: d, encoding: NSUTF8StringEncoding)
+            if let type = urlResponse?.allHeaderFields["Content-Type"] as? String, isText(type: type) {
+                return String(data: d, encoding: String.Encoding.utf8)
             } else {
-                return "\(d.length) bytes"
+                return "\(d.count) bytes"
             }
         }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         log(
             "__ \(logFormatDate(date))",
-            "\(t) Request: \(ns(request.HTTPMethod)) \(ns(request.URL))",
+            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
             "\(t) Response: \(ns(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s",
             "\(t) Headers: \(ns(urlResponse?.allHeaderFields))",
             "\(t) Data: \(ns(s))",
@@ -104,56 +107,56 @@ public class UrlSessionHttp: Http {
 
     // MARK: - Request
 
-    public func data(request request: NSURLRequest, completion: HttpCompletion) {
-        let start = NSDate()
+    open func data(request: URLRequest, completion: @escaping HttpCompletion) {
+        let start = Date()
         log(request, date: start)
 
         let responseQueue = self.responseQueue
 
         let cmpl: HttpCompletion = { response, data, error in
-            dispatch_async(responseQueue) {
+            responseQueue.async {
                 completion(response, data, error)
             }
         }
 
-        let task = session.dataTaskWithRequest(request) { data, response, error in
-            let end = NSDate()
-            self.log(response, request, data, error, time: end.timeIntervalSinceDate(start), date: end)
+        let task = session.dataTask(with: request) { data, response, error in
+            let end = Date()
+            self.log(response, request, data, error as NSError?, time: end.timeIntervalSince(start), date: end)
 
-            guard let response = response, data = data else {
-                cmpl(nil, nil, .Error(error: error))
+            guard let response = response, let data = data else {
+                cmpl(nil, nil, .error(error: error))
                 return
             }
 
-            guard let httpResponse = response as? NSHTTPURLResponse else {
-                cmpl(nil, data, .NonHttpResponse(response: response))
+            guard let httpResponse = response as? HTTPURLResponse else {
+                cmpl(nil, data, .nonHttpResponse(response: response))
                 return
             }
 
-            cmpl(httpResponse, data, error.flatMap { .Error(error: $0) })
+            cmpl(httpResponse, data, error.flatMap { .error(error: $0) })
         }
         task.resume()
     }
 
     // MARK: - Delegate
 
-    private class Delegate: NSObject, NSURLSessionDelegate {
+    private class Delegate: NSObject, URLSessionDelegate {
         var trustPolicies: [String: ServerTrustPolicy] = [:]
 
-        @objc func URLSession(
-            session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge,
-            completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void
+        func urlSession(
+            _ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
+            completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
         ) {
-            var disposition: NSURLSessionAuthChallengeDisposition = .PerformDefaultHandling
-            var credential: NSURLCredential?
+            var disposition: Foundation.URLSession.AuthChallengeDisposition = .performDefaultHandling
+            var credential: URLCredential?
 
             if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-                let serverTrust = challenge.protectionSpace.serverTrust, policy = trustPolicies[challenge.protectionSpace.host] {
+                let serverTrust = challenge.protectionSpace.serverTrust, let policy = trustPolicies[challenge.protectionSpace.host] {
                 if policy.evaluate(serverTrust: serverTrust, host: challenge.protectionSpace.host) {
-                    disposition = .UseCredential
-                    credential = NSURLCredential(trust: serverTrust)
+                    disposition = .useCredential
+                    credential = URLCredential(trust: serverTrust)
                 } else {
-                    disposition = .CancelAuthenticationChallenge
+                    disposition = .cancelAuthenticationChallenge
                 }
             }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Random {
+public enum Random {
     /**
      Generate a random unsigned integer number.
      - returns: An unsigned integer number in a [0, UInt32.max) range.
@@ -22,7 +22,7 @@ public class Random {
      - parameter max: The maximum number, not inclusive.
      - returns: An integer number in a [0, max) range.
      */
-    public static func int(max: Int) -> Int {
+    public static func int(_ max: Int) -> Int {
         return Int(arc4random_uniform(UInt32(max)))
     }
 
@@ -32,7 +32,7 @@ public class Random {
      - parameter max: The maximum number, inclusive.
      - returns: An integer number in a [min, max] range.
      */
-    public static func int(min min: Int, max: Int) -> Int {
+    public static func int(min: Int, max: Int) -> Int {
         return min + Int(arc4random_uniform(UInt32(max - min + 1)))
     }
 
@@ -41,8 +41,8 @@ public class Random {
      - parameter range: The range.
      - returns: An integer number in a given range.
      */
-    public static func int(range: Range<Int>) -> Int {
-        return range.startIndex + Int(arc4random_uniform(UInt32(range.endIndex - range.startIndex + 1)))
+    public static func int(_ range: Range<Int>) -> Int {
+        return range.lowerBound + Int(arc4random_uniform(UInt32(range.upperBound - range.lowerBound + 1)))
     }
 
     /**
@@ -58,7 +58,7 @@ public class Random {
      - parameter chance: The chance of *true*.
      - returns: *true* with a given chance (from 0% to 100%)
      */
-    public static func bool(chance chance: Int) -> Bool {
+    public static func bool(chance: Int) -> Bool {
         return arc4random_uniform(100) < UInt32(min(max(chance, 0), 100))
     }
 }

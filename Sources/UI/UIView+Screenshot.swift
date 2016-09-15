@@ -9,11 +9,11 @@
 import UIKit
 
 public extension UIView {
-    public func screenshot(afterUpdate afterUpdate: Bool = false) -> UIImage {
+    public func screenshot(afterUpdate: Bool = false) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0.0)
-        drawViewHierarchyInRect(bounds, afterScreenUpdates: afterUpdate)
+        drawHierarchy(in: bounds, afterScreenUpdates: afterUpdate)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
 }

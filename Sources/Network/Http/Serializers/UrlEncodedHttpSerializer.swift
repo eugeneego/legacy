@@ -13,32 +13,32 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
 
     public let contentType = "application/x-www-form-urlencoded"
 
-    public func serialize(value: Value?) -> NSData? {
-        return serialize(value).flatMap { $0.dataUsingEncoding(NSUTF8StringEncoding) }
+    public func serialize(_ value: Value?) -> Data? {
+        return serialize(value).flatMap { $0.data(using: String.Encoding.utf8) }
     }
 
-    public func deserialize(data: NSData?) -> Value? {
-        return deserialize(data.flatMap { String(data: $0, encoding: NSUTF8StringEncoding) })
+    public func deserialize(_ data: Data?) -> Value? {
+        return deserialize(data.flatMap { String(data: $0, encoding: String.Encoding.utf8) })
     }
 
-    public func serialize(value: Value?) -> String? {
+    public func serialize(_ value: Value?) -> String? {
         guard let value = value else { return nil }
 
         let result = value
             .map { name, value in
                 UrlEncodedHttpSerializer.encode(name) + "=" + UrlEncodedHttpSerializer.encode("\(value)")
             }
-            .joinWithSeparator("&")
+            .joined(separator: "&")
         return result
     }
 
-    public func deserialize(string: String?) -> Value? {
+    public func deserialize(_ string: String?) -> Value? {
         guard let string = string else { return nil }
 
         var params: Value = [:]
-        let cmp = string.componentsSeparatedByString("&")
+        let cmp = string.components(separatedBy: "&")
         cmp.forEach { param in
-            let parts = param.componentsSeparatedByString("=")
+            let parts = param.components(separatedBy: "=")
             if parts.count == 2 {
                 let name = UrlEncodedHttpSerializer.decode(parts[0])
                 let value = UrlEncodedHttpSerializer.decode(parts[1])
@@ -48,13 +48,13 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
         return params
     }
 
-    public static func encode(string: String) -> String {
-        let charset = NSMutableCharacterSet.alphanumericCharacterSet()
-        charset.addCharactersInString("-_.")
-        return string.stringByAddingPercentEncodingWithAllowedCharacters(charset) ?? ""
+    public static func encode(_ string: String) -> String {
+        let charset = NSMutableCharacterSet.alphanumeric()
+        charset.addCharacters(in: "-_.")
+        return string.addingPercentEncoding(withAllowedCharacters: charset as CharacterSet) ?? ""
     }
 
-    public static func decode(string: String) -> String {
-        return string.stringByRemovingPercentEncoding ?? ""
+    public static func decode(_ string: String) -> String {
+        return string.removingPercentEncoding ?? ""
     }
 }

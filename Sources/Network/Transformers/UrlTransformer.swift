@@ -9,13 +9,13 @@
 import Foundation
 
 public struct UrlTransformer: Transformer {
-    public typealias T = NSURL
+    public typealias T = URL
 
-    public func fromAny(value: AnyObject?) -> T? {
+    public func from(any value: Any?) -> T? {
         return (value as? String).flatMap(T.init)
     }
 
-    public func toAny(value: T?) -> AnyObject? {
+    public func to(any value: T?) -> Any? {
         return value?.absoluteString
     }
 }

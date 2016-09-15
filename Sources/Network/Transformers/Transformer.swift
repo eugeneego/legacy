@@ -9,7 +9,7 @@
 public protocol Transformer {
     associatedtype T
 
-    func fromAny(value: AnyObject?) -> T?
+    func from(any value: Any?) -> T?
 
-    func toAny(value: T?) -> AnyObject?
+    func to(any value: T?) -> Any?
 }

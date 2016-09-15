@@ -8,77 +8,77 @@
 
 import Foundation
 
-public typealias HttpCompletion = (NSHTTPURLResponse?, NSData?, HttpError?) -> Void
+public typealias HttpCompletion = (HTTPURLResponse?, Data?, HttpError?) -> Void
 
 public protocol Http {
-    func data(request request: NSURLRequest, completion: HttpCompletion)
+    func data(request: URLRequest, completion: @escaping HttpCompletion)
 
-    func urlWithParameters(url url: NSURL, parameters: [String: String]) -> NSURL
-    func request(method method: String, url: NSURL, urlParameters: [String: String],
-        headers: [String: String], body: NSData?) -> NSMutableURLRequest
+    func urlWithParameters(url: URL, parameters: [String: String]) -> URL
+    func request(method: String, url: URL, urlParameters: [String: String],
+        headers: [String: String], body: Data?) -> NSMutableURLRequest
 }
 
-public enum HttpError: ErrorType {
-    case NonHttpResponse(response: NSURLResponse)
-    case BadUrl
-    case ParsingFailed
-    case Error(error: ErrorType?)
-    case Status(code: Int, error: ErrorType?)
+public enum HttpError: Error {
+    case nonHttpResponse(response: URLResponse)
+    case badUrl
+    case parsingFailed
+    case error(error: Error?)
+    case status(code: Int, error: Error?)
 }
 
 public enum HttpMethod {
-    case Get
-    case Head
-    case Post
-    case Put
-    case Patch
-    case Delete
-    case Trace
-    case Options
-    case Connect
-    case Custom(String)
+    case get
+    case head
+    case post
+    case put
+    case patch
+    case delete
+    case trace
+    case options
+    case connect
+    case custom(String)
 
     public var value: String {
         switch self {
-            case Get: return "GET"
-            case Head: return "HEAD"
-            case Post: return "POST"
-            case Put: return "PUT"
-            case Patch: return "PATCH"
-            case Delete: return "DELETE"
-            case Trace: return "TRACE"
-            case Options: return "OPTIONS"
-            case Connect: return "CONNECT"
-            case Custom(let value): return value
+            case .get: return "GET"
+            case .head: return "HEAD"
+            case .post: return "POST"
+            case .put: return "PUT"
+            case .patch: return "PATCH"
+            case .delete: return "DELETE"
+            case .trace: return "TRACE"
+            case .options: return "OPTIONS"
+            case .connect: return "CONNECT"
+            case .custom(let value): return value
         }
     }
 }
 
 public extension Http {
     public func data(
-        method method: HttpMethod, url: NSURL, urlParameters: [String: String],
-        headers: [String: String], body: NSData?, completion: HttpCompletion
+        method: HttpMethod, url: URL, urlParameters: [String: String],
+        headers: [String: String], body: Data?, completion: @escaping HttpCompletion
     ) {
         let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        data(request: req, completion: completion)
+        data(request: req as URLRequest, completion: completion)
     }
 
     public func data<T: HttpSerializer>(
-        request request: NSURLRequest, serializer: T,
-        completion: (NSHTTPURLResponse?, T.Value?, HttpError?) -> Void
+        request: URLRequest, serializer: T,
+        completion: @escaping (HTTPURLResponse?, T.Value?, HttpError?) -> Void
     ) {
         data(request: request) { response, data, error in
             let object = serializer.deserialize(data)
             var error = error
             if error == nil && object == nil {
-                error = HttpError.ParsingFailed
+                error = HttpError.parsingFailed
             }
             completion(response, object, error)
         }
     }
 
-    public func urlWithParameters(url url: NSURL, parameters: [String: String]) -> NSURL {
-        let components = NSURLComponents(URL: url, resolvingAgainstBaseURL: true)!
+    public func urlWithParameters(url: URL, parameters: [String: String]) -> URL {
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
 
         if !parameters.isEmpty {
             let serializer = UrlEncodedHttpSerializer()
@@ -89,16 +89,16 @@ public extension Http {
             components.percentEncodedQuery = serializer.serialize(params)
         }
 
-        return components.URL!
+        return components.url!
     }
 
     public func request(
-        method method: String, url: NSURL, urlParameters: [String: String],
-        headers: [String: String], body: NSData?
+        method: String, url: URL, urlParameters: [String: String],
+        headers: [String: String], body: Data?
     ) -> NSMutableURLRequest {
-        let request = NSMutableURLRequest(URL: urlWithParameters(url: url, parameters: urlParameters))
-        request.HTTPMethod = method
-        request.HTTPBody = body
+        let request = NSMutableURLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
+        request.httpMethod = method
+        request.httpBody = body
         headers.forEach { name, value in
             request.setValue(value, forHTTPHeaderField: name)
         }
@@ -106,20 +106,20 @@ public extension Http {
     }
 
     public func request(
-        method method: HttpMethod, url: NSURL, urlParameters: [String: String],
-        headers: [String: String], body: NSData?
+        method: HttpMethod, url: URL, urlParameters: [String: String],
+        headers: [String: String], body: Data?
     ) -> NSMutableURLRequest {
         return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body)
     }
 
     public func request<T: HttpSerializer>(
-        method method: HttpMethod, url: NSURL, urlParameters: [String: String],
+        method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String],
         object: T.Value?, serializer: T
     ) -> NSMutableURLRequest {
         let req = request(method: method, url: url, urlParameters: urlParameters,
             headers: headers, body: serializer.serialize(object))
-        if req.HTTPBody != nil {
+        if req.httpBody != nil {
             req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
         }
         return req

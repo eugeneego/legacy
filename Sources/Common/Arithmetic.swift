@@ -9,26 +9,26 @@
 import CoreGraphics
 
 public protocol Arithmetic {
-    func + (left: Self, right: Self) -> Self
-    func - (left: Self, right: Self) -> Self
-    func * (left: Self, right: Self) -> Self
-    func / (left: Self, right: Self) -> Self
+    static func + (left: Self, right: Self) -> Self
+    static func - (left: Self, right: Self) -> Self
+    static func * (left: Self, right: Self) -> Self
+    static func / (left: Self, right: Self) -> Self
 
-    func += (inout left: Self, right: Self)
-    func -= (inout left: Self, right: Self)
-    func *= (inout left: Self, right: Self)
-    func /= (inout left: Self, right: Self)
+    static func += (left: inout Self, right: Self)
+    static func -= (left: inout Self, right: Self)
+    static func *= (left: inout Self, right: Self)
+    static func /= (left: inout Self, right: Self)
 }
 
 public protocol BitArithmetic {
-    func & (left: Self, right: Self) -> Self
-    func | (left: Self, right: Self) -> Self
-    func ^ (left: Self, right: Self) -> Self
-    prefix func ~ (left: Self) -> Self
+    static func & (left: Self, right: Self) -> Self
+    static func | (left: Self, right: Self) -> Self
+    static func ^ (left: Self, right: Self) -> Self
+    prefix static func ~ (left: Self) -> Self
 
-    func &= (inout left: Self, right: Self)
-    func |= (inout left: Self, right: Self)
-    func ^= (inout left: Self, right: Self)
+    static func &= (left: inout Self, right: Self)
+    static func |= (left: inout Self, right: Self)
+    static func ^= (left: inout Self, right: Self)
 }
 
 extension Int: BitArithmetic, Arithmetic {}

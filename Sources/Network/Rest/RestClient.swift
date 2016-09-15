@@ -8,60 +8,60 @@
 
 import Foundation
 
-public enum RestError: ErrorType {
-    case Http(code: Int, error: ErrorType?)
+public enum RestError: Error {
+    case http(code: Int, error: Error?)
 }
 
 public protocol RestClient {
     var http: Http { get }
-    var baseURL: NSURL { get }
+    var baseURL: URL { get }
 
     func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        method method: HttpMethod, path: String,
+        method: HttpMethod, path: String,
         parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     )
 
     func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
-        method method: HttpMethod, path: String,
+        method: HttpMethod, path: String,
         parameters: [String: String], object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: (ResponseSerializer.Value?, ErrorType?) -> Void
+        completion: @escaping (ResponseSerializer.Value?, Error?) -> Void
     )
 
     func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        path path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     )
 
     func create<ResponseTransformer: Transformer>(
-        path path: String, id: String?, data: NSData?, contentType: String, headers: [String: String],
+        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     )
 
     func read<ResponseTransformer: Transformer>(
-        path path: String, id: String?, parameters: [String: String], headers: [String: String],
+        path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     )
 
     func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        path path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     )
 
     func update<ResponseTransformer: Transformer>(
-        path path: String, id: String?, data: NSData?, contentType: String, headers: [String: String],
+        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: (ResponseTransformer.T?, ErrorType?) -> Void
+        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
     )
 
     func delete(
-        path path: String, id: String?, headers: [String: String],
-        completion: (Void?, ErrorType?) -> Void
+        path: String, id: String?, headers: [String: String],
+        completion: @escaping (Void?, Error?) -> Void
     )
 }

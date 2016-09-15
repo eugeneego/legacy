@@ -6,10 +6,10 @@
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-public class SimpleSubscription: Subscription {
+open class SimpleSubscription: Subscription {
     private let unsubscribeClosure: () -> Void
 
-    public init(unsubscribeClosure: () -> Void) {
+    public init(unsubscribeClosure: @escaping () -> Void) {
         self.unsubscribeClosure = unsubscribeClosure
     }
 
@@ -17,7 +17,7 @@ public class SimpleSubscription: Subscription {
         unsubscribe()
     }
 
-    public func unsubscribe() {
+    open func unsubscribe() {
         unsubscribeClosure()
     }
 }

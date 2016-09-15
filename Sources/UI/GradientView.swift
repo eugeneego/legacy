@@ -8,17 +8,17 @@
 
 import UIKit
 
-public class GradientView: UIView {
-    @IBInspectable public var startPoint: CGPoint = CGPoint(x: 0.0, y: 0.0)
-    @IBInspectable public var endPoint: CGPoint = CGPoint(x: 1.0, y: 1.0)
+open class GradientView: UIView {
+    @IBInspectable open var startPoint: CGPoint = CGPoint(x: 0.0, y: 0.0)
+    @IBInspectable open var endPoint: CGPoint = CGPoint(x: 1.0, y: 1.0)
 
-    @IBInspectable public var startColor: UIColor = .whiteColor()
-    @IBInspectable public var endColor: UIColor = .lightGrayColor()
+    @IBInspectable open var startColor: UIColor = UIColor.white
+    @IBInspectable open var endColor: UIColor = UIColor.lightGray
 
-    @IBInspectable public var locations: [NSNumber]?
-    @IBInspectable public var colors: [UIColor]?
+    @IBInspectable open var locations: [NSNumber]?
+    @IBInspectable open var colors: [UIColor]?
 
-    public override class func layerClass() -> AnyClass {
+    open override class var layerClass: AnyClass {
         return CAGradientLayer.self
     }
 
@@ -32,13 +32,13 @@ public class GradientView: UIView {
         super.init(coder: aDecoder)
     }
 
-    public override func awakeFromNib() {
+    open override func awakeFromNib() {
         super.awakeFromNib()
 
         update()
     }
 
-    public func update() {
+    open func update() {
         let layer = self.layer as! CAGradientLayer
         layer.startPoint = startPoint
         layer.endPoint = endPoint
@@ -46,9 +46,9 @@ public class GradientView: UIView {
 
         let colors = self.colors ?? []
         if !colors.isEmpty {
-            layer.colors = colors.map { $0.CGColor }
+            layer.colors = colors.map { $0.cgColor }
         } else {
-            layer.colors = [ startColor.CGColor, endColor.CGColor ]
+            layer.colors = [ startColor.cgColor, endColor.cgColor ]
         }
     }
 }

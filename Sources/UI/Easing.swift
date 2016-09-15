@@ -21,26 +21,26 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Linear
 
     /// The line y = x
-    public static func linear(p: T) -> T {
+    public static func linear(_ p: T) -> T {
         return p
     }
 
     // MARK: - Quadratic
 
     /// The parabola y = x^2
-    public static func quadraticIn(p: T) -> T {
+    public static func quadraticIn(_ p: T) -> T {
         return p * p
     }
 
     /// The parabola y = -x^2 + 2x
-    public static func quadraticOut(p: T) -> T {
+    public static func quadraticOut(_ p: T) -> T {
         return -p * (p - 2)
     }
 
     /// The piecewise quadratic
     /// y = (1/2)((2x)^2)             ; [0, 0.5)
     /// y = -(1/2)((2x-1)*(2x-3) - 1) ; [0.5, 1]
-    public static func quadraticInOut(p: T) -> T {
+    public static func quadraticInOut(_ p: T) -> T {
         let pp2 = 2 * p * p
         if p < 0.5 {
             return pp2
@@ -53,12 +53,12 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Cubic
 
     /// The cubic y = x^3
-    public static func cubicIn(p: T) -> T {
+    public static func cubicIn(_ p: T) -> T {
         return p * p * p
     }
 
     /// The cubic y = (x - 1)^3 + 1
-    public static func cubicOut(p: T) -> T {
+    public static func cubicOut(_ p: T) -> T {
         let f = p - 1
         return f * f * f + 1
     }
@@ -66,7 +66,7 @@ public struct Easing<T: EasingValueType> {
     /// The piecewise cubic
     /// y = (1/2)((2x)^3)       ; [0, 0.5)
     /// y = (1/2)((2x-2)^3 + 2) ; [0.5, 1]
-    public static func cubicInOut(p: T) -> T {
+    public static func cubicInOut(_ p: T) -> T {
         if p < 0.5 {
             let ppp = p * p * p
             return 4 * ppp
@@ -80,12 +80,12 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Quartic
 
     /// The quartic x^4
-    public static func quarticIn(p: T) -> T {
+    public static func quarticIn(_ p: T) -> T {
         return p * p * p * p
     }
 
     /// The quartic y = 1 - (x - 1)^4
-    public static func quarticOut(p: T) -> T {
+    public static func quarticOut(_ p: T) -> T {
         let f = p - 1
         let fff = f * f * f
         return fff * (1 - p) + 1
@@ -94,7 +94,7 @@ public struct Easing<T: EasingValueType> {
     /// The piecewise quartic
     /// y = (1/2)((2x)^4)        ; [0, 0.5)
     /// y = -(1/2)((2x-2)^4 - 2) ; [0.5, 1]
-    public static func quarticInOut(p: T) -> T {
+    public static func quarticInOut(_ p: T) -> T {
         if p < 0.5 {
             let pppp = p * p * p * p
             return 8 * pppp
@@ -108,12 +108,12 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Quintic
 
     /// The quintic y = x^5
-    public static func quinticIn(p: T) -> T {
+    public static func quinticIn(_ p: T) -> T {
         return p * p * p * p * p
     }
 
     /// The quintic y = (x - 1)^5 + 1
-    public static func quinticOut(p: T) -> T {
+    public static func quinticOut(_ p: T) -> T {
         let f = p - 1
         let ff = f * f
         return ff * ff * f + 1
@@ -122,7 +122,7 @@ public struct Easing<T: EasingValueType> {
     /// The piecewise quintic
     /// y = (1/2)((2x)^5)       ; [0, 0.5)
     /// y = (1/2)((2x-2)^5 + 2) ; [0.5, 1]
-    public static func quinticInOut(p: T) -> T {
+    public static func quinticInOut(_ p: T) -> T {
         if p < 0.5 {
             let p5 = p * p * p * p * p
             return 16 * p5
@@ -136,36 +136,36 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Sine
 
     /// Quarter-cycle of sine wave
-    public static func sineIn(p: T) -> T {
+    public static func sineIn(_ p: T) -> T {
         return T.sin((p - 1) * T.pi2) + 1
     }
 
     /// Quarter-cycle of sine wave (different phase)
-    public static func sineOut(p: T) -> T {
+    public static func sineOut(_ p: T) -> T {
         return T.sin(p * T.pi2)
     }
 
     /// Half sine wave
-    public static func sineInOut(p: T) -> T {
+    public static func sineInOut(_ p: T) -> T {
         return 0.5 * (1 - T.cos(p * T.pi))
     }
 
     // MARK: - Circular
 
     /// Shifted quadrant IV of unit circle
-    public static func circularIn(p: T) -> T {
+    public static func circularIn(_ p: T) -> T {
         return 1 - T.sqrt(1 - p * p)
     }
 
     /// Shifted quadrant II of unit circle
-    public static func circularOut(p: T) -> T {
+    public static func circularOut(_ p: T) -> T {
         return T.sqrt((2 - p) * p)
     }
 
     /// The piecewise circular function
     /// y = (1/2)(1 - sqrt(1 - 4x^2))           ; [0, 0.5)
     /// y = (1/2)(sqrt(-(2x - 3)*(2x - 1)) + 1) ; [0.5, 1]
-    public static func circularInOut(p: T) -> T {
+    public static func circularInOut(_ p: T) -> T {
         if p < 0.5 {
             let pp = p * p
             return 0.5 * (1 - T.sqrt(1 - 4 * pp))
@@ -179,19 +179,19 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Exponential
 
     /// The exponential function y = 2^(10(x - 1))
-    public static func exponentialIn(p: T) -> T {
+    public static func exponentialIn(_ p: T) -> T {
         return (p == 0.0) ? p : T.pow(2, 10 * (p - 1))
     }
 
     /// The exponential function y = -2^(-10x) + 1
-    public static func exponentialOut(p: T) -> T {
+    public static func exponentialOut(_ p: T) -> T {
         return (p == 1.0) ? p : 1 - T.pow(2, -10 * p)
     }
 
     /// The piecewise exponential
     /// y = (1/2)2^(10(2x - 1))         ; [0,0.5)
     /// y = -(1/2)*2^(-10(2x - 1))) + 1 ; [0.5,1]
-    public static func exponentialInOut(p: T) -> T {
+    public static func exponentialInOut(_ p: T) -> T {
         if p == 0.0 || p == 1.0 {
             return p
         }
@@ -206,12 +206,12 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Elastic
 
     /// The damped sine wave y = sin(13pi/2*x)*pow(2, 10 * (x - 1))
-    public static func elasticIn(p: T) -> T {
+    public static func elasticIn(_ p: T) -> T {
         return T.sin(13 * T.pi2 * p) * T.pow(2, 10 * (p - 1))
     }
 
     /// The damped sine wave y = sin(-13pi/2*(x + 1))*pow(2, -10x) + 1
-    public static func elasticOut(p: T) -> T {
+    public static func elasticOut(_ p: T) -> T {
         let f1 = T.pi2 * (p + 1)
         return T.sin(-13 * f1) * T.pow(2, -10 * p) + 1
     }
@@ -219,7 +219,7 @@ public struct Easing<T: EasingValueType> {
     /// The piecewise exponentially-damped sine wave:
     /// y = (1/2)*sin(13pi/2*(2*x))*pow(2, 10 * ((2*x) - 1))      ; [0,0.5)
     /// y = (1/2)*(sin(-13pi/2*((2x-1)+1))*pow(2,-10(2*x-1)) + 2) ; [0.5, 1]
-    public static func elasticInOut(p: T) -> T {
+    public static func elasticInOut(_ p: T) -> T {
         let p2 = 2 * p
         let pi132 = 13 * T.pi2 * p2
         let p10 = 10 * (p2 - 1)
@@ -233,12 +233,12 @@ public struct Easing<T: EasingValueType> {
     // MARK: - Back
 
     /// The overshooting cubic y = x^3-x*sin(x*pi)
-    public static func backIn(p: T) -> T {
+    public static func backIn(_ p: T) -> T {
         return p * p * p - p * T.sin(p * T.pi)
     }
 
     /// The overshooting cubic y = 1-((1-x)^3-(1-x)*sin((1-x)*pi))
-    public static func backOut(p: T) -> T {
+    public static func backOut(_ p: T) -> T {
         let f = 1 - p
         let fff = f * f * f
         return 1 - (fff - f * T.sin(f * T.pi))
@@ -247,7 +247,7 @@ public struct Easing<T: EasingValueType> {
     /// The piecewise overshooting cubic function:
     /// y = (1/2)*((2x)^3-(2x)*sin(2*x*pi))           ; [0, 0.5)
     /// y = (1/2)*(1-((1-x)^3-(1-x)*sin((1-x)*pi))+1) ; [0.5, 1]
-    public static func backInOut(p: T) -> T {
+    public static func backInOut(_ p: T) -> T {
         if p < 0.5 {
             let f = 2 * p
             let fff = f * f * f
@@ -263,11 +263,11 @@ public struct Easing<T: EasingValueType> {
 
     // MARK: - Bounce
 
-    public static func bounceIn(p: T) -> T {
+    public static func bounceIn(_ p: T) -> T {
         return 1 - bounceOut(1 - p)
     }
 
-    public static func bounceOut(p: T) -> T {
+    public static func bounceOut(_ p: T) -> T {
         let pp = p * p
         if p < 4.0 / 11.0 {
             return (121 * pp) / 16.0
@@ -289,7 +289,7 @@ public struct Easing<T: EasingValueType> {
         }
     }
 
-    public static func bounceInOut(p: T) -> T {
+    public static func bounceInOut(_ p: T) -> T {
         if p < 0.5 {
             return 0.5 * bounceIn(p * 2)
         } else {
@@ -298,44 +298,44 @@ public struct Easing<T: EasingValueType> {
     }
 }
 
-public protocol EasingValueType: IntegerLiteralConvertible, FloatLiteralConvertible {
-    func + (left: Self, right: Self) -> Self
-    func - (left: Self, right: Self) -> Self
-    func * (left: Self, right: Self) -> Self
-    func / (left: Self, right: Self) -> Self
-    prefix func - (x: Self) -> Self
+public protocol EasingValueType: ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+    static func + (left: Self, right: Self) -> Self
+    static func - (left: Self, right: Self) -> Self
+    static func * (left: Self, right: Self) -> Self
+    static func / (left: Self, right: Self) -> Self
+    prefix static func - (x: Self) -> Self
 
-    func < (lhs: Self, rhs: Self) -> Bool
-    func > (lhs: Self, rhs: Self) -> Bool
-    func == (lhs: Self, rhs: Self) -> Bool
+    static func < (lhs: Self, rhs: Self) -> Bool
+    static func > (lhs: Self, rhs: Self) -> Bool
+    static func == (lhs: Self, rhs: Self) -> Bool
 
     static var pi: Self { get }
     static var pi2: Self { get }
 
-    static func pow(lhs: Self, _ rhs: Self) -> Self
-    static func sqrt(x: Self) -> Self
+    static func pow(_ lhs: Self, _ rhs: Self) -> Self
+    static func sqrt(_ x: Self) -> Self
 
-    static func sin(x: Self) -> Self
-    static func cos(x: Self) -> Self
+    static func sin(_ x: Self) -> Self
+    static func cos(_ x: Self) -> Self
 }
 
 extension Float: EasingValueType {
     public static var pi: Float { return Float(M_PI) }
     public static var pi2: Float { return Float(M_PI_2) }
 
-    public static func pow(lhs: Float, _ rhs: Float) -> Float {
+    public static func pow(_ lhs: Float, _ rhs: Float) -> Float {
         return Darwin.pow(lhs, rhs)
     }
 
-    public static func sqrt(x: Float) -> Float {
+    public static func sqrt(_ x: Float) -> Float {
         return Darwin.sqrt(x)
     }
 
-    public static func sin(x: Float) -> Float {
+    public static func sin(_ x: Float) -> Float {
         return Darwin.sin(x)
     }
 
-    public static func cos(x: Float) -> Float {
+    public static func cos(_ x: Float) -> Float {
         return Darwin.cos(x)
     }
 }
@@ -344,19 +344,19 @@ extension Double: EasingValueType {
     public static var pi: Double { return M_PI }
     public static var pi2: Double { return M_PI_2 }
 
-    public static func pow(lhs: Double, _ rhs: Double) -> Double {
+    public static func pow(_ lhs: Double, _ rhs: Double) -> Double {
         return Darwin.pow(lhs, rhs)
     }
 
-    public static func sqrt(x: Double) -> Double {
+    public static func sqrt(_ x: Double) -> Double {
         return Darwin.sqrt(x)
     }
 
-    public static func sin(x: Double) -> Double {
+    public static func sin(_ x: Double) -> Double {
         return Darwin.sin(x)
     }
 
-    public static func cos(x: Double) -> Double {
+    public static func cos(_ x: Double) -> Double {
         return Darwin.cos(x)
     }
 }
@@ -369,19 +369,19 @@ extension CGFloat: EasingValueType {
         return CGFloat(M_PI_2)
     }
 
-    public static func pow(lhs: CGFloat, _ rhs: CGFloat) -> CGFloat {
+    public static func pow(_ lhs: CGFloat, _ rhs: CGFloat) -> CGFloat {
         return CoreGraphics.pow(lhs, rhs)
     }
 
-    public static func sqrt(x: CGFloat) -> CGFloat {
+    public static func sqrt(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.sqrt(x)
     }
 
-    public static func sin(x: CGFloat) -> CGFloat {
+    public static func sin(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.sin(x)
     }
 
-    public static func cos(x: CGFloat) -> CGFloat {
+    public static func cos(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.cos(x)
     }
 }

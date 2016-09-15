@@ -9,20 +9,21 @@
 import Foundation
 
 public struct DateTransformer: Transformer {
-    public typealias T = NSDate
+    public typealias T = Date
 
-    private let formatter: NSDateFormatter
+    private let formatter: DateFormatter
 
-    public init(format: String) {
-        formatter = NSDateFormatter()
+    public init(format: String, locale: Locale = Locale(identifier: "en-US")) {
+        formatter = DateFormatter()
+        formatter.locale = locale
         formatter.dateFormat = format
     }
 
-    public func fromAny(value: AnyObject?) -> T? {
-        return (value as? String).flatMap(formatter.dateFromString)
+    public func from(any value: Any?) -> T? {
+        return (value as? String).flatMap(formatter.date(from:))
     }
 
-    public func toAny(value: T?) -> AnyObject? {
-        return value.flatMap(formatter.stringFromDate)
+    public func to(any value: T?) -> Any? {
+        return value.flatMap(formatter.string(from:))
     }
 }

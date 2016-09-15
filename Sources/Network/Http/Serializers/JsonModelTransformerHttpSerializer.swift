@@ -19,11 +19,11 @@ public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer
         self.transformer = transformer
     }
 
-    public func serialize(value: Value?) -> NSData? {
-        return transformer.toAny(value).flatMap { try? NSJSONSerialization.dataWithJSONObject($0, options: []) }
+    public func serialize(_ value: Value?) -> Data? {
+        return transformer.to(any: value).flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
     }
 
-    public func deserialize(data: NSData?) -> Value? {
-        return transformer.fromAny(data.flatMap { try? NSJSONSerialization.JSONObjectWithData($0, options: .AllowFragments) })
+    public func deserialize(_ data: Data?) -> Value? {
+        return transformer.from(any: data.flatMap { try? JSONSerialization.jsonObject(with: $0, options: .allowFragments) })
     }
 }

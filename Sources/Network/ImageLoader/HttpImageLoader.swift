@@ -8,32 +8,32 @@
 
 import UIKit
 
-public class HttpImageLoader: ImageLoader {
-    public let http: Http
+open class HttpImageLoader: ImageLoader {
+    open let http: Http
 
     public init(http: Http) {
         self.http = http
     }
 
-    public func load(url url: NSURL, size: CGSize, mode: ResizeMode, completion: ImageLoaderCompletion) -> String {
-        let id = NSUUID().UUIDString
+    open func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> String {
+        let id = UUID().uuidString
 
-        let request = http.request(method: .Get, url: url, urlParameters: [:], headers: [:], body: nil)
+        let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)
 
-        http.data(request: request) { response, data, error in
-            let cmpl = { (image: UIImage?, error: ErrorType?) in
-                dispatch_async(dispatch_get_main_queue()) {
-                    completion(id: id, url: url, data: data, image: image, error: error)
+        http.data(request: request as URLRequest) { response, data, error in
+            let cmpl = { (image: UIImage?, error: Error?) in
+                DispatchQueue.main.async {
+                    completion(id, url, data, image, error)
                 }
             }
 
             if let error = error {
-                cmpl(nil, HttpError.Error(error: error))
+                cmpl(nil, HttpError.error(error: error))
                 return
             }
 
-            if let code = response?.statusCode where code >= 400 {
-                cmpl(nil, HttpError.Status(code: code, error: error))
+            if let code = response?.statusCode, code >= 400 {
+                cmpl(nil, HttpError.status(code: code, error: error))
                 return
             }
 
@@ -41,13 +41,13 @@ public class HttpImageLoader: ImageLoader {
                 let image = UIImage(data: data)?.prerenderedImage()
                 cmpl(image, error)
             } else {
-                cmpl(nil, HttpError.Error(error: error))
+                cmpl(nil, HttpError.error(error: error))
             }
         }
 
         return id
     }
 
-    public func cancel(id id: String) {
+    open func cancel(id: String) {
     }
 }

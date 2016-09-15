@@ -11,15 +11,15 @@ import UIKit
 public extension UIImage {
     public func prerender() {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 1, height: 1), true, 0)
-        drawAtPoint(.zero)
+        draw(at: .zero)
         UIGraphicsEndImageContext()
     }
 
     public func prerenderedImage() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        drawInRect(CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
 }
