@@ -29,9 +29,6 @@ open class UrlSessionHttp: Http {
         delegate = Delegate()
         session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
         self.responseQueue = responseQueue
-
-        logDateFormatter = DateFormatter()
-        logDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ"
     }
 
     deinit {
@@ -45,11 +42,7 @@ open class UrlSessionHttp: Http {
         print("", separator: "", terminator: terminator)
     }
 
-    private let logDateFormatter: DateFormatter
-
-    private func logFormatDate(_ date: Date) -> String {
-        return logDateFormatter.string(from: date)
-    }
+    private let logDateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ")
 
     private func log(_ request: URLRequest, date: Date) {
         if !logging || logOnlyErrors { return }
@@ -58,7 +51,7 @@ open class UrlSessionHttp: Http {
         let s = request.httpBody.flatMap { String(data: $0, encoding: String.Encoding.utf8) }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         log(
-            "__ \(logFormatDate(date))",
+            "__ \(logDateFormatter.string(from: date))",
             "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
             "\(t) Headers: \(ns(request.allHTTPHeaderFields))",
             "\(t) Body: \(ns(s))",
@@ -94,7 +87,7 @@ open class UrlSessionHttp: Http {
         }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         log(
-            "__ \(logFormatDate(date))",
+            "__ \(logDateFormatter.string(from: date))",
             "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
             "\(t) Response: \(ns(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s",
             "\(t) Headers: \(ns(urlResponse?.allHeaderFields))",
