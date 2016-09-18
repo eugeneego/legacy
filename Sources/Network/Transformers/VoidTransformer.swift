@@ -10,7 +10,7 @@ public struct VoidTransformer: Transformer {
     public typealias T = Void
 
     public func from(any value: Any?) -> T? {
-        return value.flatMap { _ in () }
+        return ()
     }
 
     public func to(any value: T?) -> Any? {
