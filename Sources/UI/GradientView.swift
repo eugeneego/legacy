@@ -12,11 +12,11 @@ open class GradientView: UIView {
     @IBInspectable open var startPoint: CGPoint = CGPoint(x: 0.0, y: 0.0)
     @IBInspectable open var endPoint: CGPoint = CGPoint(x: 1.0, y: 1.0)
 
-    @IBInspectable open var startColor: UIColor = UIColor.white
-    @IBInspectable open var endColor: UIColor = UIColor.lightGray
+    @IBInspectable open var startColor: UIColor = .white
+    @IBInspectable open var endColor: UIColor = .lightGray
 
-    @IBInspectable open var locations: [NSNumber]?
-    @IBInspectable open var colors: [UIColor]?
+    open var locations: [NSNumber]?
+    open var colors: [UIColor]?
 
     open override class var layerClass: AnyClass {
         return CAGradientLayer.self
