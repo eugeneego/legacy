@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		441D90351DDF70F800B4493B /* RequestAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441D90341DDF70F800B4493B /* RequestAuthorizer.swift */; };
 		441D90371DDF716A00B4493B /* Optional+Do.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441D90361DDF716A00B4493B /* Optional+Do.swift */; };
 		447729E21D7B121200D63FE7 /* EEUtilities-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 447729E11D7B121200D63FE7 /* EEUtilities-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B2FA800E823C0DCE6F286405 /* VoidTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D00A337770313807BB0 /* VoidTransformer.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		441D90341DDF70F800B4493B /* RequestAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestAuthorizer.swift; sourceTree = "<group>"; };
 		441D90361DDF716A00B4493B /* Optional+Do.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Optional+Do.swift"; sourceTree = "<group>"; };
 		447729DE1D7B121200D63FE7 /* EEUtilities.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EEUtilities.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		447729E11D7B121200D63FE7 /* EEUtilities-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EEUtilities-iOS.h"; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 		B2FA860F6549FD6B0671F111 /* Rest */ = {
 			isa = PBXGroup;
 			children = (
+				441D90341DDF70F800B4493B /* RequestAuthorizer.swift */,
 				B2FA8BAD2FA91CB5CC3817D2 /* RestClient.swift */,
 				B2FA8E388D31A7F4BAE25FE8 /* SimpleRestClient.swift */,
 			);
@@ -385,6 +388,7 @@
 				B2FA81E8D4447B8F612F5DF1 /* Reusable.swift in Sources */,
 				B2FA8491249FFBC37075348E /* ShadowView.swift in Sources */,
 				B2FA820DFC803C85E1B0FB9B /* UIColor+Hex.swift in Sources */,
+				441D90351DDF70F800B4493B /* RequestAuthorizer.swift in Sources */,
 				B2FA86FD29CA06BDD0FBDE80 /* UIView+Fade.swift in Sources */,
 				B2FA825EE069F2E9D192DC8E /* GradientView.swift in Sources */,
 				B2FA82B06D5A9CF8C759DFC4 /* UIImage+Color.swift in Sources */,

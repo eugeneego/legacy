@@ -44,6 +44,15 @@ open class UrlSessionHttp: Http {
 
     private let logDateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ")
 
+    private func logHeaders(_ httpHeaders: [AnyHashable: Any]?) -> String? {
+        let headers = httpHeaders?.map { key, value -> String in
+            let key = (key as? String) ?? "\(key)"
+            let value = (value as? String) ?? "\(value)"
+            return "\(key): \(value)"
+        }
+        return headers.map { "[\n    " + $0.joined(separator: "\n    ") + "\n  ]" }
+    }
+
     private func log(_ request: URLRequest, date: Date) {
         if !logging || logOnlyErrors { return }
 
@@ -53,7 +62,7 @@ open class UrlSessionHttp: Http {
         log(
             "__ \(logDateFormatter.string(from: date))",
             "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
-            "\(t) Headers: \(ns(request.allHTTPHeaderFields))",
+            "\(t) Headers: \(ns(logHeaders(request.allHTTPHeaderFields)))",
             "\(t) Body: \(ns(s))",
             "‾‾",
             separator: "\n", terminator: ""
@@ -90,7 +99,7 @@ open class UrlSessionHttp: Http {
             "__ \(logDateFormatter.string(from: date))",
             "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
             "\(t) Response: \(ns(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s",
-            "\(t) Headers: \(ns(urlResponse?.allHeaderFields))",
+            "\(t) Headers: \(ns(logHeaders(urlResponse?.allHeaderFields)))",
             "\(t) Data: \(ns(s))",
             "\(t) Error: \(ns(error))",
             "‾‾",
@@ -117,7 +126,7 @@ open class UrlSessionHttp: Http {
             self.log(response, request, data, error as NSError?, time: end.timeIntervalSince(start), date: end)
 
             guard let response = response, let data = data else {
-                cmpl(nil, nil, .error(error: error))
+                cmpl(nil, nil, .error(error))
                 return
             }
 
@@ -126,7 +135,7 @@ open class UrlSessionHttp: Http {
                 return
             }
 
-            cmpl(httpResponse, data, error.flatMap { .error(error: $0) })
+            cmpl(httpResponse, data, error.flatMap(HttpError.error))
         }
         task.resume()
     }

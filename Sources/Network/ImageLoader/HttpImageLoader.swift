@@ -28,7 +28,7 @@ open class HttpImageLoader: ImageLoader {
             }
 
             if let error = error {
-                cmpl(nil, HttpError.error(error: error))
+                cmpl(nil, HttpError.error(error))
                 return
             }
 
@@ -41,7 +41,7 @@ open class HttpImageLoader: ImageLoader {
                 let image = UIImage(data: data)?.prerenderedImage()
                 cmpl(image, error)
             } else {
-                cmpl(nil, HttpError.error(error: error))
+                cmpl(nil, HttpError.error(error))
             }
         }
 

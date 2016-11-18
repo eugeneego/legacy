@@ -12,18 +12,20 @@ open class SimpleRestClient: RestClient {
     open let http: Http
     open let baseURL: URL
     open let completionQueue: DispatchQueue
+    open let requestAuthorizer: RequestAuthorizer?
 
-    public init(http: Http, baseURL: URL, completionQueue: DispatchQueue) {
+    public init(http: Http, baseURL: URL, completionQueue: DispatchQueue, requestAuthorizer: RequestAuthorizer? = nil) {
         self.http = http
         self.baseURL = baseURL
         self.completionQueue = completionQueue
+        self.requestAuthorizer = requestAuthorizer
     }
 
     open func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
+        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     ) {
         let requestSerializer = JsonModelTransformerHttpSerializer(transformer: requestTransformer)
         let responseSerializer = JsonModelTransformerHttpSerializer(transformer: responseTransformer)
@@ -40,12 +42,12 @@ open class SimpleRestClient: RestClient {
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: @escaping (ResponseSerializer.Value?, Error?) -> Void
+        completion: @escaping (ResponseSerializer.Value?, RestError?) -> Void
     ) {
         let pathUrl = URL(string: path)
         let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
         guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else {
-            completion(nil, HttpError.badUrl)
+            completion(nil, RestError.badUrl)
             return
         }
 
@@ -56,14 +58,30 @@ open class SimpleRestClient: RestClient {
 
         let queue = self.completionQueue
 
-        http.data(request: request as URLRequest, serializer: responseSerializer) { response, object, error in
-            queue.async {
-                if let code = response?.statusCode, code >= 400 {
-                    completion(object, RestError.http(code: code, error: error))
-                } else {
-                    completion(object, error)
+        let runRequest = { (request: URLRequest) in
+            self.http.data(request: request as URLRequest, serializer: responseSerializer) { response, object, data, error in
+                queue.async {
+                    if let code = response?.statusCode, code >= 400 {
+                        completion(object, RestError.http(code: code, error: error, body: data))
+                    } else {
+                        completion(object, RestError.error(error: error, body: data))
+                    }
                 }
             }
+        }
+
+        if let requestAuthorizer = requestAuthorizer {
+            requestAuthorizer.authorize(request: request) { request, error in
+                if let request = request {
+                    runRequest(request)
+                } else {
+                    queue.async {
+                        completion(nil, RestError.auth(error: error))
+                    }
+                }
+            }
+        } else {
+            runRequest(request)
         }
     }
 
@@ -81,7 +99,7 @@ open class SimpleRestClient: RestClient {
     open func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
+        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     ) {
         request(
             method: .post,
@@ -98,7 +116,7 @@ open class SimpleRestClient: RestClient {
     open func create<ResponseTransformer: Transformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
+        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     ) {
         request(
             method: .post,
@@ -115,7 +133,7 @@ open class SimpleRestClient: RestClient {
     open func read<ResponseTransformer: Transformer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
+        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     ) {
         request(
             method: .get,
@@ -132,7 +150,7 @@ open class SimpleRestClient: RestClient {
     open func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
+        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     ) {
         request(
             method: .put,
@@ -149,7 +167,7 @@ open class SimpleRestClient: RestClient {
     open func update<ResponseTransformer: Transformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, Error?) -> Void
+        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     ) {
         request(
             method: .put,
@@ -165,7 +183,7 @@ open class SimpleRestClient: RestClient {
 
     open func delete(
         path: String, id: String?, headers: [String: String],
-        completion: @escaping (Void?, Error?) -> Void
+        completion: @escaping (Void?, RestError?) -> Void
     ) {
         request(
             method: .delete,

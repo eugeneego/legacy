@@ -14,15 +14,14 @@ public protocol Http {
     func data(request: URLRequest, completion: @escaping HttpCompletion)
 
     func urlWithParameters(url: URL, parameters: [String: String]) -> URL
-    func request(method: String, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?) -> NSMutableURLRequest
+    func request(method: String, url: URL, urlParameters: [String: String], headers: [String: String], body: Data?) -> URLRequest
 }
 
 public enum HttpError: Error {
     case nonHttpResponse(response: URLResponse)
     case badUrl
     case parsingFailed
-    case error(error: Error?)
+    case error(Error?)
     case status(code: Int, error: Error?)
 }
 
@@ -65,7 +64,7 @@ public extension Http {
 
     public func data<T: HttpSerializer>(
         request: URLRequest, serializer: T,
-        completion: @escaping (HTTPURLResponse?, T.Value?, HttpError?) -> Void
+        completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
     ) {
         data(request: request) { response, data, error in
             let object = serializer.deserialize(data)
@@ -73,7 +72,7 @@ public extension Http {
             if error == nil && object == nil {
                 error = HttpError.parsingFailed
             }
-            completion(response, object, error)
+            completion(response, object, data, error)
         }
     }
 
@@ -95,8 +94,8 @@ public extension Http {
     public func request(
         method: String, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?
-    ) -> NSMutableURLRequest {
-        let request = NSMutableURLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
+    ) -> URLRequest {
+        var request = URLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
         request.httpMethod = method
         request.httpBody = body
         headers.forEach { name, value in
@@ -108,7 +107,7 @@ public extension Http {
     public func request(
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?
-    ) -> NSMutableURLRequest {
+    ) -> URLRequest {
         return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body)
     }
 
@@ -116,8 +115,8 @@ public extension Http {
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String],
         object: T.Value?, serializer: T
-    ) -> NSMutableURLRequest {
-        let req = request(method: method, url: url, urlParameters: urlParameters,
+    ) -> URLRequest {
+        var req = request(method: method, url: url, urlParameters: urlParameters,
             headers: headers, body: serializer.serialize(object))
         if req.httpBody != nil {
             req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
