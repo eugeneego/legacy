@@ -64,7 +64,7 @@ open class SimpleRestClient: RestClient {
                     if let code = response?.statusCode, code >= 400 {
                         completion(object, RestError.http(code: code, error: error, body: data))
                     } else {
-                        completion(object, RestError.error(error: error, body: data))
+                        completion(object, error.map { RestError.error(error: $0, body: data) })
                     }
                 }
             }
