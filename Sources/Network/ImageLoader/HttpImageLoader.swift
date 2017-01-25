@@ -20,7 +20,7 @@ open class HttpImageLoader: ImageLoader {
 
         let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)
 
-        http.data(request: request as URLRequest) { response, data, error in
+        http.data(request: request as URLRequest) { _, data, error in
             let cmpl = { (image: UIImage?, error: Error?) in
                 DispatchQueue.main.async {
                     completion(id, url, data, image, error)
@@ -28,20 +28,12 @@ open class HttpImageLoader: ImageLoader {
             }
 
             if let error = error {
-                cmpl(nil, HttpError.error(error))
-                return
-            }
-
-            if let code = response?.statusCode, code >= 400 {
-                cmpl(nil, HttpError.status(code: code, error: error))
-                return
-            }
-
-            if let data = data {
+                cmpl(nil, error)
+            } else if let data = data {
                 let image = UIImage(data: data)?.prerenderedImage()
                 cmpl(image, error)
             } else {
-                cmpl(nil, HttpError.error(error))
+                cmpl(nil, error)
             }
         }
 

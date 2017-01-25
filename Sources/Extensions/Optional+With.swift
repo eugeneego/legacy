@@ -1,5 +1,5 @@
 //
-// Optional (Do)
+// Optional (With)
 // EE Utilities
 //
 // Copyright (c) 2016 Eugene Egorov.
@@ -7,9 +7,11 @@
 //
 
 extension Optional {
-    func `do`(_ action: (Wrapped) throws -> Void) rethrows {
-        if case .some(let value) = self {
+    @discardableResult
+    func with(_ action: (Wrapped) throws -> Void) rethrows -> Optional {
+        if let value = self {
             try action(value)
         }
+        return self
     }
 }

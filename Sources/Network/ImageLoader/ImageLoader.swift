@@ -11,9 +11,9 @@ import UIKit
 public typealias ImageLoaderCompletion = (_ id: String, _ url: URL, _ data: Data?, _ image: UIImage?, _ error: Error?) -> Void
 
 public enum ResizeMode {
+    case original
     case fit
     case fill
-    case minimumFit
 }
 
 public protocol ImageLoader {

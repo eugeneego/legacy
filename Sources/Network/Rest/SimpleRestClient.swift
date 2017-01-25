@@ -47,7 +47,7 @@ open class SimpleRestClient: RestClient {
         let pathUrl = URL(string: path)
         let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
         guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else {
-            completion(nil, RestError.badUrl)
+            completion(nil, .badUrl)
             return
         }
 
@@ -59,12 +59,12 @@ open class SimpleRestClient: RestClient {
         let queue = self.completionQueue
 
         let runRequest = { (request: URLRequest) in
-            self.http.data(request: request as URLRequest, serializer: responseSerializer) { response, object, data, error in
+            self.http.data(request: request as URLRequest, serializer: responseSerializer) { _, object, data, error in
                 queue.async {
-                    if let code = response?.statusCode, code >= 400 {
-                        completion(object, RestError.http(code: code, error: error, body: data))
+                    if case .status(let code, let error)? = error {
+                        completion(object, .http(code: code, error: error, body: data))
                     } else {
-                        completion(object, error.map { RestError.error(error: $0, body: data) })
+                        completion(object, error.map { .error(error: $0, body: data) })
                     }
                 }
             }
@@ -76,7 +76,7 @@ open class SimpleRestClient: RestClient {
                     runRequest(request)
                 } else {
                     queue.async {
-                        completion(nil, RestError.auth(error: error))
+                        completion(nil, .auth(error: error))
                     }
                 }
             }

@@ -6,6 +6,9 @@ disabled_rules:
   - type_body_length
   - force_cast
   - force_unwrapping
+  - redundant_string_enum_value
+  - weak_delegate
+
 opt_in_rules:
   - empty_count
 
@@ -40,6 +43,8 @@ type_name:
   max_length:
     warning: 45
     error: 50
+  excluded:
+    - T
 
 variable_name:
   max_length:

@@ -11,8 +11,10 @@ import Foundation
 open class UrlSessionHttp: Http {
     open let session: URLSession
     open let responseQueue: DispatchQueue
+
     open var logging: Bool = false
     open var logOnlyErrors: Bool = false
+    open var maxLoggingBodySize: Int = 2048
 
     open var trustPolicies: [String: ServerTrustPolicy] {
         get {
@@ -57,7 +59,13 @@ open class UrlSessionHttp: Http {
         if !logging || logOnlyErrors { return }
 
         let t = "←"
-        let s = request.httpBody.flatMap { String(data: $0, encoding: String.Encoding.utf8) }
+        let s = request.httpBody.flatMap { data -> String? in
+            if let type = request.allHTTPHeaderFields?["Content-Type"], isText(type: type) && data.count <= maxLoggingBodySize {
+                return String(data: data, encoding: String.Encoding.utf8)
+            } else {
+                return "\(data.count) bytes"
+            }
+        }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         log(
             "__ \(logDateFormatter.string(from: date))",
@@ -87,11 +95,11 @@ open class UrlSessionHttp: Http {
         }
 
         let t = "→"
-        let s = data.flatMap { d -> String? in
-            if let type = urlResponse?.allHeaderFields["Content-Type"] as? String, isText(type: type) {
-                return String(data: d, encoding: String.Encoding.utf8)
+        let s = data.flatMap { data -> String? in
+            if let type = urlResponse?.allHeaderFields["Content-Type"] as? String, isText(type: type) && data.count <= maxLoggingBodySize {
+                return String(data: data, encoding: String.Encoding.utf8)
             } else {
-                return "\(d.count) bytes"
+                return "\(data.count) bytes"
             }
         }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
@@ -126,7 +134,7 @@ open class UrlSessionHttp: Http {
             self.log(response, request, data, error as NSError?, time: end.timeIntervalSince(start), date: end)
 
             guard let response = response, let data = data else {
-                cmpl(nil, nil, .error(error))
+                cmpl(nil, nil, error.map(self.processError))
                 return
             }
 
@@ -135,9 +143,26 @@ open class UrlSessionHttp: Http {
                 return
             }
 
-            cmpl(httpResponse, data, error.flatMap(HttpError.error))
+            if httpResponse.statusCode >= 400 {
+                cmpl(httpResponse, data, .status(code: httpResponse.statusCode, error: error))
+            } else {
+                cmpl(httpResponse, data, error.map(self.processError))
+            }
         }
         task.resume()
+    }
+
+    open func processError(_ error: Error) -> HttpError {
+        let urlError = error as NSError
+        guard urlError.domain == NSURLErrorDomain else { return HttpError.error(error) }
+
+        switch urlError.code {
+            case NSURLErrorTimedOut, NSURLErrorCannotFindHost, NSURLErrorCannotConnectToHost, NSURLErrorNetworkConnectionLost,
+                NSURLErrorDNSLookupFailed, NSURLErrorNotConnectedToInternet:
+                return HttpError.unreachable(error)
+            default:
+                return HttpError.error(error)
+        }
     }
 
     // MARK: - Delegate

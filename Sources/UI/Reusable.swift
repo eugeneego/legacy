@@ -33,8 +33,12 @@ public extension UITableView {
         }
     }
 
+    public func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) -> CellType {
+        return dequeueReusableCell(withIdentifier: reusable.id) as! CellType
+    }
+
     public func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
-        return self.dequeueReusableCell(withIdentifier: reusable.id, for: indexPath) as! CellType
+        return dequeueReusableCell(withIdentifier: reusable.id, for: indexPath) as! CellType
     }
 
     // Header/Footer
@@ -65,7 +69,22 @@ public extension UICollectionView {
             }
     }
 
+    public func registerReusableHeader<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>) {
+        switch reusable {
+            case .class(let id):
+                register(CellType.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: id)
+            case .nib(let id, let name, let bundle):
+                let nib = UINib(nibName: name, bundle: bundle)
+                register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: id)
+            }
+    }
+
     public func dequeueReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
-        return self.dequeueReusableCell(withReuseIdentifier: reusable.id, for: indexPath) as! CellType
+        return dequeueReusableCell(withReuseIdentifier: reusable.id, for: indexPath) as! CellType
+    }
+
+    public func dequeueHeader<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
+        return dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader,
+            withReuseIdentifier: reusable.id, for: indexPath) as! CellType
     }
 }

@@ -10,9 +10,9 @@ import Foundation
 
 public enum RestError: Error {
     case badUrl
-    case http(code: Int, error: Error?, body: Data?)
     case auth(error: AuthError?)
-    case error(error: Error, body: Data?)
+    case http(code: Int, error: Error?, body: Data?)
+    case error(error: HttpError, body: Data?)
 }
 
 public protocol RestClient {

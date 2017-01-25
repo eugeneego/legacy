@@ -21,7 +21,8 @@ public enum HttpError: Error {
     case nonHttpResponse(response: URLResponse)
     case badUrl
     case parsingFailed
-    case error(Error?)
+    case unreachable(Error)
+    case error(Error)
     case status(code: Int, error: Error?)
 }
 
