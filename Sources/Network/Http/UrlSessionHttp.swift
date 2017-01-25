@@ -158,7 +158,7 @@ open class UrlSessionHttp: Http {
 
         switch urlError.code {
             case NSURLErrorTimedOut, NSURLErrorCannotFindHost, NSURLErrorCannotConnectToHost, NSURLErrorNetworkConnectionLost,
-                NSURLErrorDNSLookupFailed, NSURLErrorNotConnectedToInternet:
+                    NSURLErrorDNSLookupFailed, NSURLErrorNotConnectedToInternet:
                 return HttpError.unreachable(error)
             default:
                 return HttpError.error(error)

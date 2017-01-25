@@ -6,9 +6,9 @@
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-extension Optional {
+public extension Optional {
     @discardableResult
-    func with(_ action: (Wrapped) throws -> Void) rethrows -> Optional {
+    public func with(_ action: (Wrapped) throws -> Void) rethrows -> Optional {
         if let value = self {
             try action(value)
         }

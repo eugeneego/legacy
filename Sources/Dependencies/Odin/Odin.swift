@@ -6,9 +6,7 @@
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-/**
- Simple dependency injection container
-*/
+/// Simple dependency injection container
 open class Odin: DependencyInjectionContainer {
     public typealias Resolver = (Any) -> Void
 
