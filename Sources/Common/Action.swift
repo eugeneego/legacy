@@ -6,7 +6,7 @@
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-public protocol Action {
+@objc public protocol Action {
     func performAction()
 }
 
@@ -32,7 +32,7 @@ public final class TargetAction<Target: AnyObject>: Action {
         }
     }
 
-    public init(target: Target?, action: @escaping (Target) -> () -> Void) {
+    public init(target: Target, action: @escaping (Target) -> () -> Void) {
         self.target = target
         self.action = action
     }
@@ -49,7 +49,7 @@ public final class TargetSenderAction<Target: AnyObject, Sender: AnyObject>: Act
         }
     }
 
-    public init(target: Target?, sender: Sender?, action: @escaping (Target) -> (Sender) -> Void) {
+    public init(target: Target, sender: Sender, action: @escaping (Target) -> (Sender) -> Void) {
         self.target = target
         self.sender = sender
         self.action = action
