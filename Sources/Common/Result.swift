@@ -74,9 +74,9 @@ public enum Result<T, E> {
             case .success(let value):
                 return value
             case .failure(let error as Error):
-                throw error as Error
+                throw error
             default:
-                fatalError("E should adopt Error.")
+                fatalError("\(E.self) should adopt Error.")
         }
     }
 
@@ -94,7 +94,7 @@ public enum Result<T, E> {
         return self.value ?? value()
     }
 
-    public func recoverWith(_ result: @autoclosure () -> Result<T, E>) -> Result<T, E> {
+    public func recover(_ result: @autoclosure () -> Result<T, E>) -> Result<T, E> {
         return map(success: { _ in self }, failure: { _ in result() })
     }
 
@@ -127,5 +127,5 @@ public func ?? <T, E> (left: Result<T, E>, right: @autoclosure () -> T) -> T {
 }
 
 public func ?? <T, E> (left: Result<T, E>, right: @autoclosure () -> Result<T, E>) -> Result<T, E> {
-    return left.recoverWith(right())
+    return left.recover(right())
 }
