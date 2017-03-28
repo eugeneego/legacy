@@ -39,10 +39,8 @@ public enum ServerTrustPolicy {
                     let pinnedDataArray = dataForCertificates(certificates)
 
                     for serverData in serverDataArray {
-                        for pinnedData in pinnedDataArray {
-                            if serverData == pinnedData {
-                                return true
-                            }
+                        for pinnedData in pinnedDataArray where serverData == pinnedData {
+                            return true
                         }
                     }
 

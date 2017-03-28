@@ -1,9 +1,8 @@
 //
-//  EEUtilities-iOS.h
-//  EEUtilities-iOS
+// EE Utilities
 //
-//  Created by Eugene Egorov on 03/09/16.
-//
+// Copyright (c) 2016 Eugene Egorov.
+// License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
 #import <UIKit/UIKit.h>
@@ -15,5 +14,3 @@ FOUNDATION_EXPORT double EEUtilitiesVersionNumber;
 FOUNDATION_EXPORT const unsigned char EEUtilitiesVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <EEUtilities/PublicHeader.h>
-
-

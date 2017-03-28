@@ -21,9 +21,9 @@ public struct DictionaryTransformer
     public func from(any value: Any?) -> T? {
         guard let value = value as? [String: Any] else { return nil }
 
-        let dict: T = value.reduce([:]) { result, kv in
+        let dict: T = value.reduce([:]) { result, element in
             var result = result
-            if let key = keyTransformer.from(any: kv.0), let value = valueTransformer.from(any: kv.1) {
+            if let key = keyTransformer.from(any: element.0), let value = valueTransformer.from(any: element.1) {
                 result[key] = value
             }
             return result
@@ -35,9 +35,9 @@ public struct DictionaryTransformer
     public func to(any value: T?) -> Any? {
         guard let value = value else { return nil }
 
-        let dict: [String: Any] = value.reduce([:]) { result, kv in
+        let dict: [String: Any] = value.reduce([:]) { result, element in
             var result = result
-            if let key = keyTransformer.to(any: kv.0) as? String, let value = valueTransformer.to(any: kv.1) {
+            if let key = keyTransformer.to(any: element.0) as? String, let value = valueTransformer.to(any: element.1) {
                 result[key] = value
             }
             return result

@@ -20,9 +20,9 @@ public enum Result<T, E> {
         self = .failure(error)
     }
 
-    public init(try f: () throws -> T) {
+    public init(try closure: () throws -> T) {
         do {
-            self = .success(try f())
+            self = .success(try closure())
         } catch let error as E {
             self = .failure(error)
         } catch {

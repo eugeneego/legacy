@@ -16,10 +16,10 @@ public typealias EEColor = NSColor
 
 public extension EEColor {
     /**
-     Hex representation of a color with alpha channel.
+        Hex representation of a color with alpha channel.
 
-     - returns: AARRGGBB string
-    */
+        - returns: AARRGGBB string
+     */
     public var hexARGB: String {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)
@@ -27,10 +27,10 @@ public extension EEColor {
     }
 
     /**
-     Hex representation of a color without alpha channel.
+        Hex representation of a color without alpha channel.
 
-     - returns: RRGGBB string
-    */
+        - returns: RRGGBB string
+     */
     public var hexRGB: String {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)
@@ -38,54 +38,54 @@ public extension EEColor {
     }
 
     /**
-     Parse a string with a hex representation of a color.
+        Parse a string with a hex representation of a color.
 
-     Acceptable formats:
-     - RGB
-     - ARGB
-     - RRGGBB
-     - AARRGGBB
+        Acceptable formats:
+        - RGB
+        - ARGB
+        - RRGGBB
+        - AARRGGBB
 
-     - parameter hex: The string to parse, may be prefixed with #.
+        - parameter hex: The string to parse, may be prefixed with #.
 
-     - returns: A parsed color or nil if parsing is failed.
-    */
+        - returns: A parsed color or nil if parsing is failed.
+     */
     public static func from(hex: String) -> EEColor? {
         return from(hex: hex, optionalDefault: nil)
     }
 
     /**
-     Parse a string with a hex representation of a color.
+        Parse a string with a hex representation of a color.
 
-     Acceptable formats:
-     - RGB
-     - ARGB
-     - RRGGBB
-     - AARRGGBB
+        Acceptable formats:
+        - RGB
+        - ARGB
+        - RRGGBB
+        - AARRGGBB
 
-     - parameter hex: The string to parse, may be prefixed with #.
-     - parameter default: The default color for fallback.
+        - parameter hex: The string to parse, may be prefixed with #.
+        - parameter default: The default color for fallback.
 
-     - returns: A parsed color or a default value if parsing is failed.
-    */
+        - returns: A parsed color or a default value if parsing is failed.
+     */
     public static func from(hex: String, default: EEColor) -> EEColor {
         return from(hex: hex, optionalDefault: `default`)!
     }
 
     /**
-     Parse a string with a hex representation of a color.
+        Parse a string with a hex representation of a color.
 
-     Acceptable formats:
-     - RGB
-     - ARGB
-     - RRGGBB
-     - AARRGGBB
+        Acceptable formats:
+        - RGB
+        - ARGB
+        - RRGGBB
+        - AARRGGBB
 
-     - parameter hex: The string to parse, may be prefixed with #.
-     - parameter optionalDefault: The default color for fallback, nil by default.
+        - parameter hex: The string to parse, may be prefixed with #.
+        - parameter optionalDefault: The default color for fallback, nil by default.
 
-     - returns: A parsed color or a default value if parsing is failed.
-    */
+        - returns: A parsed color or a default value if parsing is failed.
+     */
     public static func from(hex: String, optionalDefault: EEColor? = nil) -> EEColor? {
         if hex.characters.count < 3 {
             return optionalDefault

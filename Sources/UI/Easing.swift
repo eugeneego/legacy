@@ -320,8 +320,7 @@ public protocol EasingValueType: ExpressibleByIntegerLiteral, ExpressibleByFloat
 }
 
 extension Float: EasingValueType {
-    public static var pi: Float { return Float(M_PI) }
-    public static var pi2: Float { return Float(M_PI_2) }
+    public static let pi2: Float = .pi / 2
 
     public static func pow(_ lhs: Float, _ rhs: Float) -> Float {
         return Darwin.pow(lhs, rhs)
@@ -341,8 +340,7 @@ extension Float: EasingValueType {
 }
 
 extension Double: EasingValueType {
-    public static var pi: Double { return M_PI }
-    public static var pi2: Double { return M_PI_2 }
+    public static let pi2: Double = .pi / 2
 
     public static func pow(_ lhs: Double, _ rhs: Double) -> Double {
         return Darwin.pow(lhs, rhs)
@@ -362,12 +360,7 @@ extension Double: EasingValueType {
 }
 
 extension CGFloat: EasingValueType {
-    public static var pi: CGFloat {
-        return CGFloat(M_PI)
-    }
-    public static var pi2: CGFloat {
-        return CGFloat(M_PI_2)
-    }
+    public static let pi2: CGFloat = .pi / 2
 
     public static func pow(_ lhs: CGFloat, _ rhs: CGFloat) -> CGFloat {
         return CoreGraphics.pow(lhs, rhs)
