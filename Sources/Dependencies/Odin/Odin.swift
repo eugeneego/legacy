@@ -24,7 +24,9 @@ open class Odin: DependencyInjectionContainer {
         }
     }
 
-    open func resolve(_ object: Any) {
+    open func resolve(_ object: Any?) {
+        guard let object = object else { return }
+
         resolvers.forEach { resolver in
             resolver(object)
         }
