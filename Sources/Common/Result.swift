@@ -30,6 +30,14 @@ public enum Result<T, E> {
         }
     }
 
+    public init(_ value: T?, _ error: @autoclosure () -> E) {
+        if let value = value {
+            self = .success(value)
+        } else {
+            self = .failure(error())
+        }
+    }
+
     // MARK: - Accessors
 
     public var value: T? {
