@@ -14,7 +14,7 @@ protocol ZoomTransitionDelegate: class {
     var zoomTransitionAnimatingView: UIView? { get }
 
     func zoomTransitionHideViews(hide: Bool)
-    func zoomTransitionDestinationFrame(for view: UIView) -> CGRect
+    func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect
 }
 
 class ZoomTransition: NSObject,
@@ -77,7 +77,7 @@ class ZoomTransition: NSObject,
 
         guard
             let animatingView = sourceTransition?.zoomTransitionAnimatingView,
-            let destinationFrame = destinationTransition?.zoomTransitionDestinationFrame(for: animatingView)
+            let destinationFrame = destinationTransition?.zoomTransitionDestinationFrame(for: animatingView, frame: toFinalFrame)
         else { return }
 
         let animatingFrame = containerView.convert(semiAnimatingFrame ?? animatingView.frame, from: fromView)
@@ -229,7 +229,8 @@ class ZoomTransition: NSObject,
 
         guard let context = interactiveTransitionContext else { return }
 
-        let destinationFrame = destinationTransition?.zoomTransitionDestinationFrame(for: context.animatingView)
+        let toFinalFrame = context.transitionContext.finalFrame(for: context.toViewController)
+        let destinationFrame = destinationTransition?.zoomTransitionDestinationFrame(for: context.animatingView, frame: toFinalFrame)
 
         animationSetup?(context.animatingView)
 

@@ -27,7 +27,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
     var closeAction: (() -> Void)?
     var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
 
-    var closeTitle: String = "Cancel"
+    var closeTitle: String = "Close"
     var shareIcon: UIImage?
 
     private var imageSize: CGSize = .zero
@@ -58,6 +58,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         animatingImageView.translatesAutoresizingMaskIntoConstraints = true
         animatingImageView.contentMode = .scaleAspectFill
         animatingImageView.clipsToBounds = true
+        animatingImageView.backgroundColor = .clear
 
         // Title View
 
@@ -85,7 +86,6 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         shareButton.backgroundColor = .clear
         shareButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         shareButton.tintColor = .white
-        shareButton.isHidden = shareIcon == nil
         titleContentView.addSubview(shareButton)
 
         tapGesture.addTarget(self, action: #selector(toggleTap))
@@ -167,19 +167,17 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
 
         updatePreviewImage()
         updateShare()
-
-        if let url = video.url {
-            update(url: url)
-        }
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
         if !isShown {
             isShown = true
 
-            if let videoLoader = video.videoLoader, video.url == nil {
+            if let url = video.url {
+                update(url: url)
+            } else if let videoLoader = video.videoLoader {
                 loadingIndicatorView.startAnimating()
 
                 videoLoader { [weak self] url, _ in
@@ -341,7 +339,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
 
     private func updateShare() {
         // Share only local videos
-        shareButton.isHidden = !(video.url?.isFileURL ?? false)
+        shareButton.isHidden = !(video.url?.isFileURL ?? false) || shareIcon == nil
     }
 
     // MARK: - Transition
@@ -379,15 +377,15 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         titleView.isHidden = hide
     }
 
-    func zoomTransitionDestinationFrame(for view: UIView) -> CGRect {
-        let viewSize = self.view.frame.size
-        var frame = self.view.bounds
+    func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
+        var result = frame
+        let viewSize = frame.size
 
         if imageSize.width > 0.1 && imageSize.height > 0.1 {
             let imageRatio = imageSize.height / imageSize.width
             let viewRatio = viewSize.height / viewSize.width
 
-            frame.size = imageRatio <= viewRatio
+            result.size = imageRatio <= viewRatio
                 ? CGSize(
                     width: viewSize.width,
                     height: (viewSize.width * (imageSize.height / imageSize.width)).rounded(.toNearestOrAwayFromZero)
@@ -396,13 +394,13 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
                     width: (viewSize.height * (imageSize.width / imageSize.height)).rounded(.toNearestOrAwayFromZero),
                     height: viewSize.height
                 )
-            frame.origin = CGPoint(
-                x: (viewSize.width / 2 - frame.size.width / 2).rounded(.toNearestOrAwayFromZero),
-                y: (viewSize.height / 2 - frame.size.height / 2).rounded(.toNearestOrAwayFromZero)
+            result.origin = CGPoint(
+                x: (viewSize.width / 2 - result.size.width / 2).rounded(.toNearestOrAwayFromZero),
+                y: (viewSize.height / 2 - result.size.height / 2).rounded(.toNearestOrAwayFromZero)
             )
         }
 
-        return frame
+        return result
     }
 
     private var transition: ZoomTransition = ZoomTransition(interactive: false)

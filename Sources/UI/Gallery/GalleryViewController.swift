@@ -11,6 +11,8 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
     var closeTitle: String = "Close"
     var shareIcon: UIImage?
 
+    private var isShown: Bool = false
+
     init() {
         // let options: [String: Any] = [ UIPageViewControllerOptionInterPageSpacingKey: CGFloat(8) ]
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -23,14 +25,8 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        log("")
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        log("")
 
         view.backgroundColor = .black
 
@@ -56,18 +52,6 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
-    }
-
-    // MARK: - Logging
-
-    let logDateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ")
-
-    func logFormatDate(_ date: Date) -> String {
-        return logDateFormatter.string(from: date)
-    }
-
-    func log(_ message: String, function: String = #function) {
-        print("\(logFormatDate(Date())) \(type(of: self)).\(function): \(message)")
     }
 
     // MARK: - Models
@@ -176,10 +160,10 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
         transitionDelegate.zoomTransitionHideViews(hide: hide)
     }
 
-    func zoomTransitionDestinationFrame(for view: UIView) -> CGRect {
+    func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
         guard let transitionDelegate = currentViewController as? ZoomTransitionDelegate else { return .zero }
 
-        return transitionDelegate.zoomTransitionDestinationFrame(for: view)
+        return transitionDelegate.zoomTransitionDestinationFrame(for: view, frame: frame)
     }
 
     var zoomTransition: ZoomTransition? {

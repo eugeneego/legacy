@@ -23,7 +23,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
     var closeAction: (() -> Void)?
     var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
 
-    var closeTitle: String = "Cancel"
+    var closeTitle: String = "Close"
     var shareIcon: UIImage?
 
     private var scrollSize: CGSize = .zero
@@ -60,6 +60,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
         animatingImageView.translatesAutoresizingMaskIntoConstraints = true
         animatingImageView.contentMode = .scaleAspectFill
         animatingImageView.clipsToBounds = true
+        animatingImageView.backgroundColor = .clear
 
         // Title View
 
@@ -156,8 +157,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
             imageView.image = previewImage
         }
         if let image = imageView.image {
-            let size = image.size
-            imageSize = CGSize(width: size.width, height: size.height)
+            imageSize = image.size
         }
 
         // Other
@@ -310,7 +310,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
         scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
-        imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: imageSize)
+        imageView.frame = CGRect(origin: .zero, size: imageSize)
 
         calcZoom(with: size)
         zoomAll()
@@ -394,16 +394,15 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
         titleView.isHidden = hide || !controlsAreVisible
     }
 
-    func zoomTransitionDestinationFrame(for view: UIView) -> CGRect {
-        let viewSize = self.view.frame.size
-        var frame = self.view.bounds
-        let imageSize = imageView.image?.size ?? .zero
+    func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
+        var result = frame
+        let viewSize = frame.size
 
         if imageSize.width > 0.1 && imageSize.height > 0.1 {
             let imageRatio = imageSize.height / imageSize.width
             let viewRatio = viewSize.height / viewSize.width
 
-            frame.size = imageRatio <= viewRatio
+            result.size = imageRatio <= viewRatio
                 ? CGSize(
                     width: viewSize.width,
                     height: (viewSize.width * (imageSize.height / imageSize.width)).rounded(.toNearestOrAwayFromZero)
@@ -412,13 +411,13 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
                     width: (viewSize.height * (imageSize.width / imageSize.height)).rounded(.toNearestOrAwayFromZero),
                     height: viewSize.height
                 )
-            frame.origin = CGPoint(
-                x: (viewSize.width / 2 - frame.size.width / 2).rounded(.toNearestOrAwayFromZero),
-                y: (viewSize.height / 2 - frame.size.height / 2).rounded(.toNearestOrAwayFromZero)
+            result.origin = CGPoint(
+                x: (viewSize.width / 2 - result.size.width / 2).rounded(.toNearestOrAwayFromZero),
+                y: (viewSize.height / 2 - result.size.height / 2).rounded(.toNearestOrAwayFromZero)
             )
         }
 
-        return frame
+        return result
     }
 
     private var transition: ZoomTransition = ZoomTransition(interactive: false)
