@@ -15,7 +15,7 @@
 
 import CoreGraphics
 
-// swiftlint:disable variable_name
+// swiftlint:disable identifier_name
 
 public struct Easing<T: EasingValueType> {
     // MARK: - Linear
@@ -379,4 +379,4 @@ extension CGFloat: EasingValueType {
     }
 }
 
-// swiftlint:enable variable_name
+// swiftlint:enable identifier_name

@@ -30,7 +30,8 @@ trailing_newline: error
 trailing_semicolon: error
 
 comma: error
-colon: error
+colon:
+  severity: error
 opening_brace: error
 empty_count: error
 legacy_constructor: error
