@@ -7,7 +7,7 @@
 //
 
 public struct DictionaryTransformer
-        <KeyTransformer: Transformer, ValueTransformer: Transformer>: Transformer where KeyTransformer.T: Hashable {
+    <KeyTransformer: SimpleTransformer, ValueTransformer: SimpleTransformer>: SimpleTransformer where KeyTransformer.T: Hashable {
     public typealias T = [KeyTransformer.T: ValueTransformer.T]
 
     private let keyTransformer: KeyTransformer

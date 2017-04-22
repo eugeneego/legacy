@@ -18,6 +18,7 @@ excluded:
   - Pods
   - ThirdParty
   - Vendor
+  - EEUtilities.playground
 
 force_cast: error
 force_try: error

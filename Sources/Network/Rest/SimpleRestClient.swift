@@ -21,7 +21,7 @@ open class SimpleRestClient: RestClient {
         self.requestAuthorizer = requestAuthorizer
     }
 
-    open func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    open func request<RequestTransformer: SimpleTransformer, ResponseTransformer: SimpleTransformer>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
@@ -96,7 +96,7 @@ open class SimpleRestClient: RestClient {
         }
     }
 
-    open func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    open func create<RequestTransformer: SimpleTransformer, ResponseTransformer: SimpleTransformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
@@ -113,7 +113,7 @@ open class SimpleRestClient: RestClient {
         )
     }
 
-    open func create<ResponseTransformer: Transformer>(
+    open func create<ResponseTransformer: SimpleTransformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
@@ -130,7 +130,7 @@ open class SimpleRestClient: RestClient {
         )
     }
 
-    open func read<ResponseTransformer: Transformer>(
+    open func read<ResponseTransformer: SimpleTransformer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
@@ -141,13 +141,13 @@ open class SimpleRestClient: RestClient {
             parameters: parameters,
             object: nil,
             headers: headers,
-            requestTransformer: VoidTransformer(),
+            requestTransformer: SimpleVoidTransformer(),
             responseTransformer: responseTransformer,
             completion: completion
         )
     }
 
-    open func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    open func update<RequestTransformer: SimpleTransformer, ResponseTransformer: SimpleTransformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
@@ -164,7 +164,7 @@ open class SimpleRestClient: RestClient {
         )
     }
 
-    open func update<ResponseTransformer: Transformer>(
+    open func update<ResponseTransformer: SimpleTransformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
@@ -191,8 +191,8 @@ open class SimpleRestClient: RestClient {
             parameters: [:],
             object: nil,
             headers: headers,
-            requestTransformer: VoidTransformer(),
-            responseTransformer: VoidTransformer(),
+            requestTransformer: SimpleVoidTransformer(),
+            responseTransformer: SimpleVoidTransformer(),
             completion: completion
         )
     }

@@ -2,20 +2,23 @@
 // UrlTransformer
 // EE Utilities
 //
-// Copyright (c) 2015 Eugene Egorov.
+// Copyright (c) 2017 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
 import Foundation
 
-public struct UrlTransformer: Transformer {
-    public typealias T = URL
+public struct UrlTransformer<From>: FullTransformer {
+    public typealias Source = From
+    public typealias Destination = URL
 
-    public func from(any value: Any?) -> T? {
-        return (value as? String).flatMap(T.init)
+    public init() {}
+
+    public func convert(source value: Source) -> TransformerResult<Destination> {
+        return TransformerResult((value as? String).flatMap(URL.init), .transform)
     }
 
-    public func to(any value: T?) -> Any? {
-        return value?.absoluteString
+    public func convert(destination value: Destination) -> TransformerResult<Source> {
+        return TransformerResult(value.absoluteString as? From, .transform)
     }
 }

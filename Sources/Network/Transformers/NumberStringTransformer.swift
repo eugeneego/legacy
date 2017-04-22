@@ -2,24 +2,29 @@
 // NumberStringTransformer
 // EE Utilities
 //
-// Copyright (c) 2015 Eugene Egorov.
+// Copyright (c) 2017 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
 import Foundation
 import CoreGraphics
 
-public struct NumberStringTransformer<Number: NumberConvertible>: Transformer where Number: TransformerStringConvertible {
-    public typealias T = Number
+public struct NumberStringTransformer<From, To: NumberConvertible & TransformerStringConvertible>: FullTransformer {
+    public typealias Source = From
+    public typealias Destination = To
 
-    private let numberTransformer = NumberTransformer<Number>()
+    private let numberTransformer = NumberTransformer<From, To>()
 
-    public func from(any value: Any?) -> T? {
-        return numberTransformer.from(any: value) ?? (value as? String).flatMap(T.init)
+    public init() {}
+
+    public func convert(source value: Source) -> TransformerResult<Destination> {
+        return numberTransformer.convert(source: value)
+            .flatMapError { _ in TransformerResult((value as? String).flatMap(To.init), .transform) }
     }
 
-    public func to(any value: T?) -> Any? {
-        return (numberTransformer.to(any: value) as? NSNumber)?.stringValue
+    public func convert(destination value: Destination) -> TransformerResult<Source> {
+        return numberTransformer.convert(destination: value)
+            .flatMap { TransformerResult<Source>(($0 as? NSNumber)?.stringValue as? From, .transform) }
     }
 }
 

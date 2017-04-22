@@ -2,7 +2,7 @@
 // ColorTransformer
 // EE Utilities
 //
-// Copyright (c) 2015 Eugene Egorov.
+// Copyright (c) 2017 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
@@ -12,14 +12,17 @@ import UIKit
 import AppKit
 #endif
 
-public struct ColorTransformer: Transformer {
-    public typealias T = EEColor
+public struct ColorTransformer<From>: FullTransformer {
+    public typealias Source = From
+    public typealias Destination = EEColor
 
-    public func from(any value: Any?) -> T? {
-        return (value as? String).flatMap(T.from(hex:))
+    public init() {}
+
+    public func convert(source value: Source) -> TransformerResult<Destination> {
+        return TransformerResult((value as? String).flatMap(EEColor.from(hex:)), .transform)
     }
 
-    public func to(any value: T?) -> Any? {
-        return value?.hexARGB
+    public func convert(destination value: Destination) -> TransformerResult<Source> {
+        return TransformerResult(value.hexARGB as? From, .transform)
     }
 }

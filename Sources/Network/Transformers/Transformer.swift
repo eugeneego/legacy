@@ -2,14 +2,34 @@
 // Transformer
 // EE Utilities
 //
-// Copyright (c) 2015 Eugene Egorov.
+// Copyright (c) 2017 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-public protocol Transformer {
-    associatedtype T
+public indirect enum TransformerError: Error {
+    case badDictionary
+    case requirement
+    case transform
+    case validation(Error)
+    case multiple([(String, TransformerError)])
+}
 
-    func from(any value: Any?) -> T?
+public typealias TransformerResult<T> = Result<T, TransformerError>
+public typealias TransformerValidator<T> = (T) -> Error?
 
-    func to(any value: T?) -> Any?
+public protocol ForwardTransformer {
+    associatedtype Source
+    associatedtype Destination
+
+    func convert(source value: Source) -> TransformerResult<Destination>
+}
+
+public protocol BackwardTransformer {
+    associatedtype Source
+    associatedtype Destination
+
+    func convert(destination value: Destination) -> TransformerResult<Source>
+}
+
+public protocol FullTransformer: ForwardTransformer, BackwardTransformer {
 }

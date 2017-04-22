@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer {
+public struct JsonModelTransformerHttpSerializer<T: SimpleTransformer>: HttpSerializer {
     public typealias Value = T.T
 
     public let contentType = "application/json"
