@@ -18,7 +18,9 @@ excluded:
   - Pods
   - ThirdParty
   - Vendor
+  - Scripts
   - EEUtilities.playground
+  - Example-iOS
 
 force_cast: error
 force_try: error

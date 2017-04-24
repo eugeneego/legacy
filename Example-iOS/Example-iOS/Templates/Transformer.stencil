@@ -1,0 +1,101 @@
+{% for type in types.all|annotated:"transformer" %}
+
+// sourcery:file:{{ type.annotations.name|default:type.name }}Transformer.swift
+import Foundation
+import CoreGraphics
+import EEUtilities
+
+// swiftlint:disable line_length
+struct {{ type.annotations.name|default:type.name }}Transformer: FullTransformer {
+    typealias Source = Any
+    typealias Destination = {{ type.name }}
+
+    {% for var in type.storedVariables %}
+    let {{ var.name }}Name = "{{ var.annotations.name|default:var.name }}"
+    {% endfor %}
+
+    {% macro varTransformer name %}{% if name == "Int" or name == "Int8" or name == "Int16" or name == "Int16" or name == "Int32" or name == "Int64" or name == "UInt" or name == "UInt8" or name == "UInt16" or name == "UInt16" or name == "UInt32" or name == "UInt64" or name == "Float" or name == "Double" or name == "CGFloat" or name == "Bool" %}NumberTransformer<Any, {{ name }}>{% else %}{{ name }}Transformer<Any>{% endif %}{% endmacro %}
+    {% for var in type.storedVariables %}
+    {% if var.annotations.transformer %}
+    let {{ var.name }}Transformer = "{{ var.annotations.transformer }}"
+    {% else %}
+    {% if var.isArray %}
+    let {{ var.name }}Transformer = ArrayTransformer<Any, {% call varTransformer var.typeName.array.elementTypeName.name %}>(transformer: .init(), skipElements: true)
+    {% else %}
+    {% if var.isOptional %}
+    let {{ var.name }}Transformer = OptionalTransformer<{% call varTransformer var.unwrappedTypeName %}>(valueTransformer: .init())
+    {% else %}
+    let {{ var.name }}Transformer = {% call varTransformer var.unwrappedTypeName %}()
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+
+    func convert(source value: Source) -> TransformerResult<Destination> {
+        guard let dictionary: [String: Any] = CastTransformer().convert(source: value).value else { return .failure(.badDictionary) }
+
+        {% for var in type.storedVariables %}
+        {% if var.isOptional %}
+        let {{ var.name }}Result = {{ var.name }}Transformer.convert(source: dictionary[{{ var.name }}Name])
+        {% else %}
+        let {{ var.name }}Result = dictionary[{{ var.name }}Name].map({{ var.name }}Transformer.convert(source:)) ?? .failure(.requirement)
+        {% endif %}
+        {% endfor %}
+
+        var errors: [(String, TransformerError)] = []
+        {% for var in type.storedVariables %}
+        {{ var.name }}Result.error.map { errors.append(({{ var.name }}Name, $0)) }
+        {% endfor %}
+
+        guard
+            {% for var in type.storedVariables %}
+            let {{ var.name }} = {{ var.name }}Result.value,
+            {% endfor %}
+            errors.isEmpty
+        else {
+            return .failure(.multiple(errors))
+        }
+
+        {% for var in type.storedVariables|annotated:"validate" %}
+        if let error = {{ var.annotations.validate }}({{ var.name }}) { errors.append(({{ var.name }}Name, .validation(error))) }
+        {% endfor %}
+
+        return .success(
+            Destination(
+                {% for var in type.storedVariables %}
+                {{ var.name }}: {{ var.name }}{% ifnot forloop.last %},{% endif %}
+                {% endfor %}
+            )
+        )
+    }
+
+    func convert(destination value: Destination) -> TransformerResult<Source> {
+        {% for var in type.storedVariables %}
+        let {{ var.name }}Result = {{ var.name }}Transformer.convert(destination: value.{{ var.name }})
+        {% endfor %}
+
+        var errors: [(String, TransformerError)] = []
+        {% for var in type.storedVariables %}
+        {{ var.name }}Result.error.map { errors.append(({{ var.name }}Name, $0)) }
+        {% endfor %}
+
+        guard
+            {% for var in type.storedVariables %}
+            let {{ var.name }} = {{ var.name }}Result.value,
+            {% endfor %}
+            errors.isEmpty
+        else {
+            return .failure(.multiple(errors))
+        }
+
+        var dictionary: [String: Any] = [:]
+        {% for var in type.storedVariables %}
+        dictionary[{{ var.name }}Name] = {{ var.name }}
+        {% endfor %}
+        return .success(dictionary)
+    }
+}
+// swiftlint:enable line_length
+
+// sourcery:end
+{% endfor %}

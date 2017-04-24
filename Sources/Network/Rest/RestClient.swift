@@ -19,7 +19,7 @@ public protocol RestClient {
     var http: Http { get }
     var baseURL: URL { get }
 
-    func request<RequestTransformer: SimpleTransformer, ResponseTransformer: SimpleTransformer>(
+    func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
@@ -33,31 +33,31 @@ public protocol RestClient {
         completion: @escaping (ResponseSerializer.Value?, RestError?) -> Void
     )
 
-    func create<RequestTransformer: SimpleTransformer, ResponseTransformer: SimpleTransformer>(
+    func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     )
 
-    func create<ResponseTransformer: SimpleTransformer>(
+    func create<ResponseTransformer: LightTransformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     )
 
-    func read<ResponseTransformer: SimpleTransformer>(
+    func read<ResponseTransformer: LightTransformer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     )
 
-    func update<RequestTransformer: SimpleTransformer, ResponseTransformer: SimpleTransformer>(
+    func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
     )
 
-    func update<ResponseTransformer: SimpleTransformer>(
+    func update<ResponseTransformer: LightTransformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (ResponseTransformer.T?, RestError?) -> Void

@@ -1,12 +1,13 @@
 //
-//  AppDelegate.swift
-//  Example-iOS
+// AppDelegate
+// Example-iOS
 //
-//  Created by Eugene Egorov on 24/04/2017.
-//  Copyright © 2017 Eugene Egorov. All rights reserved.
+// Created by Eugene Egorov on 24 April 2017.
+// Copyright (c) 2017 Eugene Egorov. All rights reserved.
 //
 
 import UIKit
+import EEUtilities
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
     ) -> Bool {
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = .white
+        self.window = window
+
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let tabBarController = mainStoryboard.instantiateInitialViewController()! as! UITabBarController
+
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
+        window.tintColor = tabBarController.view.tintColor
+
         return true
     }
 
