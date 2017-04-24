@@ -2,9 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "container:EEUtilities.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:EEUtilities.playground">
    </FileRef>
    <FileRef
-      location = "container:EEUtilities.xcodeproj">
+      location = "group:Example-iOS/Example-iOS.xcodeproj">
    </FileRef>
 </Workspace>
