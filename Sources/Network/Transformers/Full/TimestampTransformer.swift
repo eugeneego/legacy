@@ -16,12 +16,11 @@ public struct TimestampTransformer<From>: FullTransformer {
 
     public init() {}
 
-    public func convert(source value: Source) -> TransformerResult<Destination> {
-        return numberTransformer.convert(source: value)
-            .map { Date(timeIntervalSince1970: TimeInterval($0)) }
+    public func transform(source value: Source) -> TransformerResult<Destination> {
+        return numberTransformer.transform(source: value).map { Date(timeIntervalSince1970: TimeInterval($0)) }
     }
 
-    public func convert(destination value: Destination) -> TransformerResult<Source> {
-        return numberTransformer.convert(destination: Int64(value.timeIntervalSince1970))
+    public func transform(destination value: Destination) -> TransformerResult<Source> {
+        return numberTransformer.transform(destination: Int64(value.timeIntervalSince1970))
     }
 }

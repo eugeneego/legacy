@@ -26,16 +26,16 @@ struct FeedTransformer: FullTransformer {
     let tagsTransformer = ArrayTransformer<Any, StringTransformer<Any>>(transformer: .init(), skipElements: true)
     let likesTransformer = NumberTransformer<Any, Int>()
 
-    func convert(source value: Source) -> TransformerResult<Destination> {
-        guard let dictionary: [String: Any] = CastTransformer().convert(source: value).value else { return .failure(.badDictionary) }
+    func transform(source value: Source) -> TransformerResult<Destination> {
+        guard let dictionary: [String: Any] = CastTransformer().transform(source: value).value else { return .failure(.badDictionary) }
 
-        let idResult = dictionary[idName].map(idTransformer.convert(source:)) ?? .failure(.requirement)
-        let titleResult = dictionary[titleName].map(titleTransformer.convert(source:)) ?? .failure(.requirement)
-        let descriptionResult = dictionary[descriptionName].map(descriptionTransformer.convert(source:)) ?? .failure(.requirement)
-        let createdResult = dictionary[createdName].map(createdTransformer.convert(source:)) ?? .failure(.requirement)
-        let authorResult = authorTransformer.convert(source: dictionary[authorName])
-        let tagsResult = dictionary[tagsName].map(tagsTransformer.convert(source:)) ?? .failure(.requirement)
-        let likesResult = dictionary[likesName].map(likesTransformer.convert(source:)) ?? .failure(.requirement)
+        let idResult = dictionary[idName].map(idTransformer.transform(source:)) ?? .failure(.requirement)
+        let titleResult = dictionary[titleName].map(titleTransformer.transform(source:)) ?? .failure(.requirement)
+        let descriptionResult = dictionary[descriptionName].map(descriptionTransformer.transform(source:)) ?? .failure(.requirement)
+        let createdResult = dictionary[createdName].map(createdTransformer.transform(source:)) ?? .failure(.requirement)
+        let authorResult = authorTransformer.transform(source: dictionary[authorName])
+        let tagsResult = dictionary[tagsName].map(tagsTransformer.transform(source:)) ?? .failure(.requirement)
+        let likesResult = dictionary[likesName].map(likesTransformer.transform(source:)) ?? .failure(.requirement)
 
         var errors: [(String, TransformerError)] = []
         idResult.error.map { errors.append((idName, $0)) }
@@ -73,14 +73,14 @@ struct FeedTransformer: FullTransformer {
         )
     }
 
-    func convert(destination value: Destination) -> TransformerResult<Source> {
-        let idResult = idTransformer.convert(destination: value.id)
-        let titleResult = titleTransformer.convert(destination: value.title)
-        let descriptionResult = descriptionTransformer.convert(destination: value.description)
-        let createdResult = createdTransformer.convert(destination: value.created)
-        let authorResult = authorTransformer.convert(destination: value.author)
-        let tagsResult = tagsTransformer.convert(destination: value.tags)
-        let likesResult = likesTransformer.convert(destination: value.likes)
+    func transform(destination value: Destination) -> TransformerResult<Source> {
+        let idResult = idTransformer.transform(destination: value.id)
+        let titleResult = titleTransformer.transform(destination: value.title)
+        let descriptionResult = descriptionTransformer.transform(destination: value.description)
+        let createdResult = createdTransformer.transform(destination: value.created)
+        let authorResult = authorTransformer.transform(destination: value.author)
+        let tagsResult = tagsTransformer.transform(destination: value.tags)
+        let likesResult = likesTransformer.transform(destination: value.likes)
 
         var errors: [(String, TransformerError)] = []
         idResult.error.map { errors.append((idName, $0)) }

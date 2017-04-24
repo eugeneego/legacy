@@ -31,14 +31,14 @@ struct {{ type.annotations.name|default:type.name }}Transformer: FullTransformer
     {% endif %}
     {% endfor %}
 
-    func convert(source value: Source) -> TransformerResult<Destination> {
-        guard let dictionary: [String: Any] = CastTransformer().convert(source: value).value else { return .failure(.badDictionary) }
+    func transform(source value: Source) -> TransformerResult<Destination> {
+        guard let dictionary: [String: Any] = CastTransformer().transform(source: value).value else { return .failure(.badDictionary) }
 
         {% for var in type.storedVariables %}
         {% if var.isOptional %}
-        let {{ var.name }}Result = {{ var.name }}Transformer.convert(source: dictionary[{{ var.name }}Name])
+        let {{ var.name }}Result = {{ var.name }}Transformer.transform(source: dictionary[{{ var.name }}Name])
         {% else %}
-        let {{ var.name }}Result = dictionary[{{ var.name }}Name].map({{ var.name }}Transformer.convert(source:)) ?? .failure(.requirement)
+        let {{ var.name }}Result = dictionary[{{ var.name }}Name].map({{ var.name }}Transformer.transform(source:)) ?? .failure(.requirement)
         {% endif %}
         {% endfor %}
 
@@ -69,9 +69,9 @@ struct {{ type.annotations.name|default:type.name }}Transformer: FullTransformer
         )
     }
 
-    func convert(destination value: Destination) -> TransformerResult<Source> {
+    func transform(destination value: Destination) -> TransformerResult<Source> {
         {% for var in type.storedVariables %}
-        let {{ var.name }}Result = {{ var.name }}Transformer.convert(destination: value.{{ var.name }})
+        let {{ var.name }}Result = {{ var.name }}Transformer.transform(destination: value.{{ var.name }})
         {% endfor %}
 
         var errors: [(String, TransformerError)] = []

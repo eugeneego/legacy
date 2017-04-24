@@ -17,17 +17,17 @@ public struct OptionalTransformer<ValueTransformer: FullTransformer>: FullTransf
         self.valueTransformer = valueTransformer
     }
 
-    public func convert(source value: Source) -> TransformerResult<Destination> {
+    public func transform(source value: Source) -> TransformerResult<Destination> {
         if let value = value, !(value is NSNull) {
-            return valueTransformer.convert(source: value).map { $0 }
+            return valueTransformer.transform(source: value).map { $0 }
         } else {
             return .success(nil)
         }
     }
 
-    public func convert(destination value: Destination) -> TransformerResult<Source> {
+    public func transform(destination value: Destination) -> TransformerResult<Source> {
         if let value = value {
-            return valueTransformer.convert(destination: value).map { $0 }
+            return valueTransformer.transform(destination: value).map { $0 }
         } else {
             return .success(nil)
         }

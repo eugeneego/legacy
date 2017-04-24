@@ -1,13 +1,13 @@
 //
-// DictionaryTransformer
+// DictionaryLightTransformer
 // EE Utilities
 //
 // Copyright (c) 2015 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-public struct DictionaryTransformer
-        <KeyTransformer: LightTransformer, ValueTransformer: LightTransformer>: LightTransformer where KeyTransformer.T: Hashable {
+public struct DictionaryLightTransformer<KeyTransformer: LightTransformer, ValueTransformer: LightTransformer>:
+        LightTransformer where KeyTransformer.T: Hashable {
     public typealias T = [KeyTransformer.T: ValueTransformer.T]
 
     private let keyTransformer: KeyTransformer

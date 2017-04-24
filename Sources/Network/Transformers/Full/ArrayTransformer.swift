@@ -18,8 +18,8 @@ public struct ArrayTransformer<From, ElementTransformer: FullTransformer>: FullT
         self.skipElements = skipElements
     }
 
-    public func convert(source value: Source) -> TransformerResult<Destination> {
-        guard let results = (value as? [ElementTransformer.Source])?.flatMap(transformer.convert(source:))
+    public func transform(source value: Source) -> TransformerResult<Destination> {
+        guard let results = (value as? [ElementTransformer.Source])?.flatMap(transformer.transform(source:))
         else { return .failure(.transform) }
 
         if skipElements {
@@ -34,7 +34,7 @@ public struct ArrayTransformer<From, ElementTransformer: FullTransformer>: FullT
         }
     }
 
-    public func convert(destination value: Destination) -> TransformerResult<Source> {
-        return TransformerResult(value.flatMap { transformer.convert(destination: $0).value } as? From, .transform)
+    public func transform(destination value: Destination) -> TransformerResult<Source> {
+        return TransformerResult(value.flatMap { transformer.transform(destination: $0).value } as? From, .transform)
     }
 }

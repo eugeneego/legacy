@@ -18,11 +18,11 @@ public struct ColorTransformer<From>: FullTransformer {
 
     public init() {}
 
-    public func convert(source value: Source) -> TransformerResult<Destination> {
+    public func transform(source value: Source) -> TransformerResult<Destination> {
         return TransformerResult((value as? String).flatMap(EEColor.from(hex:)), .transform)
     }
 
-    public func convert(destination value: Destination) -> TransformerResult<Source> {
+    public func transform(destination value: Destination) -> TransformerResult<Source> {
         return TransformerResult(value.hexARGB as? From, .transform)
     }
 }

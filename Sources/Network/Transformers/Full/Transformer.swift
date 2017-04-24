@@ -21,15 +21,14 @@ public protocol ForwardTransformer {
     associatedtype Source
     associatedtype Destination
 
-    func convert(source value: Source) -> TransformerResult<Destination>
+    func transform(source value: Source) -> TransformerResult<Destination>
 }
 
 public protocol BackwardTransformer {
     associatedtype Source
     associatedtype Destination
 
-    func convert(destination value: Destination) -> TransformerResult<Source>
+    func transform(destination value: Destination) -> TransformerResult<Source>
 }
 
-public protocol FullTransformer: ForwardTransformer, BackwardTransformer {
-}
+public protocol FullTransformer: ForwardTransformer, BackwardTransformer {}

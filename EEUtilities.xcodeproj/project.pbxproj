@@ -32,6 +32,7 @@
 		B2FA844A0C61315760A8B100 /* ArrayTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D5570D6EF73D907E6B2 /* ArrayTransformer.swift */; };
 		B2FA8491249FFBC37075348E /* ShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81C3C6CFE9B879F44CBF /* ShadowView.swift */; };
 		B2FA849298F5E83473B6F567 /* Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D9E17BD746E31E8C38D /* Arithmetic.swift */; };
+		B2FA85562CFF64F4D74A52D5 /* EnumLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */; };
 		B2FA855F1E59C64BA008037F /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA821B587ACD8434FFAA0F /* Action.swift */; };
 		B2FA857740A73E82F7311C14 /* UrlLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */; };
 		B2FA8591D163BDDD0FA6C746 /* CastLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */; };
@@ -53,8 +54,6 @@
 		B2FA89779BBFE1B071D9E98D /* VoidTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D1FD5C9DDBEFA447845 /* VoidTransformer.swift */; };
 		B2FA8A0DF9FDBCEC216879A5 /* TimestampTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88EE3C82A5FAA97CF24B /* TimestampTransformer.swift */; };
 		B2FA8A884FCEDDC22A9E1D9B /* StringMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89D51C66A26B2D105F83 /* StringMatcher.swift */; };
-		B2FA8B1F2E515DDC54B2C0E1 /* EnumTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87F04001BC9FD656F4D4 /* EnumTransformer.swift */; };
-		B2FA8B9D79D646A62875E4C5 /* DictionaryTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84AE770B320C830352AE /* DictionaryTransformer.swift */; };
 		B2FA8BA9230D459CBC071B41 /* Odin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8AB2D5F82CDE95F5E777 /* Odin.swift */; };
 		B2FA8BDDC62B592A6BB14C6B /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EC38AC1BAA7D7066674 /* GalleryViewController.swift */; };
 		B2FA8C040A79133CADF6BC58 /* NumberStringTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85D8439F462794AA5ED1 /* NumberStringTransformer.swift */; };
@@ -65,6 +64,7 @@
 		B2FA8D1F701749F7115F1CC7 /* HttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8FCE558D3984B7C03D18 /* HttpSerializer.swift */; };
 		B2FA8E0ACB9B69D535F57BD0 /* LightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA844184D1B3827C980DB3 /* LightTransformer.swift */; };
 		B2FA8E2D218194F836DB8CFD /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */; };
+		B2FA8E3478A25C6BAFA3C5FC /* DictionaryLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */; };
 		B2FA8E616DD222761559959E /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8343F8CC638295A9178B /* Json.swift */; };
 		B2FA8E876CAFA839778B5D3B /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8B92E4FF28AD37A47198 /* VideoViewController.swift */; };
 		B2FA8EBC887E729D71FA8F24 /* UrlSessionHttp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85D4956ADEAF7B13BFD8 /* UrlSessionHttp.swift */; };
@@ -90,11 +90,11 @@
 		B2FA81B9B48B6F6CD61E53CD /* ServerTrustPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerTrustPolicy.swift; sourceTree = "<group>"; };
 		B2FA81C3C6CFE9B879F44CBF /* ShadowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
 		B2FA821B587ACD8434FFAA0F /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA832A7D8E587420E22722 /* ColorTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorTransformer.swift; sourceTree = "<group>"; };
 		B2FA8343F8CC638295A9178B /* Json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
 		B2FA841D3A1CF42F932BA8A7 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		B2FA844184D1B3827C980DB3 /* LightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightTransformer.swift; sourceTree = "<group>"; };
-		B2FA84AE770B320C830352AE /* DictionaryTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryTransformer.swift; sourceTree = "<group>"; };
 		B2FA84BBE47AB20628675CBD /* Http.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Http.swift; sourceTree = "<group>"; };
 		B2FA851A9B04FA4D133EA879 /* DateLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA852B1C43001C50964B88 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
@@ -106,8 +106,8 @@
 		B2FA871E8CDD13651A0653C9 /* CastTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastTransformer.swift; sourceTree = "<group>"; };
 		B2FA873002C781AA701C4253 /* UIView+Fade.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Fade.swift"; sourceTree = "<group>"; };
 		B2FA877C4F8708E00C9D6F1B /* Transformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transformer.swift; sourceTree = "<group>"; };
-		B2FA87F04001BC9FD656F4D4 /* EnumTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTransformer.swift; sourceTree = "<group>"; };
 		B2FA87F9B5E313F53D90ABCA /* Easing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Easing.swift; sourceTree = "<group>"; };
+		B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Screenshot.swift"; sourceTree = "<group>"; };
 		B2FA88ABD9166F294CB557C0 /* UrlEncodedHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlEncodedHttpSerializer.swift; sourceTree = "<group>"; };
 		B2FA88C5C52A570B17B93ADC /* OptionalTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalTransformer.swift; sourceTree = "<group>"; };
@@ -195,12 +195,10 @@
 			children = (
 				B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */,
 				B2FA85D8439F462794AA5ED1 /* NumberStringTransformer.swift */,
-				B2FA84AE770B320C830352AE /* DictionaryTransformer.swift */,
 				B2FA8C8E8999BE8D439CF369 /* NumberTransformer.swift */,
 				B2FA877C4F8708E00C9D6F1B /* Transformer.swift */,
 				B2FA8114F6C4DC5F55A323F1 /* DateTransformer.swift */,
 				B2FA832A7D8E587420E22722 /* ColorTransformer.swift */,
-				B2FA87F04001BC9FD656F4D4 /* EnumTransformer.swift */,
 				B2FA8D1FD5C9DDBEFA447845 /* VoidTransformer.swift */,
 				B2FA871E8CDD13651A0653C9 /* CastTransformer.swift */,
 				B2FA8D5570D6EF73D907E6B2 /* ArrayTransformer.swift */,
@@ -368,6 +366,8 @@
 				B2FA8C8F891B8EEC67935F9A /* ColorLightTransformer.swift */,
 				B2FA851A9B04FA4D133EA879 /* DateLightTransformer.swift */,
 				B2FA8D5AEE04AEAAC1E9ADA3 /* TimestampLightTransformer.swift */,
+				B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */,
+				B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */,
 			);
 			path = Light;
 			sourceTree = "<group>";
@@ -510,12 +510,10 @@
 				B2FA8BDDC62B592A6BB14C6B /* GalleryViewController.swift in Sources */,
 				B2FA87F3F19972FA40192A07 /* UrlTransformer.swift in Sources */,
 				B2FA8C040A79133CADF6BC58 /* NumberStringTransformer.swift in Sources */,
-				B2FA8B9D79D646A62875E4C5 /* DictionaryTransformer.swift in Sources */,
 				B2FA82588A476D2C00A9DA37 /* NumberTransformer.swift in Sources */,
 				B2FA81ACC6E0BCA7D5AB481C /* Transformer.swift in Sources */,
 				B2FA8C2CB8B25FE75F462278 /* DateTransformer.swift in Sources */,
 				B2FA802B512F23D6E6E9E582 /* ColorTransformer.swift in Sources */,
-				B2FA8B1F2E515DDC54B2C0E1 /* EnumTransformer.swift in Sources */,
 				B2FA89779BBFE1B071D9E98D /* VoidTransformer.swift in Sources */,
 				B2FA8EE725814DEA592BF43F /* CastTransformer.swift in Sources */,
 				B2FA844A0C61315760A8B100 /* ArrayTransformer.swift in Sources */,
@@ -532,6 +530,8 @@
 				B2FA890118833BBAAEC499FC /* TimestampLightTransformer.swift in Sources */,
 				B2FA8A0DF9FDBCEC216879A5 /* TimestampTransformer.swift in Sources */,
 				B2FA8ECF83711F7B35DDAAE5 /* OptionalTransformer.swift in Sources */,
+				B2FA85562CFF64F4D74A52D5 /* EnumLightTransformer.swift in Sources */,
+				B2FA8E3478A25C6BAFA3C5FC /* DictionaryLightTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

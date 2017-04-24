@@ -6,7 +6,7 @@
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-public struct EnumCastTransformer<Enum: RawRepresentable>: LightTransformer {
+public struct EnumCastLightTransformer<Enum: RawRepresentable>: LightTransformer {
     public typealias T = Enum
 
     public func from(any value: Any?) -> T? {
@@ -18,7 +18,7 @@ public struct EnumCastTransformer<Enum: RawRepresentable>: LightTransformer {
     }
 }
 
-public struct EnumTransformer<Enum: RawRepresentable, RawTransformer: LightTransformer>:
+public struct EnumLightTransformer<Enum: RawRepresentable, RawTransformer: LightTransformer>:
         LightTransformer where RawTransformer.T == Enum.RawValue {
     public typealias T = Enum
 
@@ -37,7 +37,7 @@ public struct EnumTransformer<Enum: RawRepresentable, RawTransformer: LightTrans
     }
 }
 
-public struct DictionaryEnumTransformer<Enum: Hashable, ValueTransformer: LightTransformer>:
+public struct DictionaryEnumLightTransformer<Enum: Hashable, ValueTransformer: LightTransformer>:
         LightTransformer where ValueTransformer.T: Hashable {
     public typealias T = Enum
     public typealias Value = ValueTransformer.T

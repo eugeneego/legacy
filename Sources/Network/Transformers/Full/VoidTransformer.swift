@@ -12,11 +12,11 @@ public struct VoidTransformer<From>: FullTransformer {
 
     public init() {}
 
-    public func convert(source value: Source) -> TransformerResult<Destination> {
+    public func transform(source value: Source) -> TransformerResult<Destination> {
         return TransformerResult((), .transform)
     }
 
-    public func convert(destination value: Destination) -> TransformerResult<Source> {
+    public func transform(destination value: Destination) -> TransformerResult<Source> {
         return TransformerResult(value as? From, .transform)
     }
 }

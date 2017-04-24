@@ -20,11 +20,11 @@ public struct DateTransformer<From>: FullTransformer {
         formatter.dateFormat = format
     }
 
-    public func convert(source value: Source) -> TransformerResult<Destination> {
+    public func transform(source value: Source) -> TransformerResult<Destination> {
         return TransformerResult((value as? String).flatMap(formatter.date(from:)), .transform)
     }
 
-    public func convert(destination value: Destination) -> TransformerResult<Source> {
+    public func transform(destination value: Destination) -> TransformerResult<Source> {
         return TransformerResult(formatter.string(from: value) as? From, .transform)
     }
 }

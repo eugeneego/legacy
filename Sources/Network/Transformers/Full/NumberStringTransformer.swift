@@ -17,13 +17,13 @@ public struct NumberStringTransformer<From, To: NumberConvertible & TransformerS
 
     public init() {}
 
-    public func convert(source value: Source) -> TransformerResult<Destination> {
-        return numberTransformer.convert(source: value)
+    public func transform(source value: Source) -> TransformerResult<Destination> {
+        return numberTransformer.transform(source: value)
             .flatMapError { _ in TransformerResult((value as? String).flatMap(To.init), .transform) }
     }
 
-    public func convert(destination value: Destination) -> TransformerResult<Source> {
-        return numberTransformer.convert(destination: value)
+    public func transform(destination value: Destination) -> TransformerResult<Source> {
+        return numberTransformer.transform(destination: value)
             .flatMap { TransformerResult<Source>(($0 as? NSNumber)?.stringValue as? From, .transform) }
     }
 }
