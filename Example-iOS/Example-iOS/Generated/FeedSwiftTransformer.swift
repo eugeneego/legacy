@@ -6,7 +6,7 @@ import CoreGraphics
 import EEUtilities
 
 // swiftlint:disable line_length
-struct FeedTransformer: FullTransformer {
+struct FeedSwiftTransformer: FullTransformer {
     typealias Source = Any
     typealias Destination = Feed
 

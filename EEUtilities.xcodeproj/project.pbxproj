@@ -102,6 +102,7 @@
 		B2FA858A3D77F6B7C5DBB895 /* DependencyInjectionContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyInjectionContainer.swift; sourceTree = "<group>"; };
 		B2FA85D4956ADEAF7B13BFD8 /* UrlSessionHttp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlSessionHttp.swift; sourceTree = "<group>"; };
 		B2FA85D8439F462794AA5ED1 /* NumberStringTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberStringTransformer.swift; sourceTree = "<group>"; };
+		B2FA85FE943584046C622540 /* Transformer.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = file.swifttemplate; path = Transformer.swifttemplate; sourceTree = "<group>"; };
 		B2FA865E04614EEE00078743 /* ArrayLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA871E8CDD13651A0653C9 /* CastTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastTransformer.swift; sourceTree = "<group>"; };
 		B2FA873002C781AA701C4253 /* UIView+Fade.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Fade.swift"; sourceTree = "<group>"; };
@@ -115,6 +116,7 @@
 		B2FA88F670994240D540032B /* Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
 		B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSubscription.swift; sourceTree = "<group>"; };
 		B2FA8915D4F0786B5A29F899 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		B2FA895DEB71DB23431C5604 /* Transformer.stencil */ = {isa = PBXFileReference; lastKnownFileType = file.stencil; path = Transformer.stencil; sourceTree = "<group>"; };
 		B2FA89997C8960D3CDBFF0BA /* JsonHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonHttpSerializer.swift; sourceTree = "<group>"; };
 		B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlTransformer.swift; sourceTree = "<group>"; };
 		B2FA89A6C7B0C66FA91C0A3C /* GalleryMedia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryMedia.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 				B2FA839D74C9E0CA0CB15AF4 /* Extensions */,
 				B2FA86161EA2A514BF3C8E60 /* Network */,
 				B2FA892B06D2CF764F50602D /* UI */,
+				B2FA8E657E8046C1DD619A8F /* Templates */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -370,6 +373,15 @@
 				B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */,
 			);
 			path = Light;
+			sourceTree = "<group>";
+		};
+		B2FA8E657E8046C1DD619A8F /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				B2FA895DEB71DB23431C5604 /* Transformer.stencil */,
+				B2FA85FE943584046C622540 /* Transformer.swifttemplate */,
+			);
+			path = Templates;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

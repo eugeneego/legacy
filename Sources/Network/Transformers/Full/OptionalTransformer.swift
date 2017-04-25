@@ -11,15 +11,15 @@ public struct OptionalTransformer<ValueTransformer: FullTransformer>: FullTransf
     public typealias Source = ValueTransformer.Source?
     public typealias Destination = ValueTransformer.Destination?
 
-    private let valueTransformer: ValueTransformer
+    private let transformer: ValueTransformer
 
-    public init(valueTransformer: ValueTransformer) {
-        self.valueTransformer = valueTransformer
+    public init(transformer: ValueTransformer) {
+        self.transformer = transformer
     }
 
     public func transform(source value: Source) -> TransformerResult<Destination> {
         if let value = value, !(value is NSNull) {
-            return valueTransformer.transform(source: value).map { $0 }
+            return transformer.transform(source: value).map { $0 }
         } else {
             return .success(nil)
         }
@@ -27,7 +27,7 @@ public struct OptionalTransformer<ValueTransformer: FullTransformer>: FullTransf
 
     public func transform(destination value: Destination) -> TransformerResult<Source> {
         if let value = value {
-            return valueTransformer.transform(destination: value).map { $0 }
+            return transformer.transform(destination: value).map { $0 }
         } else {
             return .success(nil)
         }

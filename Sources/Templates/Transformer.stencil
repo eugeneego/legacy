@@ -23,7 +23,7 @@ struct {{ type.annotations.name|default:type.name }}Transformer: FullTransformer
     let {{ var.name }}Transformer = ArrayTransformer<Any, {% call varTransformer var.typeName.array.elementTypeName.name %}>(transformer: .init(), skipElements: true)
     {% else %}
     {% if var.isOptional %}
-    let {{ var.name }}Transformer = OptionalTransformer<{% call varTransformer var.unwrappedTypeName %}>(valueTransformer: .init())
+    let {{ var.name }}Transformer = OptionalTransformer<{% call varTransformer var.unwrappedTypeName %}>(transformer: .init())
     {% else %}
     let {{ var.name }}Transformer = {% call varTransformer var.unwrappedTypeName %}()
     {% endif %}

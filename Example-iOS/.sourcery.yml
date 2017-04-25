@@ -1,5 +1,5 @@
 templates:
-    - Example-iOS/Templates
+    - ../Sources/Templates
 output:
     Example-iOS/Generated
 prune:

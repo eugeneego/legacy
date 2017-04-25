@@ -1,0 +1,117 @@
+<%_
+func stringAnnotation(_ object: Annotated, _ name: String, _ default: String) -> String {
+    return object.annotations[name] as? String ?? `default`
+}
+
+func transformer(for type: String) -> String {
+    let numberTypes = Set([ "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "Bool", "Decimal" ])
+    if numberTypes.contains(type) {
+        return "NumberTransformer<Any, \(type)>"
+    } else {
+        return "\(type)Transformer<Any>"
+    }
+}
+-%>
+<%
+for type in types.all where type.annotations["transformer"] != nil {
+    let name = stringAnnotation(type, "name", type.name + "SwiftTransformer")
+    let variables = type.storedVariables
+-%>
+// sourcery:file:<%= name %>.swift
+import Foundation
+import CoreGraphics
+import EEUtilities
+
+// swiftlint:disable line_length
+struct <%= name %>: FullTransformer {
+    typealias Source = Any
+    typealias Destination = <%= type.name %>
+
+    <%_ for variable in variables { -%>
+    let <%= variable.name %>Name = "<%= stringAnnotation(variable, "name", variable.name) %>"
+    <%_ } -%>
+
+    <%_ for variable in variables {
+        let variableTransformer: String
+        if let annotatedTransformer = variable.annotations["transformer"] as? String {
+            variableTransformer = annotatedTransformer + "()"
+        } else if variable.isArray, let arrayType = variable.typeName.array {
+            variableTransformer = "ArrayTransformer<Any, \(transformer(for: arrayType.elementTypeName.name))>(transformer: .init(), skipElements: true)"
+        } else if variable.isOptional {
+            variableTransformer = "OptionalTransformer<\(transformer(for: variable.unwrappedTypeName))>(transformer: .init())"
+        } else {
+            variableTransformer = transformer(for: variable.unwrappedTypeName) + "()"
+        } -%>
+    let <%= variable.name %>Transformer = <%= variableTransformer %>
+    <%_ } -%>
+
+    func transform(source value: Source) -> TransformerResult<Destination> {
+        guard let dictionary: [String: Any] = CastTransformer().transform(source: value).value else { return .failure(.badDictionary) }
+
+        <%_ for variable in variables { -%>
+            <%_ if variable.isOptional { -%>
+        let <%= variable.name %>Result = <%= variable.name %>Transformer.transform(source: dictionary[<%= variable.name %>Name])
+            <%_ } else { -%>
+        let <%= variable.name %>Result = dictionary[<%= variable.name %>Name].map(<%= variable.name %>Transformer.transform(source:)) ?? .failure(.requirement)
+            <%_ } -%>
+        <%_ } -%>
+
+        var errors: [(String, TransformerError)] = []
+        <%_ for variable in variables { -%>
+        <%= variable.name %>Result.error.map { errors.append((<%= variable.name %>Name, $0)) }
+        <%_ } -%>
+
+        guard
+            <%_ for variable in variables { -%>
+            let <%= variable.name %> = <%= variable.name %>Result.value,
+            <%_ } -%>
+            errors.isEmpty
+        else {
+            return .failure(.multiple(errors))
+        }
+
+        <%_ for variable in variables where variable.annotations["validate"] != nil { -%>
+            <%_ if let validate = variable.annotations["validate"] as? String, !validate.isEmpty { -%>
+        if let error = <%= validate %>(<%= variable.name %>) { errors.append((<%= variable.name %>Name, .validation(error))) }
+            <%_ } -%>
+        <%_ } -%>
+
+        return .success(
+            Destination(
+                <%_ for (index, variable) in variables.enumerated() { -%>
+                <%= variable.name %>: <%= variable.name %><%= index != variables.count - 1 ? "," : "" %>
+                <%_ } -%>
+            )
+        )
+    }
+
+    func transform(destination value: Destination) -> TransformerResult<Source> {
+        <%_ for variable in variables { -%>
+        let <%= variable.name %>Result = <%= variable.name %>Transformer.transform(destination: value.<%= variable.name %>)
+        <%_ } -%>
+
+        var errors: [(String, TransformerError)] = []
+        <%_ for variable in variables { -%>
+        <%= variable.name %>Result.error.map { errors.append((<%= variable.name %>Name, $0)) }
+        <%_ } -%>
+
+        guard
+            <%_ for variable in variables { -%>
+            let <%= variable.name %> = <%= variable.name %>Result.value,
+            <%_ } -%>
+            errors.isEmpty
+        else {
+            return .failure(.multiple(errors))
+        }
+
+        var dictionary: [String: Any] = [:]
+        <%_ for variable in variables { -%>
+        dictionary[<%= variable.name %>Name] = <%= variable.name %>
+        <%_ } -%>
+        return .success(dictionary)
+    }
+}
+// swiftlint:enable line_length
+
+// sourcery:end
+<% } -%>
