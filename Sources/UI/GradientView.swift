@@ -39,7 +39,8 @@ open class GradientView: UIView {
     }
 
     open func update() {
-        let layer = self.layer as! CAGradientLayer
+        guard let layer = self.layer as? CAGradientLayer else { return }
+
         layer.startPoint = startPoint
         layer.endPoint = endPoint
         layer.locations = locations

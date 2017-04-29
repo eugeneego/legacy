@@ -1,20 +1,95 @@
 <%_
+func cleanTypeName(_ s: String) -> String {
+    return s.replacingOccurrences(of: ".", with: "")
+}
+
 func stringAnnotation(_ object: Annotated, _ name: String, _ default: String) -> String {
     return object.annotations[name] as? String ?? `default`
 }
 
-func transformer(for type: String) -> String {
-    let numberTypes = Set([ "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "Bool", "Decimal" ])
-    if numberTypes.contains(type) {
-        return "NumberTransformer<Any, \(type)>"
+func transformer(for type: String, from: String = "Any") -> String {
+    let numbers = Set([ "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "Bool", "Decimal" ])
+    if numbers.contains(type) {
+        return "NumberTransformer<\(from), \(type)>"
     } else {
-        return "\(type)Transformer<Any>"
+        return "\(type)Transformer<\(from)>"
+    }
+}
+
+func enumValueTransformer(for type: Enum, from: String = "Any") -> String? {
+    if let rawTransformer = type.annotations["enumTransformer.transformer"] as? String {
+        return rawTransformer
+    } else if let rawType = type.annotations["enumTransformer.type"] as? String {
+        return transformer(for: cleanTypeName(rawType), from: from) + "()"
+    } else if let rawType = type.rawType {
+        return transformer(for: cleanTypeName(rawType.name), from: from) + "()"
+    }
+    return nil
+}
+
+func enumRawValue(for enumCase: EnumCase) -> String {
+    if let string = enumCase.annotations["enumTransformer.value"] as? String {
+        return "\"\(string)\""
+    } else if let int = enumCase.annotations["enumTransformer.value"] as? Int {
+        return "\(int)"
+    } else {
+        return enumCase.rawValue ?? "\"\(enumCase.name)\""
     }
 }
 -%>
+<%# Enum Transformers -%>
+<%
+for type in types.enums where type.annotations["enumTransformer"] != nil {
+    let name = stringAnnotation(type, "name", cleanTypeName(type.name) + "Transformer")
+    let variables = type.storedVariables
+-%>
+// sourcery:file:<%= name %>.swift
+import Foundation
+import EEUtilities
+
+<%_ if type.hasAssociatedValues { -%>
+// Enums with associated values are not supported.
+// sourcery:end
+<%_ continue } -%>
+<%_ guard let valueTransformer = enumValueTransformer(for: type, from: "From") else { -%>
+// No raw type detected.
+// sourcery:end
+<%_ continue } -%>
+struct <%= name %><From>: FullTransformer {
+    typealias Source = From
+    typealias Destination = <%= type.name %>
+
+    private let transformer = <%= valueTransformer %>
+
+    func transform(source value: Source) -> TransformerResult<Destination> {
+        guard let rawValue = transformer.transform(source: value).value else { return .failure(.transform) }
+
+        switch rawValue {
+            <%_ for enumCase in type.cases { -%>
+            case <%= enumRawValue(for: enumCase) %>:
+                return .success(.<%= enumCase.name %>)
+            <%_ } -%>
+            default:
+                return .failure(.transform)
+        }
+    }
+
+    func transform(destination value: Destination) -> TransformerResult<Source> {
+        switch value {
+            <%_ for enumCase in type.cases { -%>
+            case .<%= enumCase.name %>:
+                return transformer.transform(destination: <%= enumRawValue(for: enumCase) %>)
+            <%_ } -%>
+        }
+    }
+}
+
+// sourcery:end
+<% } -%>
+<%# Object Transformers -%>
 <%
 for type in types.all where type.annotations["transformer"] != nil {
-    let name = stringAnnotation(type, "name", type.name + "SwiftTransformer")
+    let name = stringAnnotation(type, "name", cleanTypeName(type.name) + "Transformer")
     let variables = type.storedVariables
 -%>
 // sourcery:file:<%= name %>.swift
@@ -22,7 +97,6 @@ import Foundation
 import CoreGraphics
 import EEUtilities
 
-// swiftlint:disable line_length
 struct <%= name %>: FullTransformer {
     typealias Source = Any
     typealias Destination = <%= type.name %>
@@ -40,7 +114,7 @@ struct <%= name %>: FullTransformer {
         } else if variable.isOptional {
             variableTransformer = "OptionalTransformer<\(transformer(for: variable.unwrappedTypeName))>(transformer: .init())"
         } else {
-            variableTransformer = transformer(for: variable.unwrappedTypeName) + "()"
+            variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.typeName.name)) + "()"
         } -%>
     let <%= variable.name %>Transformer = <%= variableTransformer %>
     <%_ } -%>
@@ -111,7 +185,6 @@ struct <%= name %>: FullTransformer {
         return .success(dictionary)
     }
 }
-// swiftlint:enable line_length
 
 // sourcery:end
 <% } -%>

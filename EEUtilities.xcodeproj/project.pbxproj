@@ -116,7 +116,6 @@
 		B2FA88F670994240D540032B /* Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
 		B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSubscription.swift; sourceTree = "<group>"; };
 		B2FA8915D4F0786B5A29F899 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
-		B2FA895DEB71DB23431C5604 /* Transformer.stencil */ = {isa = PBXFileReference; lastKnownFileType = file.stencil; path = Transformer.stencil; sourceTree = "<group>"; };
 		B2FA89997C8960D3CDBFF0BA /* JsonHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonHttpSerializer.swift; sourceTree = "<group>"; };
 		B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlTransformer.swift; sourceTree = "<group>"; };
 		B2FA89A6C7B0C66FA91C0A3C /* GalleryMedia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryMedia.swift; sourceTree = "<group>"; };
@@ -378,7 +377,6 @@
 		B2FA8E657E8046C1DD619A8F /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				B2FA895DEB71DB23431C5604 /* Transformer.stencil */,
 				B2FA85FE943584046C622540 /* Transformer.swifttemplate */,
 			);
 			path = Templates;

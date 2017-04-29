@@ -22,11 +22,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
 
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let tabBarController = mainStoryboard.instantiateInitialViewController()! as! UITabBarController
+        guard let tabBarController = mainStoryboard.instantiateInitialViewController() as? UITabBarController else {
+            fatalError("Invalid initial view controller")
+        }
+
+        #if MOCK
+        let configurator = MockConfigurator(tabBarController: tabBarController)
+        #elseif DEV
+        let configurator = RestConfigurator(
+            baseUrl: URL(string: "https://dev.base.url")!,
+            tabBarController: tabBarController
+        )
+        #elseif STAGING
+        let configurator = RestConfigurator(
+            baseUrl: URL(string: "https://staging.base.url")!,
+            tabBarController: tabBarController
+        )
+        #else
+        let configurator = RestConfigurator(
+            baseUrl: URL(string: "https://base.url")!,
+            tabBarController: tabBarController
+        )
+        #endif
+        let container = configurator.create()
+        container.resolve(self)
+        tabBarController.viewControllers?.forEach { controller in
+            container.resolve(controller)
+            (controller as? UINavigationController)?.viewControllers.forEach(container.resolve)
+        }
 
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
-        window.tintColor = tabBarController.view.tintColor
 
         return true
     }
