@@ -15,11 +15,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Ocj4zZetnLAEipOda3JBCzlwE/w=
+			a9A5HQqCeWzmPEMEncHgBnK+XOk=
 			</data>
 			<key>hash2</key>
 			<data>
-			B2ey/0nrWpxJG8Itv+sQOeGpPvCTFjAux6XOs73Hehw=
+			2aIP1VhlTY7AvI1T8YHA69BPudqzkgkxriEr0MyS74Y=
 			</data>
 		</dict>
 		<key>Headers/SWXMLHash-umbrella.h</key>
@@ -37,22 +37,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			xSrPK8GSup8OWZ5AqJqOQpdp8aA=
+			MQtmYpPAMnYOxoa2aqZIVea6fm4=
 			</data>
 			<key>hash2</key>
 			<data>
-			7lWfdOiztfKd8VsHDzYcmwJbRaoCKadvnJ/MbaNZqcs=
+			9tGvSZhvjCuUE8Nt4o0JWhjrOvSOX5JEHqb2TwV5ZPY=
 			</data>
 		</dict>
 		<key>Modules/SWXMLHash.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			owYyHE7ytEJ7YlccER6dkLguJas=
+			HmdHbInael1PUbFOMpOu6vngaOc=
 			</data>
 			<key>hash2</key>
 			<data>
-			Smn63ICXpYe2QOoqxgGqxtVn3qJUmKeG0ZD1faa9GUU=
+			g6x8kWowJJgyIE5+dMnDA6+wi39Olu7GwFcHzdzp15o=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
