@@ -2,7 +2,46 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Paths in config file are now relative to config file path by default, absolute paths should start with `/`
+- Improved logging and error reporting, added `--quiet` CLI option, added runtime errors for using invalid types in `implementing` and `inheriting`
+- Added support for includes in EJS templates (for example: `<%- include('myTemplate.js') %>`)
+- Add the `lowerFirst` filter for Stencil templates.
+- Added `isRequired` property for `Method`
+- Improved parsing of closure types
+- Check if Current Project Version match version in podspec in release task
+- Improved swift templates performance
+- Added `// sourcery:file` annotation for source code
+
+### Bug fixes
+
+- Fixed detecting computed properties
+- Fixed typo in `isConvenienceInitialiser` property
+- Fixed creating cache folder when cache is disabled
+- Fixed parsing multiple enum cases annotations
+- Fixed parsing inline annotations when there is an access level or attribute
+- Fixed parsing `required` attribute
+
+### Internal changes
+
+- Improved `AutoMockable.stencil` to support protocols with `init` methods
+- Improved `AutoCases.stencil` to use `let` instead of computed `var`
+- Updated StencilSwiftKit to 1.0.2 which includes Stencil 0.9.0
+- Adding docset to release archive
+- Moved to CocoaPods 1.2.1
+- Made Array.parallelMap's block non-escaping
+
+
 ## 0.6.0
+
+### New Features
+
+- Added some convenience accessors for classic, static and instance methods, and types and contained types grouped by names
+
+## 0.6
 
 ### New Features
 
