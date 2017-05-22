@@ -1,8 +1,9 @@
 //
 // OptionalTransformer
-// EEUtilities
+// EE Utilities
 //
-// Created by Eugene Egorov on 24 April 2017.
+// Copyright (c) 2017 Eugene Egorov.
+// License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
 import Foundation

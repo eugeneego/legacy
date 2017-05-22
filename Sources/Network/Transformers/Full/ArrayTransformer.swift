@@ -6,8 +6,8 @@
 // License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
 //
 
-public struct ArrayTransformer<From, ElementTransformer: FullTransformer>: FullTransformer {
-    public typealias Source = From
+public struct ArrayTransformer<ElementTransformer: FullTransformer>: FullTransformer {
+    public typealias Source = ElementTransformer.Source
     public typealias Destination = [ElementTransformer.Destination]
 
     private let transformer: ElementTransformer
@@ -35,6 +35,6 @@ public struct ArrayTransformer<From, ElementTransformer: FullTransformer>: FullT
     }
 
     public func transform(destination value: Destination) -> TransformerResult<Source> {
-        return TransformerResult(value.flatMap { transformer.transform(destination: $0).value } as? From, .transform)
+        return TransformerResult(value.flatMap { transformer.transform(destination: $0).value } as? Source, .transform)
     }
 }

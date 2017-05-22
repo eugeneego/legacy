@@ -15,16 +15,15 @@
 		B2FA802B512F23D6E6E9E582 /* ColorTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA832A7D8E587420E22722 /* ColorTransformer.swift */; };
 		B2FA8051D9395EC9D5884B35 /* UIImage+Prerender.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D0E1B4C307E2B3DEAC9 /* UIImage+Prerender.swift */; };
 		B2FA80680DD7AA43FC4299B7 /* JsonModelTransformerHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8B11307D20C903178300 /* JsonModelTransformerHttpSerializer.swift */; };
+		B2FA809E22694CDBBFBE7C70 /* DecimalLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA80ED88407CC95DD21164 /* DecimalLightTransformer.swift */; };
 		B2FA80AD039954C52079CC11 /* DateLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA851A9B04FA4D133EA879 /* DateLightTransformer.swift */; };
-		B2FA80B71B76047CF00DBD98 /* StringTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8B22B5AFBEBB89A5BDEC /* StringTransformer.swift */; };
 		B2FA80B81FDB6BFF1D4C9B57 /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8BAD2FA91CB5CC3817D2 /* RestClient.swift */; };
 		B2FA80DD943B1C1D6DA042BE /* VoidLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89A74F51868729D4A3DE /* VoidLightTransformer.swift */; };
 		B2FA81ACC6E0BCA7D5AB481C /* Transformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA877C4F8708E00C9D6F1B /* Transformer.swift */; };
-		B2FA81B4AFDE9EF6B9FC58DB /* NumberLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8DA605424D84089320EF /* NumberLightTransformer.swift */; };
+		B2FA81C2EE735B2686E1D52F /* DecimalTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */; };
 		B2FA81E8D4447B8F612F5DF1 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88F670994240D540032B /* Reusable.swift */; };
 		B2FA820DFC803C85E1B0FB9B /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8070910A5471F1C64F29 /* UIColor+Hex.swift */; };
 		B2FA8214C9CDA35EC397896A /* Http.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84BBE47AB20628675CBD /* Http.swift */; };
-		B2FA82588A476D2C00A9DA37 /* NumberTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C8E8999BE8D439CF369 /* NumberTransformer.swift */; };
 		B2FA825EE069F2E9D192DC8E /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA852B1C43001C50964B88 /* GradientView.swift */; };
 		B2FA82B06D5A9CF8C759DFC4 /* UIImage+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA803636A6075723D28CB5 /* UIImage+Color.swift */; };
 		B2FA831F5630309EED6CF9B9 /* DateFormatter+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8E950FEFE2262DA05B79 /* DateFormatter+Format.swift */; };
@@ -84,6 +83,7 @@
 		44EE86021E92A4DC00E3F6AD /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		B2FA803636A6075723D28CB5 /* UIImage+Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Color.swift"; sourceTree = "<group>"; };
 		B2FA8070910A5471F1C64F29 /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
+		B2FA80ED88407CC95DD21164 /* DecimalLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8114F6C4DC5F55A323F1 /* DateTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTransformer.swift; sourceTree = "<group>"; };
 		B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA81309C1D00C1C54500A5 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
@@ -124,11 +124,9 @@
 		B2FA89D51C66A26B2D105F83 /* StringMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringMatcher.swift; sourceTree = "<group>"; };
 		B2FA8AB2D5F82CDE95F5E777 /* Odin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Odin.swift; sourceTree = "<group>"; };
 		B2FA8B11307D20C903178300 /* JsonModelTransformerHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonModelTransformerHttpSerializer.swift; sourceTree = "<group>"; };
-		B2FA8B22B5AFBEBB89A5BDEC /* StringTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringTransformer.swift; sourceTree = "<group>"; };
 		B2FA8B4CC7F989C0196CA4B6 /* ZoomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomTransition.swift; sourceTree = "<group>"; };
 		B2FA8B92E4FF28AD37A47198 /* VideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		B2FA8BAD2FA91CB5CC3817D2 /* RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
-		B2FA8C8E8999BE8D439CF369 /* NumberTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberTransformer.swift; sourceTree = "<group>"; };
 		B2FA8C8F891B8EEC67935F9A /* ColorLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8D0E1B4C307E2B3DEAC9 /* UIImage+Prerender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Prerender.swift"; sourceTree = "<group>"; };
@@ -137,11 +135,11 @@
 		B2FA8D5570D6EF73D907E6B2 /* ArrayTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayTransformer.swift; sourceTree = "<group>"; };
 		B2FA8D5AEE04AEAAC1E9ADA3 /* TimestampLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimestampLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8D9E17BD746E31E8C38D /* Arithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arithmetic.swift; sourceTree = "<group>"; };
-		B2FA8DA605424D84089320EF /* NumberLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8E388D31A7F4BAE25FE8 /* LightRestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightRestClient.swift; sourceTree = "<group>"; };
 		B2FA8E3E7D9481DB8601D32A /* HttpImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpImageLoader.swift; sourceTree = "<group>"; };
 		B2FA8E950FEFE2262DA05B79 /* DateFormatter+Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Format.swift"; sourceTree = "<group>"; };
 		B2FA8EC38AC1BAA7D7066674 /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
+		B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalTransformer.swift; sourceTree = "<group>"; };
 		B2FA8FCE558D3984B7C03D18 /* HttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpSerializer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -196,16 +194,15 @@
 			children = (
 				B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */,
 				B2FA85D8439F462794AA5ED1 /* NumberStringTransformer.swift */,
-				B2FA8C8E8999BE8D439CF369 /* NumberTransformer.swift */,
 				B2FA877C4F8708E00C9D6F1B /* Transformer.swift */,
 				B2FA8114F6C4DC5F55A323F1 /* DateTransformer.swift */,
 				B2FA832A7D8E587420E22722 /* ColorTransformer.swift */,
 				B2FA8D1FD5C9DDBEFA447845 /* VoidTransformer.swift */,
 				B2FA871E8CDD13651A0653C9 /* CastTransformer.swift */,
 				B2FA8D5570D6EF73D907E6B2 /* ArrayTransformer.swift */,
-				B2FA8B22B5AFBEBB89A5BDEC /* StringTransformer.swift */,
 				B2FA88EE3C82A5FAA97CF24B /* TimestampTransformer.swift */,
 				B2FA88C5C52A570B17B93ADC /* OptionalTransformer.swift */,
+				B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */,
 			);
 			path = Full;
 			sourceTree = "<group>";
@@ -358,7 +355,6 @@
 		B2FA8D5105F18DB075DB3A74 /* Light */ = {
 			isa = PBXGroup;
 			children = (
-				B2FA8DA605424D84089320EF /* NumberLightTransformer.swift */,
 				B2FA844184D1B3827C980DB3 /* LightTransformer.swift */,
 				B2FA865E04614EEE00078743 /* ArrayLightTransformer.swift */,
 				B2FA85586B2FCF3923C037AB /* NumberStringLightTransformer.swift */,
@@ -370,6 +366,7 @@
 				B2FA8D5AEE04AEAAC1E9ADA3 /* TimestampLightTransformer.swift */,
 				B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */,
 				B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */,
+				B2FA80ED88407CC95DD21164 /* DecimalLightTransformer.swift */,
 			);
 			path = Light;
 			sourceTree = "<group>";
@@ -520,14 +517,12 @@
 				B2FA8BDDC62B592A6BB14C6B /* GalleryViewController.swift in Sources */,
 				B2FA87F3F19972FA40192A07 /* UrlTransformer.swift in Sources */,
 				B2FA8C040A79133CADF6BC58 /* NumberStringTransformer.swift in Sources */,
-				B2FA82588A476D2C00A9DA37 /* NumberTransformer.swift in Sources */,
 				B2FA81ACC6E0BCA7D5AB481C /* Transformer.swift in Sources */,
 				B2FA8C2CB8B25FE75F462278 /* DateTransformer.swift in Sources */,
 				B2FA802B512F23D6E6E9E582 /* ColorTransformer.swift in Sources */,
 				B2FA89779BBFE1B071D9E98D /* VoidTransformer.swift in Sources */,
 				B2FA8EE725814DEA592BF43F /* CastTransformer.swift in Sources */,
 				B2FA844A0C61315760A8B100 /* ArrayTransformer.swift in Sources */,
-				B2FA81B4AFDE9EF6B9FC58DB /* NumberLightTransformer.swift in Sources */,
 				B2FA8E0ACB9B69D535F57BD0 /* LightTransformer.swift in Sources */,
 				B2FA8C120B12C8A80F30F5B8 /* ArrayLightTransformer.swift in Sources */,
 				B2FA87141EAB94B39806AEA4 /* NumberStringLightTransformer.swift in Sources */,
@@ -536,12 +531,13 @@
 				B2FA8591D163BDDD0FA6C746 /* CastLightTransformer.swift in Sources */,
 				B2FA83CC968A2681DE9F9CE2 /* ColorLightTransformer.swift in Sources */,
 				B2FA80AD039954C52079CC11 /* DateLightTransformer.swift in Sources */,
-				B2FA80B71B76047CF00DBD98 /* StringTransformer.swift in Sources */,
 				B2FA890118833BBAAEC499FC /* TimestampLightTransformer.swift in Sources */,
 				B2FA8A0DF9FDBCEC216879A5 /* TimestampTransformer.swift in Sources */,
 				B2FA8ECF83711F7B35DDAAE5 /* OptionalTransformer.swift in Sources */,
 				B2FA85562CFF64F4D74A52D5 /* EnumLightTransformer.swift in Sources */,
 				B2FA8E3478A25C6BAFA3C5FC /* DictionaryLightTransformer.swift in Sources */,
+				B2FA81C2EE735B2686E1D52F /* DecimalTransformer.swift in Sources */,
+				B2FA809E22694CDBBFBE7C70 /* DecimalLightTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

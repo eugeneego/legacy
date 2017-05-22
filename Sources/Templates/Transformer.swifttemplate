@@ -1,4 +1,12 @@
 <%_
+//
+// Transformer
+// EE Utilities
+//
+// Copyright (c) 2017 Eugene Egorov.
+// License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
+//
+
 func cleanTypeName(_ s: String) -> String {
     return s.replacingOccurrences(of: ".", with: "")
 }
@@ -8,9 +16,9 @@ func stringAnnotation(_ object: Annotated, _ name: String, _ default: String) ->
 }
 
 func transformer(for type: String, from: String = "Any") -> String {
-    let numbers = Set([ "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "Bool", "Decimal" ])
-    if numbers.contains(type) {
-        return "NumberTransformer<\(from), \(type)>"
+    let casts = Set([ "String", "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "TimeInterval", "Bool" ])
+    if casts.contains(type) {
+        return "CastTransformer<\(from), \(type)>"
     } else {
         return "\(type)Transformer<\(from)>"
     }
@@ -97,6 +105,7 @@ import Foundation
 import CoreGraphics
 import EEUtilities
 
+// swiftlint:disable line_length
 struct <%= name %>: FullTransformer {
     typealias Source = Any
     typealias Destination = <%= type.name %>
@@ -106,15 +115,20 @@ struct <%= name %>: FullTransformer {
     <%_ } -%>
 
     <%_ for variable in variables {
-        let variableTransformer: String
+        var variableTransformer: String
         if let annotatedTransformer = variable.annotations["transformer"] as? String {
-            variableTransformer = annotatedTransformer + "()"
+            variableTransformer = annotatedTransformer
         } else if variable.isArray, let arrayType = variable.typeName.array {
-            variableTransformer = "ArrayTransformer<Any, \(transformer(for: arrayType.elementTypeName.name))>(transformer: .init(), skipElements: true)"
+            variableTransformer = transformer(for: cleanTypeName(arrayType.elementTypeName.name)) + "()"
         } else if variable.isOptional {
-            variableTransformer = "OptionalTransformer<\(transformer(for: variable.unwrappedTypeName))>(transformer: .init())"
+            variableTransformer = transformer(for: cleanTypeName(variable.unwrappedTypeName)) + "()"
         } else {
             variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.typeName.name)) + "()"
+        }
+        if variable.isArray, let arrayType = variable.typeName.array {
+            variableTransformer = "ArrayTransformer(transformer: \(variableTransformer), skipElements: true)"
+        } else if variable.isOptional {
+            variableTransformer = "OptionalTransformer(transformer: \(variableTransformer))"
         } -%>
     let <%= variable.name %>Transformer = <%= variableTransformer %>
     <%_ } -%>
@@ -185,6 +199,7 @@ struct <%= name %>: FullTransformer {
         return .success(dictionary)
     }
 }
+// swiftlint:enable line_length
 
 // sourcery:end
 <% } -%>

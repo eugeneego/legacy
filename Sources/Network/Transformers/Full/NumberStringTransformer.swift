@@ -9,11 +9,11 @@
 import Foundation
 import CoreGraphics
 
-public struct NumberStringTransformer<From, To: NumberConvertible & TransformerStringConvertible>: FullTransformer {
+public struct NumberStringTransformer<From, To: TransformerStringConvertible>: FullTransformer {
     public typealias Source = From
     public typealias Destination = To
 
-    private let numberTransformer = NumberTransformer<From, To>()
+    private let numberTransformer = CastTransformer<From, To>()
 
     public init() {}
 

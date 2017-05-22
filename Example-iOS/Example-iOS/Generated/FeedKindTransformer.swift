@@ -8,7 +8,7 @@ struct FeedKindTransformer<From>: FullTransformer {
     typealias Source = From
     typealias Destination = Feed.Kind
 
-    private let transformer = StringTransformer<From>()
+    private let transformer = CastTransformer<From, String>()
 
     func transform(source value: Source) -> TransformerResult<Destination> {
         guard let rawValue = transformer.transform(source: value).value else { return .failure(.transform) }

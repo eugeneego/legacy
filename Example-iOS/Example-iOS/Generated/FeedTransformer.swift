@@ -5,6 +5,7 @@ import Foundation
 import CoreGraphics
 import EEUtilities
 
+// swiftlint:disable line_length
 struct FeedTransformer: FullTransformer {
     typealias Source = Any
     typealias Destination = Feed
@@ -19,14 +20,14 @@ struct FeedTransformer: FullTransformer {
     let likesName = "likes"
     let subscriptionName = "subscription"
 
-    let idTransformer = StringTransformer<Any>()
+    let idTransformer = CastTransformer<Any, String>()
     let kindTransformer = FeedKindTransformer<Any>()
-    let titleTransformer = StringTransformer<Any>()
-    let descriptionTransformer = StringTransformer<Any>()
+    let titleTransformer = CastTransformer<Any, String>()
+    let descriptionTransformer = CastTransformer<Any, String>()
     let createdTransformer = DateTransformer<Any>()
-    let authorTransformer = OptionalTransformer<StringTransformer<Any>>(transformer: .init())
-    let tagsTransformer = ArrayTransformer<Any, StringTransformer<Any>>(transformer: .init(), skipElements: true)
-    let likesTransformer = NumberTransformer<Any, Int>()
+    let authorTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
+    let tagsTransformer = ArrayTransformer(transformer: CastTransformer<Any, String>(), skipElements: true)
+    let likesTransformer = CastTransformer<Any, Int>()
     let subscriptionTransformer = FeedSubscriptionTransformer<Any>()
 
     func transform(source value: Source) -> TransformerResult<Destination> {
@@ -134,3 +135,4 @@ struct FeedTransformer: FullTransformer {
         return .success(dictionary)
     }
 }
+// swiftlint:enable line_length

@@ -8,7 +8,7 @@ struct FeedSubscriptionTransformer<From>: FullTransformer {
     typealias Source = From
     typealias Destination = Feed.Subscription
 
-    private let transformer = NumberTransformer<From, Int>()
+    private let transformer = CastTransformer<From, Int>()
 
     func transform(source value: Source) -> TransformerResult<Destination> {
         guard let rawValue = transformer.transform(source: value).value else { return .failure(.transform) }
