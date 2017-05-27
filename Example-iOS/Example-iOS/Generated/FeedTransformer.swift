@@ -24,7 +24,7 @@ struct FeedTransformer: FullTransformer {
     let kindTransformer = FeedKindTransformer<Any>()
     let titleTransformer = CastTransformer<Any, String>()
     let descriptionTransformer = CastTransformer<Any, String>()
-    let createdTransformer = DateTransformer<Any>()
+    let createdTransformer = TimestampTransformer<Any>()
     let authorTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
     let tagsTransformer = ArrayTransformer(transformer: CastTransformer<Any, String>(), skipElements: true)
     let likesTransformer = CastTransformer<Any, Int>()
@@ -68,7 +68,6 @@ struct FeedTransformer: FullTransformer {
         else {
             return .failure(.multiple(errors))
         }
-
 
         return .success(
             Destination(

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		44EDDE021EAE0F06003948BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EDDE011EAE0F06003948BD /* AppDelegate.swift */; };
 		44EDDE151EAE2C2B003948BD /* EEUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44EDDE141EAE2C2B003948BD /* EEUtilities.framework */; };
+		B2FA80E57845BE9DA0FED411 /* FeedKindLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */; };
+		B2FA8144D4C67BEFB867B1E0 /* FeedSubscriptionLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89FD8DF20967266E488E /* FeedSubscriptionLightTransformer.swift */; };
 		B2FA83002DF11E0F9A3E92FF /* FeedTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C48B459389546352F64 /* FeedTransformer.swift */; };
 		B2FA861F95E4886123F88EE4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2FA82D2AAB7CB42665C4ABE /* LaunchScreen.storyboard */; };
 		B2FA862F20BD4EA12A9D077C /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA835700C9E58AE78EA11A /* Feed.swift */; };
@@ -23,6 +25,7 @@
 		B2FA8D55E8395C328A810532 /* RestConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EB41C0D1F48107F1963 /* RestConfigurator.swift */; };
 		B2FA8E326BE3BF7A871C49D5 /* FeedSubscriptionTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA870E75265BD81CC7B083 /* FeedSubscriptionTransformer.swift */; };
 		B2FA8E6F55980B8E460E8A9F /* Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F556B8B9183D0BE2EBF /* Configurator.swift */; };
+		B2FA8EF38DCEAC60EE05D875 /* FeedLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */; };
 		B2FA8FCB785AEE8D838DDF1F /* MockFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88E0993B2841F1111042 /* MockFeedService.swift */; };
 		B2FA8FE08A340843EC1F8C12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2FA8A203E7A8D44F7890FD4 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -32,13 +35,16 @@
 		44EDDE011EAE0F06003948BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		44EDDE141EAE2C2B003948BD /* EEUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EEUtilities.framework; path = "../../../../Library/Developer/Xcode/DerivedData/EEUtilities-gchdpcvtdzmhggfyngfskznyvmfc/Build/Products/Debug-iphonesimulator/EEUtilities.framework"; sourceTree = "<group>"; };
 		B2FA814E158A105ADE6265ED /* FeedService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedService.swift; sourceTree = "<group>"; };
+		B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedKindLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8279F04CEF09C8630DD6 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		B2FA835700C9E58AE78EA11A /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
+		B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA84377325E88F6D4BB29A /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		B2FA85DEA88CBB9441946CCF /* Dependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dependencies.swift; sourceTree = "<group>"; };
 		B2FA870E75265BD81CC7B083 /* FeedSubscriptionTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSubscriptionTransformer.swift; sourceTree = "<group>"; };
 		B2FA8773D5C40988B58775BF /* FeedKindTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedKindTransformer.swift; sourceTree = "<group>"; };
 		B2FA88E0993B2841F1111042 /* MockFeedService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFeedService.swift; sourceTree = "<group>"; };
+		B2FA89FD8DF20967266E488E /* FeedSubscriptionLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSubscriptionLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8A203E7A8D44F7890FD4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2FA8A49DD648E8B8C5A90B2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Example-iOS/Base.lproj/LaunchScreen.storyboard"; sourceTree = SOURCE_ROOT; };
 		B2FA8B2C50A65D4AA98A45DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -153,6 +159,9 @@
 				B2FA8C48B459389546352F64 /* FeedTransformer.swift */,
 				B2FA8773D5C40988B58775BF /* FeedKindTransformer.swift */,
 				B2FA870E75265BD81CC7B083 /* FeedSubscriptionTransformer.swift */,
+				B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */,
+				B2FA89FD8DF20967266E488E /* FeedSubscriptionLightTransformer.swift */,
+				B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */,
 			);
 			path = Generated;
 			sourceTree = "<group>";
@@ -272,6 +281,9 @@
 				B2FA8871AB3FB59CCD345B40 /* MockConfigurator.swift in Sources */,
 				B2FA8D1836EF440A211FBEBD /* FeedKindTransformer.swift in Sources */,
 				B2FA8E326BE3BF7A871C49D5 /* FeedSubscriptionTransformer.swift in Sources */,
+				B2FA80E57845BE9DA0FED411 /* FeedKindLightTransformer.swift in Sources */,
+				B2FA8144D4C67BEFB867B1E0 /* FeedSubscriptionLightTransformer.swift in Sources */,
+				B2FA8EF38DCEAC60EE05D875 /* FeedLightTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
