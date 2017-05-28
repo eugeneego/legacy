@@ -35,6 +35,7 @@
 		B2FA855F1E59C64BA008037F /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA821B587ACD8434FFAA0F /* Action.swift */; };
 		B2FA857740A73E82F7311C14 /* UrlLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */; };
 		B2FA8591D163BDDD0FA6C746 /* CastLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */; };
+		B2FA86C3B5734D06F4BC11DB /* DictionaryTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA892E03F8A89CA27FEE9F /* DictionaryTransformer.swift */; };
 		B2FA86FD29CA06BDD0FBDE80 /* UIView+Fade.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA873002C781AA701C4253 /* UIView+Fade.swift */; };
 		B2FA87141EAB94B39806AEA4 /* NumberStringLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85586B2FCF3923C037AB /* NumberStringLightTransformer.swift */; };
 		B2FA875B3DC4B7E32A882A4C /* SimpleSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */; };
@@ -116,6 +117,7 @@
 		B2FA88F670994240D540032B /* Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
 		B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSubscription.swift; sourceTree = "<group>"; };
 		B2FA8915D4F0786B5A29F899 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		B2FA892E03F8A89CA27FEE9F /* DictionaryTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryTransformer.swift; sourceTree = "<group>"; };
 		B2FA89997C8960D3CDBFF0BA /* JsonHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonHttpSerializer.swift; sourceTree = "<group>"; };
 		B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlTransformer.swift; sourceTree = "<group>"; };
 		B2FA89A6C7B0C66FA91C0A3C /* GalleryMedia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryMedia.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				B2FA88EE3C82A5FAA97CF24B /* TimestampTransformer.swift */,
 				B2FA88C5C52A570B17B93ADC /* OptionalTransformer.swift */,
 				B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */,
+				B2FA892E03F8A89CA27FEE9F /* DictionaryTransformer.swift */,
 			);
 			path = Full;
 			sourceTree = "<group>";
@@ -540,6 +543,7 @@
 				B2FA8E3478A25C6BAFA3C5FC /* DictionaryLightTransformer.swift in Sources */,
 				B2FA81C2EE735B2686E1D52F /* DecimalTransformer.swift in Sources */,
 				B2FA809E22694CDBBFBE7C70 /* DecimalLightTransformer.swift in Sources */,
+				B2FA86C3B5734D06F4BC11DB /* DictionaryTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

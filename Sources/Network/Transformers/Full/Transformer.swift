@@ -7,7 +7,7 @@
 //
 
 public indirect enum TransformerError: Error {
-    case badDictionary
+    case source
     case requirement
     case transform
     case validation(Error)

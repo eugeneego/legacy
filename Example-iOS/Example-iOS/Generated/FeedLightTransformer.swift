@@ -30,7 +30,7 @@ struct FeedLightTransformer: LightTransformer {
     let subscriptionTransformer = FeedSubscriptionLightTransformer()
 
     func from(any value: Any?) -> T? {
-        guard let dictionary: [String: Any] = CastLightTransformer().from(any: value) else { return nil }
+        guard let dictionary = value as? [String: Any] else { return nil }
 
         guard let id = idTransformer.from(any: dictionary[idName]) else { return nil }
         guard let kind = kindTransformer.from(any: dictionary[kindName]) else { return nil }

@@ -26,12 +26,12 @@ struct FeedTransformer: FullTransformer {
     let descriptionTransformer = CastTransformer<Any, String>()
     let createdTransformer = TimestampTransformer<Any>()
     let authorTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
-    let tagsTransformer = ArrayTransformer(transformer: CastTransformer<Any, String>(), skipElements: true)
+    let tagsTransformer = ArrayTransformer(from: Any.self, transformer: CastTransformer<Any, String>(), skipFailures: true)
     let likesTransformer = CastTransformer<Any, Int>()
     let subscriptionTransformer = FeedSubscriptionTransformer<Any>()
 
     func transform(source value: Source) -> TransformerResult<Destination> {
-        guard let dictionary: [String: Any] = CastTransformer().transform(source: value).value else { return .failure(.badDictionary) }
+        guard let dictionary = value as? [String: Any] else { return .failure(.source) }
 
         let idResult = dictionary[idName].map(idTransformer.transform(source:)) ?? .failure(.requirement)
         let kindResult = dictionary[kindName].map(kindTransformer.transform(source:)) ?? .failure(.requirement)

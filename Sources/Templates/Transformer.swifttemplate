@@ -139,7 +139,7 @@ struct <%= name %>: FullTransformer {
             variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.typeName.name)) + "()"
         }
         if variable.isArray {
-            variableTransformer = "ArrayTransformer(transformer: \(variableTransformer), skipElements: true)"
+            variableTransformer = "ArrayTransformer(from: Any.self, transformer: \(variableTransformer), skipFailures: true)"
         } else if variable.isOptional {
             variableTransformer = "OptionalTransformer(transformer: \(variableTransformer))"
         } -%>
@@ -147,7 +147,7 @@ struct <%= name %>: FullTransformer {
     <%_ } -%>
 
     func transform(source value: Source) -> TransformerResult<Destination> {
-        guard let dictionary: [String: Any] = CastTransformer().transform(source: value).value else { return .failure(.badDictionary) }
+        guard let dictionary = value as? [String: Any] else { return .failure(.source) }
 
         <%_ for variable in variables { -%>
             <%_ if variable.isOptional { -%>

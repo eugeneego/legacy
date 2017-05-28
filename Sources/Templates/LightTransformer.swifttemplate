@@ -145,7 +145,7 @@ struct <%= name %>: LightTransformer {
     <%_ } -%>
 
     func from(any value: Any?) -> T? {
-        guard let dictionary: [String: Any] = CastLightTransformer().from(any: value) else { return nil }
+        guard let dictionary = value as? [String: Any] else { return nil }
 
         <%_ for variable in variables { -%>
             <%_ if variable.isOptional { -%>
