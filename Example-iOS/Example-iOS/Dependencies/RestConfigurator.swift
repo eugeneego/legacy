@@ -56,7 +56,7 @@ class RestConfigurator: Configurator {
 
     private func feedService(baseUrl: URL, http: Http) -> FeedService {
         let url = baseUrl.appendingPathComponent("feed", isDirectory: true)
-        let restClient = LightRestClient(http: http, baseURL: url, completionQueue: DispatchQueue.main)
+        let restClient = BaseRestClient(http: http, baseURL: url, completionQueue: DispatchQueue.main)
         let service = RestFeedService(rest: restClient)
         return service
     }

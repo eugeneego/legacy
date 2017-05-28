@@ -8,29 +8,70 @@
 
 import Foundation
 
-open class LightRestClient: RestClient {
-    open let http: Http
-    open let baseURL: URL
-    open let completionQueue: DispatchQueue
-    open let requestAuthorizer: RequestAuthorizer?
-
-    public init(http: Http, baseURL: URL, completionQueue: DispatchQueue, requestAuthorizer: RequestAuthorizer? = nil) {
-        self.http = http
-        self.baseURL = baseURL
-        self.completionQueue = completionQueue
-        self.requestAuthorizer = requestAuthorizer
-    }
-
-    open func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+public protocol LightRestClient: RestClient {
+    @discardableResult
+    func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
-    ) {
-        let requestSerializer = JsonModelTransformerHttpSerializer(transformer: requestTransformer)
-        let responseSerializer = JsonModelTransformerHttpSerializer(transformer: responseTransformer)
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask
 
-        request(
+    @discardableResult
+    func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask
+
+    @discardableResult
+    func create<ResponseTransformer: LightTransformer>(
+        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
+        responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask
+
+    @discardableResult
+    func read<ResponseTransformer: LightTransformer>(
+        path: String, id: String?, parameters: [String: String], headers: [String: String],
+        responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask
+
+    @discardableResult
+    func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask
+
+    @discardableResult
+    func update<ResponseTransformer: LightTransformer>(
+        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
+        responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask
+
+    @discardableResult
+    func delete<ResponseTransformer: LightTransformer>(
+        path: String, id: String?, headers: [String: String],
+        responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask
+}
+
+public extension LightRestClient {
+    @discardableResult
+    public func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+        method: HttpMethod, path: String,
+        parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
+        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask {
+        let requestSerializer = JsonModelLightTransformerHttpSerializer(transformer: requestTransformer)
+        let responseSerializer = JsonModelLightTransformerHttpSerializer(transformer: responseTransformer)
+
+        return request(
             method: method,
             path: path, parameters: parameters, object: object, headers: headers,
             requestSerializer: requestSerializer, responseSerializer: responseSerializer,
@@ -38,70 +79,13 @@ open class LightRestClient: RestClient {
         )
     }
 
-    open func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestSerializer.Value?, headers: [String: String],
-        requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: @escaping (ResponseSerializer.Value?, RestError?) -> Void
-    ) {
-        let pathUrl = URL(string: path)
-        let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
-        guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else {
-            completion(nil, .badUrl)
-            return
-        }
-
-        let request = http.request(
-            method: method, url: url, urlParameters: parameters, headers: headers,
-            object: object, serializer: requestSerializer
-        )
-
-        let queue = self.completionQueue
-
-        let runRequest = { (request: URLRequest) in
-            self.http.data(request: request as URLRequest, serializer: responseSerializer) { _, object, data, error in
-                queue.async {
-                    if case .status(let code, let error)? = error {
-                        completion(object, .http(code: code, error: error, body: data))
-                    } else {
-                        completion(object, error.map { .error(error: $0, body: data) })
-                    }
-                }
-            }
-        }
-
-        if let requestAuthorizer = requestAuthorizer {
-            requestAuthorizer.authorize(request: request) { request, error in
-                if let request = request {
-                    runRequest(request)
-                } else {
-                    queue.async {
-                        completion(nil, .auth(error: error))
-                    }
-                }
-            }
-        } else {
-            runRequest(request)
-        }
-    }
-
-    private func pathWithId(path: String, id: String?) -> String {
-        let path = (path.isEmpty || path[path.startIndex] != "/") ? path : path.substring(from: path.index(after: path.startIndex))
-
-        if let id = id {
-            let delimiter = (!path.isEmpty && path[path.characters.index(before: path.endIndex)] != "/") ? "/" : ""
-            return path + delimiter + id
-        } else {
-            return path
-        }
-    }
-
-    open func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    @discardableResult
+    public func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
-    ) {
-        request(
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask {
+        return request(
             method: .post,
             path: pathWithId(path: path, id: id),
             parameters: [:],
@@ -113,29 +97,31 @@ open class LightRestClient: RestClient {
         )
     }
 
-    open func create<ResponseTransformer: LightTransformer>(
+    @discardableResult
+    public func create<ResponseTransformer: LightTransformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
-    ) {
-        request(
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask {
+        return request(
             method: .post,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: JsonModelTransformerHttpSerializer(transformer: responseTransformer),
+            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer),
             completion: completion
         )
     }
 
-    open func read<ResponseTransformer: LightTransformer>(
+    @discardableResult
+    public func read<ResponseTransformer: LightTransformer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
-    ) {
-        request(
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask {
+        return request(
             method: .get,
             path: pathWithId(path: path, id: id),
             parameters: parameters,
@@ -147,12 +133,13 @@ open class LightRestClient: RestClient {
         )
     }
 
-    open func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    @discardableResult
+    public func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
-    ) {
-        request(
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask {
+        return request(
             method: .put,
             path: pathWithId(path: path, id: id),
             parameters: [:],
@@ -164,35 +151,38 @@ open class LightRestClient: RestClient {
         )
     }
 
-    open func update<ResponseTransformer: LightTransformer>(
+    @discardableResult
+    public func update<ResponseTransformer: LightTransformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
-        completion: @escaping (ResponseTransformer.T?, RestError?) -> Void
-    ) {
-        request(
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask {
+        return request(
             method: .put,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: JsonModelTransformerHttpSerializer(transformer: responseTransformer),
+            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer),
             completion: completion
         )
     }
 
-    open func delete(
+    @discardableResult
+    public func delete<ResponseTransformer: LightTransformer>(
         path: String, id: String?, headers: [String: String],
-        completion: @escaping (Void?, RestError?) -> Void
-    ) {
-        request(
+        responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, RestError>) -> Void
+    ) -> RestTask {
+        return request(
             method: .delete,
             path: pathWithId(path: path, id: id),
             parameters: [:],
             object: nil,
             headers: headers,
             requestTransformer: VoidLightTransformer(),
-            responseTransformer: VoidLightTransformer(),
+            responseTransformer: responseTransformer,
             completion: completion
         )
     }

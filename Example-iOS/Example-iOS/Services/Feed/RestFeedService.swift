@@ -9,9 +9,9 @@
 import EEUtilities
 
 class RestFeedService: FeedService {
-    private let rest: RestClient
+    private let rest: LightRestClient
 
-    init(rest: RestClient) {
+    init(rest: LightRestClient) {
         self.rest = rest
     }
 }

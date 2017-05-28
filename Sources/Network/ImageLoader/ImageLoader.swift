@@ -8,7 +8,19 @@
 
 import UIKit
 
-public typealias ImageLoaderCompletion = (_ id: String, _ url: URL, _ data: Data?, _ image: UIImage?, _ error: Error?) -> Void
+public enum ImageLoaderError: Error {
+    case http(HttpError)
+    case creating
+    case unknown(Error?)
+}
+
+public protocol ImageLoaderTask {
+    var url: URL { get }
+    var size: CGSize { get }
+    var mode: ResizeMode { get }
+
+    func cancel()
+}
 
 public enum ResizeMode {
     case original
@@ -16,8 +28,9 @@ public enum ResizeMode {
     case fill
 }
 
+public typealias ImageLoaderCompletion = (ImageLoaderTask, Result<(Data, UIImage), ImageLoaderError>) -> Void
+
 public protocol ImageLoader {
     @discardableResult
-    func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> String
-    func cancel(id: String)
+    func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> ImageLoaderTask
 }
