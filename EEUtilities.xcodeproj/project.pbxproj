@@ -54,6 +54,7 @@
 		B2FA89779BBFE1B071D9E98D /* VoidTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D1FD5C9DDBEFA447845 /* VoidTransformer.swift */; };
 		B2FA8A0DF9FDBCEC216879A5 /* TimestampTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88EE3C82A5FAA97CF24B /* TimestampTransformer.swift */; };
 		B2FA8A884FCEDDC22A9E1D9B /* StringMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89D51C66A26B2D105F83 /* StringMatcher.swift */; };
+		B2FA8B6F222B852039B6B89B /* AsIsTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EA228D0CD3E18F673DA /* AsIsTransformer.swift */; };
 		B2FA8BA9230D459CBC071B41 /* Odin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8AB2D5F82CDE95F5E777 /* Odin.swift */; };
 		B2FA8BDDC62B592A6BB14C6B /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EC38AC1BAA7D7066674 /* GalleryViewController.swift */; };
 		B2FA8C040A79133CADF6BC58 /* NumberStringTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85D8439F462794AA5ED1 /* NumberStringTransformer.swift */; };
@@ -141,6 +142,7 @@
 		B2FA8E388D31A7F4BAE25FE8 /* LightRestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightRestClient.swift; sourceTree = "<group>"; };
 		B2FA8E3E7D9481DB8601D32A /* HttpImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpImageLoader.swift; sourceTree = "<group>"; };
 		B2FA8E950FEFE2262DA05B79 /* DateFormatter+Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Format.swift"; sourceTree = "<group>"; };
+		B2FA8EA228D0CD3E18F673DA /* AsIsTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsIsTransformer.swift; sourceTree = "<group>"; };
 		B2FA8EC38AC1BAA7D7066674 /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalTransformer.swift; sourceTree = "<group>"; };
 		B2FA8FCE558D3984B7C03D18 /* HttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpSerializer.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				B2FA88C5C52A570B17B93ADC /* OptionalTransformer.swift */,
 				B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */,
 				B2FA892E03F8A89CA27FEE9F /* DictionaryTransformer.swift */,
+				B2FA8EA228D0CD3E18F673DA /* AsIsTransformer.swift */,
 			);
 			path = Full;
 			sourceTree = "<group>";
@@ -544,6 +547,7 @@
 				B2FA81C2EE735B2686E1D52F /* DecimalTransformer.swift in Sources */,
 				B2FA809E22694CDBBFBE7C70 /* DecimalLightTransformer.swift in Sources */,
 				B2FA86C3B5734D06F4BC11DB /* DictionaryTransformer.swift in Sources */,
+				B2FA8B6F222B852039B6B89B /* AsIsTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
