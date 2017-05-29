@@ -29,9 +29,9 @@ public class DeviceInfo {
         system = device.systemName
         systemVersion = device.systemVersion
 
-        bundleIdentifier = mainBundle.object(forInfoDictionaryKey: kCFBundleIdentifierKey as String) as! String
-        bundleVersion = mainBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        bundleBuild = mainBundle.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as! String
+        bundleIdentifier = mainBundle.object(forInfoDictionaryKey: kCFBundleIdentifierKey as String) as? String ?? ""
+        bundleVersion = mainBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        bundleBuild = mainBundle.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String ?? ""
     }
 
     private static func getMachineName() -> String {

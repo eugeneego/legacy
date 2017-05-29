@@ -34,11 +34,19 @@ public extension UITableView {
     }
 
     public func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) -> CellType {
-        return dequeueReusableCell(withIdentifier: reusable.id) as! CellType
+        let anyCell = dequeueReusableCell(withIdentifier: reusable.id)
+        guard let cell = anyCell as? CellType else {
+            fatalError("Invalid table view cell type. Expected \(CellType.self), but received \(type(of: anyCell))")
+        }
+        return cell
     }
 
     public func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
-        return dequeueReusableCell(withIdentifier: reusable.id, for: indexPath) as! CellType
+        let anyCell = dequeueReusableCell(withIdentifier: reusable.id, for: indexPath)
+        guard let cell = anyCell as? CellType else {
+            fatalError("Invalid table view cell type. Expected \(CellType.self), but received \(type(of: anyCell))")
+        }
+        return cell
     }
 
     // Header/Footer
@@ -54,7 +62,11 @@ public extension UITableView {
     }
 
     public func dequeueReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) -> CellType {
-        return dequeueReusableHeaderFooterView(withIdentifier: reusable.id) as! CellType
+        let anyCell = dequeueReusableHeaderFooterView(withIdentifier: reusable.id)
+        guard let cell = anyCell as? CellType else {
+            fatalError("Invalid table view header/footer type. Expected \(CellType.self), but received \(type(of: anyCell))")
+        }
+        return cell
     }
 }
 
@@ -80,11 +92,25 @@ public extension UICollectionView {
     }
 
     public func dequeueReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
-        return dequeueReusableCell(withReuseIdentifier: reusable.id, for: indexPath) as! CellType
+        let anyCell = dequeueReusableCell(withReuseIdentifier: reusable.id, for: indexPath)
+        guard let cell = anyCell as? CellType else {
+            fatalError("Invalid collection view cell type. Expected \(CellType.self), but received \(type(of: anyCell))")
+        }
+        return cell
     }
 
-    public func dequeueHeader<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
-        return dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader,
-            withReuseIdentifier: reusable.id, for: indexPath) as! CellType
+    public func dequeueReusableSupplementaryView<CellType: UICollectionReusableView>(
+        _ reusable: Reusable<CellType>,
+        indexPath: IndexPath
+    ) -> CellType {
+        let anyCell = dequeueReusableSupplementaryView(
+            ofKind: UICollectionElementKindSectionHeader,
+            withReuseIdentifier: reusable.id,
+            for: indexPath
+        )
+        guard let cell = anyCell as? CellType else {
+            fatalError("Invalid collection view supplementary view type. Expected \(CellType.self), but received \(type(of: anyCell))")
+        }
+        return cell
     }
 }

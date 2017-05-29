@@ -1,0 +1,15 @@
+templates:
+    - Sources/Templates
+output:
+    Example-iOS/Example-iOS/Generated
+prune:
+    true
+verbose:
+    true
+project:
+    file:
+        Example-iOS/Example-iOS.xcodeproj
+    root:
+        Example-iOS
+    target:
+        name: Example-iOS

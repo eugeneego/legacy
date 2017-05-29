@@ -117,7 +117,7 @@ open class UrlSessionHttp: Http {
 
     // MARK: - Request
 
-    open func data(request: URLRequest, completion: @escaping HttpCompletion) {
+    open func data(request: URLRequest, completion: @escaping HttpCompletion) -> HttpTask {
         let start = Date()
         log(request, date: start)
 
@@ -129,7 +129,7 @@ open class UrlSessionHttp: Http {
             }
         }
 
-        let task = session.dataTask(with: request) { data, response, error in
+        let dataTask = session.dataTask(with: request) { data, response, error in
             let end = Date()
             self.log(response, request, data, error as NSError?, time: end.timeIntervalSince(start), date: end)
 
@@ -149,7 +149,8 @@ open class UrlSessionHttp: Http {
                 cmpl(httpResponse, data, error.map(self.processError))
             }
         }
-        task.resume()
+
+        return Task(dataTask)
     }
 
     open func processError(_ error: Error) -> HttpError {
@@ -162,6 +163,24 @@ open class UrlSessionHttp: Http {
                 return HttpError.unreachable(error)
             default:
                 return HttpError.error(error)
+        }
+    }
+
+    // MARK: - Task
+
+    private class Task: HttpTask {
+        let task: URLSessionTask
+
+        init(_ task: URLSessionTask) {
+            self.task = task
+        }
+
+        func resume() {
+            task.resume()
+        }
+
+        func cancel() {
+            task.cancel()
         }
     }
 

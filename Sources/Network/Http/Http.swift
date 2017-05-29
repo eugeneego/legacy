@@ -10,8 +10,14 @@ import Foundation
 
 public typealias HttpCompletion = (HTTPURLResponse?, Data?, HttpError?) -> Void
 
+public protocol HttpTask {
+    func resume()
+    func cancel()
+}
+
 public protocol Http {
-    func data(request: URLRequest, completion: @escaping HttpCompletion)
+    @discardableResult
+    func data(request: URLRequest, completion: @escaping HttpCompletion) -> HttpTask
 
     func urlWithParameters(url: URL, parameters: [String: String]) -> URL
     func request(method: String, url: URL, urlParameters: [String: String], headers: [String: String], body: Data?) -> URLRequest
@@ -55,19 +61,21 @@ public enum HttpMethod {
 }
 
 public extension Http {
+    @discardableResult
     public func data(
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?, completion: @escaping HttpCompletion
-    ) {
+    ) -> HttpTask {
         let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        data(request: req as URLRequest, completion: completion)
+        return data(request: req as URLRequest, completion: completion)
     }
 
+    @discardableResult
     public func data<T: HttpSerializer>(
         request: URLRequest, serializer: T,
         completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
-    ) {
-        data(request: request) { response, data, error in
+    ) -> HttpTask {
+        return data(request: request) { response, data, error in
             let object = serializer.deserialize(data)
             var error = error
             if error == nil && object == nil {

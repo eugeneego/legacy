@@ -4,8 +4,6 @@ disabled_rules:
   - missing_docs
   - valid_docs
   - type_body_length
-  - force_cast
-  - force_unwrapping
   - redundant_string_enum_value
   - weak_delegate
   - trailing_comma
@@ -18,6 +16,10 @@ excluded:
   - Pods
   - ThirdParty
   - Vendor
+  - Scripts
+  - Generated
+  - EEUtilities.playground
+  - Example-iOS
 
 force_cast: error
 force_try: error
@@ -28,6 +30,10 @@ trailing_whitespace:
   severity: warning
 trailing_newline: error
 trailing_semicolon: error
+
+vertical_whitespace:
+  max_empty_lines: 1
+  severity: warning
 
 comma: error
 colon:
@@ -114,12 +120,6 @@ custom_rules:
     name: 'Empty Line After Super'
     regex: '(^ *super\.[ a-zA-Z0-9=?.\(\)\{\}:,><!`\"]*\n *(?!(?:\}|return))\S+)'
     message: 'There should be an empty line after super'
-    severity: error
-
-  multiple_empty_lines:
-    name: 'Multiple Empty Lines'
-    regex: '((?:\s*\n){3,})'
-    message: 'There are too many line breaks'
     severity: error
 
   custom_colon:
