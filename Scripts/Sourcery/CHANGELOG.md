@@ -4,6 +4,12 @@
 
 ## Master
 
+### Bug fixes
+
+- Fixed inserting generated code inline automatically at wrong position
+
+## 0.6.1
+
 ### New Features
 
 - Paths in config file are now relative to config file path by default, absolute paths should start with `/`
@@ -24,6 +30,7 @@
 - Fixed parsing multiple enum cases annotations
 - Fixed parsing inline annotations when there is an access level or attribute
 - Fixed parsing `required` attribute
+- Fixed typo in `guides/Writing templates.md`
 
 ### Internal changes
 
@@ -31,6 +38,7 @@
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`
 - Updated StencilSwiftKit to 1.0.2 which includes Stencil 0.9.0
 - Adding docset to release archive
+- Add tests for bundled stencil templates
 - Moved to CocoaPods 1.2.1
 - Made Array.parallelMap's block non-escaping
 

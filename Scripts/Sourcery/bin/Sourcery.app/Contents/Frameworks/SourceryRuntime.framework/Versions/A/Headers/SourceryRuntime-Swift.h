@@ -1168,6 +1168,16 @@ SWIFT_CLASS("_TtC15SourceryRuntime9Typealias")
 @property (nonatomic, readonly) BOOL isImplicitlyUnwrappedOptional;
 /// Type name without attributes and optional type information. Shorthand for <code>typeName.unwrappedTypeName</code>
 @property (nonatomic, readonly, copy) NSString * _Nonnull unwrappedTypeName;
+/// Actual type name if declaration uses typealias, otherwise just a <code>typeName</code>. Shorthand for <code>typeName.actualTypeName</code>
+@property (nonatomic, readonly, strong) TypeName * _Nullable actualTypeName;
+/// Whether type is a tuple. Shorthand for <code>typeName.isTuple</code>
+@property (nonatomic, readonly) BOOL isTuple;
+/// Whether type is a closure. Shorthand for <code>typeName.isClosure</code>
+@property (nonatomic, readonly) BOOL isClosure;
+/// Whether type is an array. Shorthand for <code>typeName.isArray</code>
+@property (nonatomic, readonly) BOOL isArray;
+/// Whether type is a dictionary. Shorthand for <code>typeName.isDictionary</code>
+@property (nonatomic, readonly) BOOL isDictionary;
 @end
 
 @class TypesCollection;
