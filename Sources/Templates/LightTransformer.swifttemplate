@@ -16,7 +16,7 @@ func stringAnnotation(_ object: Annotated, _ name: String, _ default: String) ->
 }
 
 func transformer(for type: String) -> String {
-    let casts = Set([ "String", "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "TimeInterval", "Bool" ])
+    let casts = Set([ "Any", "String", "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "TimeInterval", "Bool" ])
     if casts.contains(type) {
         return "CastLightTransformer<\(type)>"
     } else {
@@ -131,15 +131,21 @@ struct <%= name %>: LightTransformer {
         var variableTransformer: String
         if let annotatedTransformer = variable.annotations[transformerName] as? String {
             variableTransformer = annotatedTransformer
+        } else if variable.isArray, let elementTransformer = variable.annotations["\(transformerName).element"] as? String {
+            variableTransformer = "ArrayLightTransformer(transformer: \(elementTransformer))"
         } else if variable.isArray, let arrayType = variable.typeName.array {
-            variableTransformer = transformer(for: cleanTypeName(arrayType.elementTypeName.name)) + "()"
+            let elementTransformer = transformer(for: cleanTypeName(arrayType.elementTypeName.name)) + "()"
+            variableTransformer = "ArrayLightTransformer(transformer: \(elementTransformer))"
+        } else if variable.isDictionary, let keyTransformer = variable.annotations["\(transformerName).key"] as? String, let valueTransformer = variable.annotations["\(transformerName).value"] as? String {
+            variableTransformer = "DictionaryLightTransformer(keyTransformer: \(keyTransformer), valueTransformer: \(valueTransformer))"
+        } else if variable.isDictionary, let dictionaryType = variable.typeName.dictionary {
+            let keyTransformer  = transformer(for: cleanTypeName(dictionaryType.keyTypeName.name)) + "()"
+            let valueTransformer = transformer(for: cleanTypeName(dictionaryType.valueTypeName.name)) + "()"
+            variableTransformer = "DictionaryLightTransformer(keyTransformer: \(keyTransformer), valueTransformer: \(valueTransformer))"
         } else if variable.isOptional {
             variableTransformer = transformer(for: cleanTypeName(variable.unwrappedTypeName)) + "()"
         } else {
             variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.typeName.name)) + "()"
-        }
-        if variable.isArray {
-            variableTransformer = "ArrayLightTransformer(transformer: \(variableTransformer))"
         } -%>
     let <%= variable.name %>Transformer = <%= variableTransformer %>
     <%_ } -%>

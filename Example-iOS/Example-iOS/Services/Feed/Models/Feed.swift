@@ -47,4 +47,5 @@ struct Feed {
     var tags: [String]
     var likes: Int
     var subscription: Subscription
+    var meta: [String: String]
 }

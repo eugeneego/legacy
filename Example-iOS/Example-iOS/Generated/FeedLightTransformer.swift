@@ -18,6 +18,7 @@ struct FeedLightTransformer: LightTransformer {
     let tagsName = "tags"
     let likesName = "likes"
     let subscriptionName = "subscription"
+    let metaName = "meta"
 
     let idTransformer = CastLightTransformer<String>()
     let kindTransformer = FeedKindLightTransformer()
@@ -28,6 +29,7 @@ struct FeedLightTransformer: LightTransformer {
     let tagsTransformer = ArrayLightTransformer(transformer: CastLightTransformer<String>())
     let likesTransformer = CastLightTransformer<Int>()
     let subscriptionTransformer = FeedSubscriptionLightTransformer()
+    let metaTransformer = DictionaryLightTransformer(keyTransformer: CastLightTransformer<String>(), valueTransformer: CastLightTransformer<String>())
 
     func from(any value: Any?) -> T? {
         guard let dictionary = value as? [String: Any] else { return nil }
@@ -41,6 +43,7 @@ struct FeedLightTransformer: LightTransformer {
         guard let tags = tagsTransformer.from(any: dictionary[tagsName]) else { return nil }
         guard let likes = likesTransformer.from(any: dictionary[likesName]) else { return nil }
         guard let subscription = subscriptionTransformer.from(any: dictionary[subscriptionName]) else { return nil }
+        guard let meta = metaTransformer.from(any: dictionary[metaName]) else { return nil }
 
         return T(
             id: id,
@@ -51,7 +54,8 @@ struct FeedLightTransformer: LightTransformer {
             author: author,
             tags: tags,
             likes: likes,
-            subscription: subscription
+            subscription: subscription,
+            meta: meta
         )
     }
 
@@ -68,6 +72,7 @@ struct FeedLightTransformer: LightTransformer {
         dictionary[tagsName] = tagsTransformer.to(any: value.tags)
         dictionary[likesName] = likesTransformer.to(any: value.likes)
         dictionary[subscriptionName] = subscriptionTransformer.to(any: value.subscription)
+        dictionary[metaName] = metaTransformer.to(any: value.meta)
         return dictionary
     }
 }
