@@ -20,6 +20,8 @@ final class MockConfigurator: Configurator {
     private let imagesMemoryCapacity: Int = 50 * 1024 * 1024
     private let imagesDiskCapacity: Int = 100 * 1024 * 1024
 
+    private let logger: Logger = PrintLogger()
+
     private func imagesHttp() -> Http {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = timeout
@@ -28,11 +30,7 @@ final class MockConfigurator: Configurator {
 
         let queue = DispatchQueue.global(qos: .default)
 
-        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue)
-        #if DEBUG
-        http.logging = true
-        http.logOnlyErrors = true
-        #endif
+        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: logger)
         return http
     }
 

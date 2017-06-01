@@ -12,9 +12,10 @@ open class UrlSessionHttp: Http {
     open let session: URLSession
     open let responseQueue: DispatchQueue
 
-    open var logging: Bool = false
-    open var logOnlyErrors: Bool = false
-    open var maxLoggingBodySize: Int = 2048
+    open let logger: Logger?
+    open let loggerTag: String
+
+    open var maxLoggingBodySize: Int = 8192
 
     open var trustPolicies: [String: ServerTrustPolicy] {
         get {
@@ -27,7 +28,12 @@ open class UrlSessionHttp: Http {
 
     private let delegate: Delegate
 
-    public init(configuration: URLSessionConfiguration, responseQueue: DispatchQueue) {
+    public init(
+        configuration: URLSessionConfiguration, responseQueue: DispatchQueue,
+        logger: Logger? = nil, loggerTag: String = String(describing: UrlSessionHttp.self)
+    ) {
+        self.logger = logger
+        self.loggerTag = loggerTag
         delegate = Delegate()
         session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
         self.responseQueue = responseQueue
@@ -39,13 +45,6 @@ open class UrlSessionHttp: Http {
 
     // MARK: - Log
 
-    private func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
-        items.forEach { print($0, separator: "", terminator: separator) }
-        print("", separator: "", terminator: terminator)
-    }
-
-    private let logDateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ")
-
     private func logHeaders(_ httpHeaders: [AnyHashable: Any]?) -> String? {
         let headers = httpHeaders?.map { key, value -> String in
             let key = (key as? String) ?? "\(key)"
@@ -56,7 +55,7 @@ open class UrlSessionHttp: Http {
     }
 
     private func log(_ request: URLRequest, date: Date) {
-        if !logging || logOnlyErrors { return }
+        guard let logger = logger else { return }
 
         let t = "←"
         let s = request.httpBody.flatMap { data -> String? in
@@ -67,14 +66,13 @@ open class UrlSessionHttp: Http {
             }
         }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
-        log(
-            "__ \(logDateFormatter.string(from: date))",
-            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
-            "\(t) Headers: \(ns(logHeaders(request.allHTTPHeaderFields)))",
-            "\(t) Body: \(ns(s))",
-            "‾‾",
-            separator: "\n", terminator: ""
-        )
+        let string =
+            "__" +
+            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))" +
+            "\(t) Headers: \(ns(logHeaders(request.allHTTPHeaderFields)))" +
+            "\(t) Body: \(ns(s))" +
+            "‾‾"
+        logger.log(string, level: .info, for: loggerTag, function: "")
     }
 
     private func isText(type: String) -> Bool {
@@ -86,13 +84,11 @@ open class UrlSessionHttp: Http {
         _ data: Data?, _ error: NSError?,
         time: TimeInterval, date: Date
     ) {
-        if !logging { return }
+        guard let logger = logger else { return }
 
         let urlResponse = response as? HTTPURLResponse
 
-        if logOnlyErrors && (error == nil && (urlResponse?.statusCode ?? 1000) < 400) {
-            return
-        }
+        let loggingLevel: LoggingLevel = (urlResponse?.statusCode ?? 1000) < 400 ? .info : .error
 
         let t = "→"
         let s = data.flatMap { data -> String? in
@@ -103,16 +99,15 @@ open class UrlSessionHttp: Http {
             }
         }
         let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
-        log(
-            "__ \(logDateFormatter.string(from: date))",
-            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))",
-            "\(t) Response: \(ns(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s",
-            "\(t) Headers: \(ns(logHeaders(urlResponse?.allHeaderFields)))",
-            "\(t) Data: \(ns(s))",
-            "\(t) Error: \(ns(error))",
-            "‾‾",
-            separator: "\n", terminator: ""
-        )
+        let string =
+            "__" +
+            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))" +
+            "\(t) Response: \(ns(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s" +
+            "\(t) Headers: \(ns(logHeaders(urlResponse?.allHeaderFields)))" +
+            "\(t) Data: \(ns(s))" +
+            "\(t) Error: \(ns(error))" +
+            "‾‾"
+        logger.log(string, level: loggingLevel, for: loggerTag, function: "")
     }
 
     // MARK: - Request

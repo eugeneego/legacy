@@ -22,6 +22,8 @@ class RestConfigurator: Configurator {
     private let imagesMemoryCapacity: Int = 50 * 1024 * 1024
     private let imagesDiskCapacity: Int = 100 * 1024 * 1024
 
+    private let logger: Logger = PrintLogger()
+
     private func apiHttp() -> Http {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = timeout
@@ -29,12 +31,7 @@ class RestConfigurator: Configurator {
         configuration.urlCache = nil
 
         let queue = DispatchQueue.global(qos: .default)
-        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue)
-        #if DEBUG
-        http.logging = true
-        http.logOnlyErrors = false
-        http.maxLoggingBodySize = 8192
-        #endif
+        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: logger)
         return http
     }
 
@@ -46,11 +43,7 @@ class RestConfigurator: Configurator {
 
         let queue = DispatchQueue.global(qos: .default)
 
-        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue)
-        #if DEBUG
-        http.logging = true
-        http.logOnlyErrors = true
-        #endif
+        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: logger)
         return http
     }
 
