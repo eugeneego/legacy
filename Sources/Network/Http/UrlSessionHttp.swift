@@ -19,14 +19,14 @@ open class UrlSessionHttp: Http {
 
     open var trustPolicies: [String: ServerTrustPolicy] {
         get {
-            return delegate.trustPolicies
+            return delegateObject.trustPolicies
         }
         set {
-            delegate.trustPolicies = newValue
+            delegateObject.trustPolicies = newValue
         }
     }
 
-    private let delegate: Delegate
+    private let delegateObject: Delegate
 
     public init(
         configuration: URLSessionConfiguration, responseQueue: DispatchQueue,
@@ -34,8 +34,8 @@ open class UrlSessionHttp: Http {
     ) {
         self.logger = logger
         self.loggerTag = loggerTag
-        delegate = Delegate()
-        session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        delegateObject = Delegate()
+        session = URLSession(configuration: configuration, delegate: delegateObject, delegateQueue: nil)
         self.responseQueue = responseQueue
     }
 
