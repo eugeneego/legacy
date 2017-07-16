@@ -47,29 +47,12 @@ public extension EEColor {
         - AARRGGBB
 
         - parameter hex: The string to parse, may be prefixed with #.
-
-        - returns: A parsed color or nil if parsing is failed.
-     */
-    public static func from(hex: String) -> EEColor? {
-        return from(hex: hex, optionalDefault: nil)
-    }
-
-    /**
-        Parse a string with a hex representation of a color.
-
-        Acceptable formats:
-        - RGB
-        - ARGB
-        - RRGGBB
-        - AARRGGBB
-
-        - parameter hex: The string to parse, may be prefixed with #.
         - parameter default: The default color for fallback.
 
         - returns: A parsed color or a default value if parsing is failed.
      */
     public static func from(hex: String, default: EEColor) -> EEColor {
-        return from(hex: hex, optionalDefault: `default`)!
+        return from(hex: hex) ?? `default`
     }
 
     /**
@@ -82,23 +65,39 @@ public extension EEColor {
         - AARRGGBB
 
         - parameter hex: The string to parse, may be prefixed with #.
-        - parameter optionalDefault: The default color for fallback, nil by default.
 
-        - returns: A parsed color or a default value if parsing is failed.
+        - returns: A parsed color or crash if parsing is failed.
      */
-    public static func from(hex: String, optionalDefault: EEColor? = nil) -> EEColor? {
-        if hex.characters.count < 3 {
-            return optionalDefault
+    public static func fromRequired(hex: String) -> EEColor {
+        guard let color = from(hex: hex) else {
+            fatalError("Cannot create a color from hex string: \(hex)")
         }
+        return color
+    }
+
+    /**
+        Parse a string with a hex representation of a color.
+
+        Acceptable formats:
+        - RGB
+        - ARGB
+        - RRGGBB
+        - AARRGGBB
+
+        - parameter hex: The string to parse, may be prefixed with #.
+
+        - returns: A parsed color or nil if parsing is failed.
+     */
+    public static func from(hex: String) -> EEColor? {
+        guard !hex.characters.isEmpty else { return nil }
 
         var s = hex.uppercased()
         if s[s.startIndex] == "#" {
             s.remove(at: s.startIndex)
         }
 
-        guard let rgb = UInt32(s, radix: 16) else {
-            return optionalDefault
-        }
+        guard hex.characters.count >= 3 else { return nil }
+        guard let rgb = UInt32(s, radix: 16) else { return nil }
 
         let a, r, g, b: UInt32
         switch s.characters.count {
@@ -111,7 +110,7 @@ public extension EEColor {
             case 8: // ARGB (32-bit) "AARRGGBB"
                 (a, r, g, b) = (rgb >> 24, rgb >> 16 & 0xFF, rgb >> 8 & 0xFF, rgb & 0xFF)
             default:
-                return optionalDefault
+                return nil
         }
 
         return EEColor(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)

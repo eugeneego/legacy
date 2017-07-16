@@ -21,6 +21,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
     var image: GalleryMedia.Image = GalleryMedia.Image()
 
     var closeAction: (() -> Void)?
+    var setupAppearance: ((UIViewController) -> Void)?
     var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
 
     var closeTitle: String = "Close"
@@ -69,6 +70,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
         titleView.isHidden = !controlsAreVisible
         view.addSubview(titleView)
 
+        closeButton.accessibilityIdentifier = "closeButton"
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
         closeButton.setTitle(closeTitle, for: .normal)
@@ -163,6 +165,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
         // Other
 
         updateShare()
+        setupAppearance?(self)
     }
 
     override func viewWillAppear(_ animated: Bool) {

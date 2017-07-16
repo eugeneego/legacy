@@ -17,8 +17,11 @@ public extension UIImage {
         let context = UIGraphicsGetCurrentContext()
         context?.setFillColor(color.cgColor)
         context?.fill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            fatalError("Cannot create image with parameters: " +
+                "color: \(color), size: \(size.width)x\(size.height), scale: \(scale), opaque: \(opaque).")
+        }
         UIGraphicsEndImageContext()
-        return image!
+        return image
     }
 }

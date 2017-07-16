@@ -86,7 +86,7 @@ public extension Http {
     }
 
     public func urlWithParameters(url: URL, parameters: [String: String]) -> URL {
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else { return url }
 
         if !parameters.isEmpty {
             let serializer = UrlEncodedHttpSerializer()
@@ -97,7 +97,7 @@ public extension Http {
             components.percentEncodedQuery = serializer.serialize(params)
         }
 
-        return components.url!
+        return components.url ?? url
     }
 
     public func request(

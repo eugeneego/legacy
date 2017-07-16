@@ -2,12 +2,12 @@ disabled_rules:
   - todo
   - nesting
   - type_body_length
-  - redundant_string_enum_value
-  - weak_delegate
   - trailing_comma
+  - redundant_string_enum_value
   - vertical_parameter_alignment
 
 opt_in_rules:
+  - force_unwrapping
 
 excluded:
   - Carthage

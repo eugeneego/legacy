@@ -10,6 +10,7 @@ import UIKit
 class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, ZoomTransitionDelegate {
     var closeTitle: String = "Close"
     var shareIcon: UIImage?
+    var setupAppearance: ((UIViewController) -> Void)?
 
     private var isShown: Bool = false
 
@@ -28,12 +29,15 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.accessibilityIdentifier = "galleryViewController"
         view.backgroundColor = .black
 
         currentIndex = initialIndex
 
         let initialViewController = viewController(for: items[currentIndex], autoplay: true)
         setViewControllers([ initialViewController ], direction: .forward, animated: false, completion: nil)
+
+        setupAppearance?(self)
     }
 
     private var statusBarHidden: Bool = false
@@ -77,6 +81,7 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
                 let controller = ImageViewController()
                 controller.closeTitle = closeTitle
                 controller.shareIcon = shareIcon
+                controller.setupAppearance = setupAppearance
                 controller.closeAction = { [weak self] in
                     self?.dismiss(animated: true, completion: nil)
                 }
@@ -89,6 +94,7 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
                 let controller = VideoViewController()
                 controller.closeTitle = closeTitle
                 controller.shareIcon = shareIcon
+                controller.setupAppearance = setupAppearance
                 controller.closeAction = { [weak self] in
                     self?.dismiss(animated: true, completion: nil)
                 }
@@ -102,7 +108,8 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
     }
 
     private var currentViewController: UIViewController {
-        return viewControllers![0]
+        guard let viewControllers = viewControllers else { fatalError("Cannot get view controllers from UIPageViewController") }
+        return viewControllers[0]
     }
 
     // MARK: - Data Source
@@ -114,7 +121,7 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
         let index = self.index(from: currentViewController) - 1
         guard index >= 0 else { return nil }
 
-        let controller = self.viewController(for: items[index], autoplay: false)
+        let controller = self.viewController(for: items[index], autoplay: true)
         return controller
     }
 
@@ -125,7 +132,7 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
         let index = self.index(from: currentViewController) + 1
         guard index < items.count else { return nil }
 
-        let controller = self.viewController(for: items[index], autoplay: false)
+        let controller = self.viewController(for: items[index], autoplay: true)
         return controller
     }
 

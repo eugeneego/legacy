@@ -12,8 +12,10 @@ public extension UIView {
     public func screenshot(afterUpdate: Bool = false) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0.0)
         drawHierarchy(in: bounds, afterScreenUpdates: afterUpdate)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            fatalError("Cannot get image from context for screenshot.")
+        }
         UIGraphicsEndImageContext()
-        return image!
+        return image
     }
 }

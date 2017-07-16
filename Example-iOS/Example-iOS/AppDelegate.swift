@@ -29,18 +29,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if MOCK
         let configurator = MockConfigurator(tabBarController: tabBarController)
         #elseif DEV
+        let baseUrl = "https://dev.base.url"
+        guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
         let configurator = RestConfigurator(
-            baseUrl: URL(string: "https://dev.base.url")!,
+            baseUrl: url,
             tabBarController: tabBarController
         )
         #elseif STAGING
+        let baseUrl = "https://staging.base.url"
+        guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
         let configurator = RestConfigurator(
-            baseUrl: URL(string: "https://staging.base.url")!,
+            baseUrl: url,
             tabBarController: tabBarController
         )
         #else
+        let baseUrl = "https://base.url"
+        guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
         let configurator = RestConfigurator(
-            baseUrl: URL(string: "https://base.url")!,
+            baseUrl: url,
             tabBarController: tabBarController
         )
         #endif

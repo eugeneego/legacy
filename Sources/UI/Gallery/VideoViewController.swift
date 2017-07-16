@@ -25,6 +25,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
 
     var autoplay: Bool = true
     var closeAction: (() -> Void)?
+    var setupAppearance: ((UIViewController) -> Void)?
     var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
 
     var closeTitle: String = "Close"
@@ -72,6 +73,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         titleContentView.isHidden = !controlsAreVisible
         titleView.addSubview(titleContentView)
 
+        closeButton.accessibilityIdentifier = "closeButton"
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
         closeButton.setTitle(closeTitle, for: .normal)
@@ -167,6 +169,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
 
         updatePreviewImage()
         updateShare()
+        setupAppearance?(self)
     }
 
     override func viewDidAppear(_ animated: Bool) {
