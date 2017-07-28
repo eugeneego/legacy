@@ -42,14 +42,14 @@ class RestConfigurator: Configurator {
         configuration.urlCache = URLCache(memoryCapacity: imagesMemoryCapacity, diskCapacity: imagesDiskCapacity, diskPath: nil)
 
         let queue = DispatchQueue.global(qos: .default)
-
         let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: logger)
         return http
     }
 
     private func feedService(baseUrl: URL, http: Http) -> FeedService {
         let url = baseUrl.appendingPathComponent("feed", isDirectory: true)
-        let restClient = BaseRestClient(http: http, baseURL: url, completionQueue: DispatchQueue.main)
+        let queue = DispatchQueue.global(qos: .default)
+        let restClient = BaseRestClient(http: http, baseURL: url, workQueue: queue, completionQueue: DispatchQueue.main)
         let service = RestFeedService(rest: restClient)
         return service
     }

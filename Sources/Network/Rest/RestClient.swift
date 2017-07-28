@@ -10,7 +10,7 @@ import Foundation
 
 public enum RestError: Error {
     case badUrl
-    case auth(error: AuthError?)
+    case auth(error: Error?)
     case http(code: Int, error: Error?, body: Data?)
     case error(error: HttpError?, body: Data?)
 }

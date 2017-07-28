@@ -11,12 +11,20 @@ import Foundation
 open class BaseRestClient: LightRestClient, FullRestClient {
     open let http: Http
     open let baseURL: URL
+    open let workQueue: DispatchQueue
     open let completionQueue: DispatchQueue
     open let requestAuthorizer: RequestAuthorizer?
 
-    public init(http: Http, baseURL: URL, completionQueue: DispatchQueue, requestAuthorizer: RequestAuthorizer? = nil) {
+    public init(
+        http: Http,
+        baseURL: URL,
+        workQueue: DispatchQueue,
+        completionQueue: DispatchQueue,
+        requestAuthorizer: RequestAuthorizer? = nil
+    ) {
         self.http = http
         self.baseURL = baseURL
+        self.workQueue = workQueue
         self.completionQueue = completionQueue
         self.requestAuthorizer = requestAuthorizer
     }
@@ -30,53 +38,77 @@ open class BaseRestClient: LightRestClient, FullRestClient {
     ) -> RestTask {
         let task = Task()
 
-        let queue = self.completionQueue
+        let http = self.http
+        let baseUrl = self.baseURL
+        let workQueue = self.workQueue
+        let completionQueue = self.completionQueue
+        let requestAuthorizer = self.requestAuthorizer
+
+        let requestCompletion = { result in
+            completionQueue.async {
+                completion(result)
+            }
+        }
+
         let pathUrl = URL(string: path)
         let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
-
-        guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else {
-            queue.async {
-                completion(.failure(.badUrl))
-            }
+        guard let url = pathUrlIsFull ? pathUrl : baseUrl.appendingPathComponent(path) else {
+            requestCompletion(.failure(.badUrl))
             return task
         }
 
-        let request = http.request(
-            method: method, url: url, urlParameters: parameters, headers: headers,
-            object: object, serializer: requestSerializer
-        )
+        let createRequest = { (createCompletion: @escaping (URLRequest) -> Void) -> Void in
+            workQueue.async {
+                let request = http.request(
+                    method: method, url: url, urlParameters: parameters, headers: headers,
+                    object: object, serializer: requestSerializer
+                )
+                createCompletion(request)
+            }
+        }
+
+        var authorizeAndRunRequest = { (request: URLRequest, error: RestError?) in }
 
         let runRequest = { (request: URLRequest) -> Void in
             let httpTask = self.http.data(request: request as URLRequest, serializer: responseSerializer) { _, object, data, error in
-                queue.async {
-                    if case .status(let code, let error)? = error {
-                        completion(.failure(.http(code: code, error: error, body: data)))
+                task.httpTask = nil
+
+                if case .status(let code, let error)? = error {
+                    if code == 401, requestAuthorizer != nil {
+                        authorizeAndRunRequest(request, .http(code: code, error: error, body: data))
                     } else {
-                        completion(Result(object, .error(error: error, body: data)))
+                        requestCompletion(.failure(.http(code: code, error: error, body: data)))
                     }
-                    task.httpTask = nil
+                } else {
+                    requestCompletion(Result(object, .error(error: error, body: data)))
                 }
             }
             task.httpTask = httpTask
             httpTask.resume()
         }
 
-        if let requestAuthorizer = requestAuthorizer {
-            requestAuthorizer.authorize(request: request) { result in
-                switch result {
-                    case .success(let request):
-                        runRequest(request)
-                    case .failure(let error):
-                        queue.async {
-                            completion(.failure(.auth(error: error)))
+        authorizeAndRunRequest = { (request: URLRequest, error: RestError?) in
+            DispatchQueue.main.async {
+                if let requestAuthorizer = requestAuthorizer {
+                    requestAuthorizer.authorize(request: request) { result in
+                        switch result {
+                            case .success(let request):
+                                runRequest(request)
+                            case .failure(let error):
+                                requestCompletion(.failure(.auth(error: error)))
                         }
+                    }
+                } else {
+                    runRequest(request)
                 }
             }
-        } else {
-            runRequest(request)
         }
 
-        return Task()
+        createRequest { request in
+            authorizeAndRunRequest(request, nil)
+        }
+
+        return task
     }
 
     private class Task: RestTask {
