@@ -63,49 +63,55 @@ open class BaseRestClient: LightRestClient, FullRestClient {
                     method: method, url: url, urlParameters: parameters, headers: headers,
                     object: object, serializer: requestSerializer
                 )
-                createCompletion(request)
-            }
-        }
-
-        var authorizeAndRunRequest = { (request: URLRequest, error: RestError?) in }
-
-        let runRequest = { (request: URLRequest) -> Void in
-            let httpTask = self.http.data(request: request as URLRequest, serializer: responseSerializer) { _, object, data, error in
-                task.httpTask = nil
-
-                if case .status(let code, let error)? = error {
-                    if code == 401, requestAuthorizer != nil {
-                        authorizeAndRunRequest(request, .http(code: code, error: error, body: data))
-                    } else {
-                        requestCompletion(.failure(.http(code: code, error: error, body: data)))
-                    }
-                } else {
-                    requestCompletion(Result(object, .error(error: error, body: data)))
+                DispatchQueue.main.async {
+                    createCompletion(request)
                 }
             }
-            task.httpTask = httpTask
-            httpTask.resume()
         }
 
-        authorizeAndRunRequest = { (request: URLRequest, error: RestError?) in
-            DispatchQueue.main.async {
-                if let requestAuthorizer = requestAuthorizer {
-                    requestAuthorizer.authorize(request: request) { result in
-                        switch result {
-                            case .success(let request):
-                                runRequest(request)
-                            case .failure(let error):
-                                requestCompletion(.failure(.auth(error: error)))
+        let authorizeAndRunRequest = { (authorizer: RequestAuthorizer, request: URLRequest, authCompletion: (() -> Void)?) in
+            authorizer.authorize(request: request) { result in
+                switch result {
+                    case .success(let request):
+                        let httpTask = http.data(request: request, serializer: responseSerializer) { _, object, data, error in
+                            task.httpTask = nil
+
+                            if case .status(let code, let error)? = error {
+                                if code == 401, let authCompletion = authCompletion {
+                                    authCompletion()
+                                } else {
+                                    requestCompletion(.failure(.http(code: code, error: error, body: data)))
+                                }
+                            } else {
+                                requestCompletion(Result(object, .error(error: error, body: data)))
+                            }
                         }
-                    }
-                } else {
-                    runRequest(request)
+                        task.httpTask = httpTask
+                        httpTask.resume()
+                    case .failure(let error):
+                        requestCompletion(.failure(.auth(error: error)))
                 }
             }
         }
 
         createRequest { request in
-            authorizeAndRunRequest(request, nil)
+            if let requestAuthorizer = requestAuthorizer {
+                authorizeAndRunRequest(requestAuthorizer, request) {
+                    authorizeAndRunRequest(requestAuthorizer, request, nil)
+                }
+            } else {
+                let httpTask = http.data(request: request, serializer: responseSerializer) { _, object, data, error in
+                    task.httpTask = nil
+
+                    if case .status(let code, let error)? = error {
+                        requestCompletion(.failure(.http(code: code, error: error, body: data)))
+                    } else {
+                        requestCompletion(Result(object, .error(error: error, body: data)))
+                    }
+                }
+                task.httpTask = httpTask
+                httpTask.resume()
+            }
         }
 
         return task
