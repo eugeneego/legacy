@@ -76,7 +76,7 @@ public extension Http {
         completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
     ) -> HttpTask {
         return data(request: request) { response, data, error in
-            let object = serializer.deserialize(data)
+            let object = error == nil ? serializer.deserialize(data) : nil
             var error = error
             if error == nil && object == nil {
                 error = HttpError.parsingFailed
