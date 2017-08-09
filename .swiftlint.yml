@@ -123,6 +123,6 @@ custom_rules:
 # test regex here https://regex101.com/r/ZhrxAm/1
   custom_colon:
     name: 'Custom Colon'
-    regex: '^(?! *\/{2,}).*(?<!swiftlint|HH|mm|h|\“H|‘'H|\sH):([^\-\)\“\s\\\/\]])(?!\s*.*\*\/)'
+    regex: '^(?! *\/{2,}).*(?<!swiftlint|HH|mm|h|\"H|''H|\sH):([^\-\)\"\s\\\/\]])(?!\s*.*\*\/)'
     message: 'Colons should be next to the identifier when specifying a type.'
     severity: error
