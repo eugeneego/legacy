@@ -69,6 +69,9 @@ import EEUtilities
 // No raw type detected.
 // sourcery:end
 <%_ continue } -%>
+// swiftlint:disable line_length
+// swiftlint:disable type_name
+// swiftlint:disable function_body_length
 struct <%= name %><From>: FullTransformer {
     typealias Source = From
     typealias Destination = <%= type.name %>
@@ -97,6 +100,9 @@ struct <%= name %><From>: FullTransformer {
         }
     }
 }
+// swiftlint:enable line_length
+// swiftlint:enable type_name
+// swiftlint:enable function_body_length
 
 // sourcery:end
 <% } -%>
@@ -119,6 +125,8 @@ import CoreGraphics
 import EEUtilities
 
 // swiftlint:disable line_length
+// swiftlint:disable type_name
+// swiftlint:disable function_body_length
 struct <%= name %>: FullTransformer {
     typealias Source = Any
     typealias Destination = <%= type.name %>
@@ -223,6 +231,8 @@ struct <%= name %>: FullTransformer {
     }
 }
 // swiftlint:enable line_length
+// swiftlint:enable type_name
+// swiftlint:enable function_body_length
 
 // sourcery:end
 <% } -%>
