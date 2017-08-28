@@ -118,8 +118,11 @@ custom_rules:
     message: 'There should be an empty line after super'
     severity: error
 
+# added ^(?! *\/{2,}).* to ignore the colons that appear in single line comments
+# added (?!\s*.*\*\/) to ignore the colons that appear in multi-line comments
+# test regex here https://regex101.com/r/ZhrxAm/1
   custom_colon:
     name: 'Custom Colon'
-    regex: '(?<!swiftlint|HH|mm|h|\"H|''H|\sH):([^\-\)\"\s\\\/\]])'
+    regex: '^(?! *\/{2,}).*(?<!swiftlint|HH|mm|h|\"H|''H|\sH):([^\-\)\"\s\\\/\]])(?!\s*.*\*\/)'
     message: 'Colons should be next to the identifier when specifying a type.'
     severity: error
