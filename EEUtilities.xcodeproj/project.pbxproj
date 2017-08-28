@@ -40,12 +40,14 @@
 		B2FA857740A73E82F7311C14 /* UrlLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */; };
 		B2FA8591D163BDDD0FA6C746 /* CastLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */; };
 		B2FA86502454995579D98F4B /* LightRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F1DBE228BC4CE0DCECA /* LightRestClient.swift */; };
+		B2FA868FB22061CC005F6113 /* UIStoryboard+Intstantiate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CBA874F87DB059F82B6 /* UIStoryboard+Intstantiate.swift */; };
 		B2FA86C23785755F31702785 /* FullRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8A70AC8E484E56F4A0FC /* FullRestClient.swift */; };
 		B2FA86C3B5734D06F4BC11DB /* DictionaryTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA892E03F8A89CA27FEE9F /* DictionaryTransformer.swift */; };
 		B2FA86FD29CA06BDD0FBDE80 /* UIView+Fade.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA873002C781AA701C4253 /* UIView+Fade.swift */; };
 		B2FA87141EAB94B39806AEA4 /* NumberStringLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85586B2FCF3923C037AB /* NumberStringLightTransformer.swift */; };
 		B2FA875B3DC4B7E32A882A4C /* SimpleSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */; };
 		B2FA8782A928BC5ED06A1BF4 /* DependencyInjectionContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA858A3D77F6B7C5DBB895 /* DependencyInjectionContainer.swift */; };
+		B2FA87C9B577EA8A1C2932C2 /* UIView+Nib.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81EADC34644BE80F3DC4 /* UIView+Nib.swift */; };
 		B2FA87F3F19972FA40192A07 /* UrlTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */; };
 		B2FA881C68BD2185A05106F2 /* Easing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87F9B5E313F53D90ABCA /* Easing.swift */; };
 		B2FA885BC0E75AC463949E70 /* HttpImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8E3E7D9481DB8601D32A /* HttpImageLoader.swift */; };
@@ -102,6 +104,7 @@
 		B2FA81309C1D00C1C54500A5 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		B2FA81B9B48B6F6CD61E53CD /* ServerTrustPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerTrustPolicy.swift; sourceTree = "<group>"; };
 		B2FA81C3C6CFE9B879F44CBF /* ShadowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
+		B2FA81EADC34644BE80F3DC4 /* UIView+Nib.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Nib.swift"; sourceTree = "<group>"; };
 		B2FA821B587ACD8434FFAA0F /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA82C5A9F2428939EB9981 /* VoidHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidHttpSerializer.swift; sourceTree = "<group>"; };
@@ -149,6 +152,7 @@
 		B2FA8BAD2FA91CB5CC3817D2 /* RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
 		B2FA8BCEA1534833B2491627 /* LightTransformer.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = file.swifttemplate; path = LightTransformer.swifttemplate; sourceTree = "<group>"; };
 		B2FA8C8F891B8EEC67935F9A /* ColorLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA8CBA874F87DB059F82B6 /* UIStoryboard+Intstantiate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Intstantiate.swift"; sourceTree = "<group>"; };
 		B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8D0E1B4C307E2B3DEAC9 /* UIImage+Prerender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Prerender.swift"; sourceTree = "<group>"; };
 		B2FA8D1FD5C9DDBEFA447845 /* VoidTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidTransformer.swift; sourceTree = "<group>"; };
@@ -307,6 +311,8 @@
 				B2FA803636A6075723D28CB5 /* UIImage+Color.swift */,
 				B2FA8D0E1B4C307E2B3DEAC9 /* UIImage+Prerender.swift */,
 				B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */,
+				B2FA81EADC34644BE80F3DC4 /* UIView+Nib.swift */,
+				B2FA8CBA874F87DB059F82B6 /* UIStoryboard+Intstantiate.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -596,6 +602,8 @@
 				B2FA8280981995DF5DE4D900 /* FilteringLogger.swift in Sources */,
 				B2FA840117CFD6DD677351D1 /* LoggerConfiguration.swift in Sources */,
 				B2FA8BA01E3CF8971385D1A5 /* PrintLogger.swift in Sources */,
+				B2FA87C9B577EA8A1C2932C2 /* UIView+Nib.swift in Sources */,
+				B2FA868FB22061CC005F6113 /* UIStoryboard+Intstantiate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
