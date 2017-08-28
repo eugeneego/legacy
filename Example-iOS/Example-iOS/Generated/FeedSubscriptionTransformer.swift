@@ -4,6 +4,7 @@
 import Foundation
 import EEUtilities
 
+// swiftlint:disable line_length type_name function_body_length
 struct FeedSubscriptionTransformer<From>: FullTransformer {
     typealias Source = From
     typealias Destination = Feed.Subscription
@@ -36,3 +37,4 @@ struct FeedSubscriptionTransformer<From>: FullTransformer {
         }
     }
 }
+// swiftlint:enable line_length type_name function_body_length

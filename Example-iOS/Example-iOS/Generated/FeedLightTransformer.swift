@@ -5,7 +5,7 @@ import Foundation
 import CoreGraphics
 import EEUtilities
 
-// swiftlint:disable line_length
+// swiftlint:disable line_length type_name function_body_length
 struct FeedLightTransformer: LightTransformer {
     typealias T = Feed
 
@@ -76,4 +76,4 @@ struct FeedLightTransformer: LightTransformer {
         return dictionary
     }
 }
-// swiftlint:enable line_length
+// swiftlint:enable line_length type_name function_body_length

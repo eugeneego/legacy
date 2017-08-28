@@ -4,6 +4,7 @@
 import Foundation
 import EEUtilities
 
+// swiftlint:disable line_length type_name function_body_length
 struct FeedSubscriptionLightTransformer: LightTransformer {
     typealias T = Feed.Subscription
 
@@ -37,3 +38,4 @@ struct FeedSubscriptionLightTransformer: LightTransformer {
         }
     }
 }
+// swiftlint:enable line_length type_name function_body_length
