@@ -67,7 +67,7 @@ public extension Http {
         headers: [String: String], body: Data?, completion: @escaping HttpCompletion
     ) -> HttpTask {
         let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        return data(request: req as URLRequest, completion: completion)
+        return data(request: req, completion: completion)
     }
 
     @discardableResult
@@ -125,11 +125,8 @@ public extension Http {
         headers: [String: String],
         object: T.Value?, serializer: T
     ) -> URLRequest {
-        var req = request(method: method, url: url, urlParameters: urlParameters,
-            headers: headers, body: serializer.serialize(object))
-        if req.httpBody != nil {
-            req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
-        }
+        var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: serializer.serialize(object))
+        req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
         return req
     }
 }

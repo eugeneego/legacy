@@ -19,7 +19,7 @@ open class HttpImageLoader: ImageLoader {
         let task = Task(url: url, size: size, mode: mode)
 
         let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)
-        let httpTask = http.data(request: request as URLRequest) { _, data, error in
+        let httpTask = http.data(request: request) { _, data, error in
             let asyncCompletion = { (result: Result<(Data, UIImage), ImageLoaderError>) in
                 DispatchQueue.main.async {
                     completion(task, result)

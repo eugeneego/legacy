@@ -48,10 +48,14 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
         return params
     }
 
+    private static var characters: CharacterSet = {
+        var characters = CharacterSet.alphanumerics
+        characters.insert(charactersIn: "-_.")
+        return characters
+    }()
+
     public static func encode(_ string: String) -> String {
-        let charset = NSMutableCharacterSet.alphanumeric()
-        charset.addCharacters(in: "-_.")
-        return string.addingPercentEncoding(withAllowedCharacters: charset as CharacterSet) ?? ""
+        return string.addingPercentEncoding(withAllowedCharacters: characters) ?? ""
     }
 
     public static func decode(_ string: String) -> String {
