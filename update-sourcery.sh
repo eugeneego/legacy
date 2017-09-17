@@ -15,7 +15,7 @@ copyFiles() {
 
     cp -R "$1/bin/" "$DEST/bin/"
     cp -R "$1/Resources/" "$DEST/Resources/"
-    cp -R "$1/Templates/" "$DEST/Templates/"
+    cp -R "$1/Templates/Templates/" "$DEST/Templates/"
     cp "$1/README.md" "$DEST/README.md"
     cp "$1/CHANGELOG.md" "$DEST/CHANGELOG.md"
     cp "$1/LICENSE" "$DEST/LICENSE"

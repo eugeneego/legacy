@@ -148,7 +148,7 @@ public class ElasticLogger: Logger {
             return
         }
 
-        let taskId = UIApplication.shared.beginBackgroundTask(withName: String(describing: type(of: self)))
+        let taskId = UIApplication.shared.beginBackgroundTask(withName: String(describing: Swift.type(of: self)))
 
         restClient.create(
             path: path, id: nil,
