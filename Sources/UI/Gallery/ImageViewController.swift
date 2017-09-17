@@ -127,7 +127,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitio
         transition.shouldStartInteractiveTransition = { [weak self] in
             guard let `self` = self else { return true }
 
-            let orientation = 1 << UInt(UIApplication.shared.statusBarOrientation.rawValue)
+            let orientation: UInt = 1 << UIApplication.shared.statusBarOrientation.rawValue
             let supportedOrientations = self.presenterInterfaceOrientations?()
                 ?? self.presentingViewController?.supportedInterfaceOrientations
                 ?? .portrait
