@@ -32,26 +32,16 @@ public protocol TransformerStringConvertible {
     init?(_ text: String)
 }
 
-public protocol TransformerIntStringConvertible: TransformerStringConvertible {
-    init?(_ text: String, radix: Int)
-}
-
-public extension TransformerIntStringConvertible {
-    public init?(_ text: String) {
-        self.init(text, radix: 10)
-    }
-}
-
-extension Int: TransformerIntStringConvertible {}
-extension Int8: TransformerIntStringConvertible {}
-extension Int16: TransformerIntStringConvertible {}
-extension Int32: TransformerIntStringConvertible {}
-extension Int64: TransformerIntStringConvertible {}
-extension UInt: TransformerIntStringConvertible {}
-extension UInt8: TransformerIntStringConvertible {}
-extension UInt16: TransformerIntStringConvertible {}
-extension UInt32: TransformerIntStringConvertible {}
-extension UInt64: TransformerIntStringConvertible {}
+extension Int: TransformerStringConvertible {}
+extension Int8: TransformerStringConvertible {}
+extension Int16: TransformerStringConvertible {}
+extension Int32: TransformerStringConvertible {}
+extension Int64: TransformerStringConvertible {}
+extension UInt: TransformerStringConvertible {}
+extension UInt8: TransformerStringConvertible {}
+extension UInt16: TransformerStringConvertible {}
+extension UInt32: TransformerStringConvertible {}
+extension UInt64: TransformerStringConvertible {}
 
 extension Float: TransformerStringConvertible {}
 extension Double: TransformerStringConvertible {}

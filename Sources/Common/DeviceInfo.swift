@@ -37,9 +37,9 @@ public class DeviceInfo {
     private static func getMachineName() -> String {
         var name = [ CTL_HW, HW_MACHINE ]
         var size = 2
-        sysctl(&name, 2, nil, &size, &name, 0)
+        sysctl(&name, 2, nil, &size, nil, 0)
         var hw_machine = [CChar](repeating: 0, count: size)
-        sysctl(&name, 2, &hw_machine, &size, &name, 0)
+        sysctl(&name, 2, &hw_machine, &size, nil, 0)
         return String(cString: hw_machine)
     }
 }
