@@ -40,10 +40,8 @@ class GalleryViewController: UIPageViewController, UIPageViewControllerDataSourc
         setupAppearance?(self)
     }
 
-    private var statusBarHidden: Bool = false
-
     override var prefersStatusBarHidden: Bool {
-        return statusBarHidden
+        return currentViewController.prefersStatusBarHidden
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
