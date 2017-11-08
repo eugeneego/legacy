@@ -6,6 +6,7 @@ disabled_rules:
   - redundant_string_enum_value
   - vertical_parameter_alignment
   - superfluous_disable_command
+  - switch_case_alignment
 
 opt_in_rules:
   - force_unwrapping
