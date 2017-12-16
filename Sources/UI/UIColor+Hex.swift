@@ -89,18 +89,18 @@ public extension EEColor {
         - returns: A parsed color or nil if parsing is failed.
      */
     public static func from(hex: String) -> EEColor? {
-        guard !hex.characters.isEmpty else { return nil }
+        guard !hex.isEmpty else { return nil }
 
         var s = hex.uppercased()
         if s[s.startIndex] == "#" {
             s.remove(at: s.startIndex)
         }
 
-        guard hex.characters.count >= 3 else { return nil }
+        guard hex.count >= 3 else { return nil }
         guard let rgb = UInt32(s, radix: 16) else { return nil }
 
         let a, r, g, b: UInt32
-        switch s.characters.count {
+        switch s.count {
             case 3: // RGB (12-bit) "RGB"
                 (a, r, g, b) = (255, (rgb >> 8 & 0xF) * 17, (rgb >> 4 & 0xF) * 17, (rgb & 0xF) * 17)
             case 4: // ARGB (16-bit) "ARGB"

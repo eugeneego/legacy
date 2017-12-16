@@ -80,7 +80,7 @@ public extension RestClient {
         let path = (path.isEmpty || path[path.startIndex] != "/") ? path : String(path[path.index(after: path.startIndex)...])
 
         if let id = id {
-            let delimiter = (!path.isEmpty && path[path.characters.index(before: path.endIndex)] != "/") ? "/" : ""
+            let delimiter = (!path.isEmpty && path[path.index(before: path.endIndex)] != "/") ? "/" : ""
             return path + delimiter + id
         } else {
             return path
