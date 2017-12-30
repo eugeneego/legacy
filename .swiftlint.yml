@@ -1,15 +1,36 @@
 disabled_rules:
-  - todo
   - nesting
-  - type_body_length
-  - trailing_comma
   - redundant_string_enum_value
-  - vertical_parameter_alignment
   - superfluous_disable_command
   - switch_case_alignment
+  - todo
+  - trailing_comma
+  - type_body_length
+  - vertical_parameter_alignment
 
 opt_in_rules:
+  - array_init
+  - closure_end_indentation
+  - closure_spacing
+  - contains_over_first_not_nil
+  - empty_count
+  - explicit_enum_raw_value
+  - explicit_init
+  - fatal_error_message
+  - first_where
   - force_unwrapping
+  - implicit_return
+  - literal_expression_end_indentation
+  - no_grouping_extension
+  - operator_usage_whitespace
+  - overridden_super_call
+  - override_in_extension
+  - private_outlet
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - strict_fileprivate
+  - trailing_closure
+  - unneeded_parentheses_in_closure_argument
 
 excluded:
   - Carthage
@@ -118,13 +139,4 @@ custom_rules:
     name: 'Empty Line After Super'
     regex: '(^ *super\.[ a-zA-Z0-9=?.\(\)\{\}:,><!`\"]*\n *(?!(?:\}|return))\S+)'
     message: 'There should be an empty line after super'
-    severity: error
-
-# added ^(?! *\/{2,}).* to ignore the colons that appear in single line comments
-# added (?!\s*.*\*\/) to ignore the colons that appear in multi-line comments
-# test regex here https://regex101.com/r/ZhrxAm/1
-  custom_colon:
-    name: 'Custom Colon'
-    regex: '^(?! *\/{2,}).*(?<!swiftlint|HH|mm|h|\"H|''H|\sH):([^\-\)\"\s\\\/\]])(?!\s*.*\*\/)'
-    message: 'Colons should be next to the identifier when specifying a type.'
     severity: error

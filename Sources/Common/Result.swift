@@ -90,9 +90,9 @@ public enum Result<T, E> {
 
     public func tryMap<U>(_ transform: (T) throws -> U) -> Result<U, E> {
         return flatMap { value in
-            Result<U, E>(try: {
+            Result<U, E> {
                 try transform(value)
-            })
+            }
         }
     }
 

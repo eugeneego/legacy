@@ -13,9 +13,9 @@ protocol DependencyContainerDependency {
 }
 
 protocol FeedServiceDependency {
-    var feedService: FeedService! { get set}
+    var feedService: FeedService! { get set }
 }
 
 protocol ImageLoaderDependency {
-    var imageLoader: ImageLoader! { get set}
+    var imageLoader: ImageLoader! { get set }
 }

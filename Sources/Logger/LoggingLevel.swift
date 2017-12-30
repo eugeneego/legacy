@@ -23,9 +23,7 @@ public enum LoggingLevel {
     case info
     case warning
     case error
-}
 
-extension LoggingLevel {
     private static let loggingLevels: [LoggingLevel] = [
         .verbose,
         .debug,

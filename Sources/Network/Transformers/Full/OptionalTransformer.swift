@@ -20,6 +20,7 @@ public struct OptionalTransformer<ValueTransformer: FullTransformer>: FullTransf
 
     public func transform(source value: Source) -> TransformerResult<Destination> {
         if let value = value, !(value is NSNull) {
+            // swiftlint:disable:next array_init
             return transformer.transform(source: value).map { $0 }
         } else {
             return .success(nil)
@@ -28,6 +29,7 @@ public struct OptionalTransformer<ValueTransformer: FullTransformer>: FullTransf
 
     public func transform(destination value: Destination) -> TransformerResult<Source> {
         if let value = value {
+            // swiftlint:disable:next array_init
             return transformer.transform(destination: value).map { $0 }
         } else {
             return .success(nil)

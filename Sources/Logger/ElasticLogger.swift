@@ -32,7 +32,7 @@ public class ElasticLogger: Logger {
     public init(
         restClient: LightRestClient, queue: DispatchQueue,
         token: String, type: String, environment: String, deviceInfo: DeviceInfo,
-        userParameters: @escaping () -> [String: String] = {[:]}
+        userParameters: @escaping () -> [String: String] = { [:] }
     ) {
         self.restClient = restClient
         self.queue = queue
