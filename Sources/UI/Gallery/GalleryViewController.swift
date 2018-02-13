@@ -9,9 +9,9 @@ import UIKit
 
 open class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
     ZoomTransitionDelegate {
-    var closeTitle: String = "Close"
-    var shareIcon: UIImage?
-    var setupAppearance: ((UIViewController) -> Void)?
+    open var closeTitle: String = "Close"
+    open var shareIcon: UIImage?
+    open var setupAppearance: ((UIViewController) -> Void)?
 
     private var isShown: Bool = false
 
@@ -58,9 +58,9 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     // MARK: - Models
 
-    var items: [GalleryMedia] = []
-    var initialIndex: Int = 0
-    private(set) var currentIndex: Int = 0
+    open var items: [GalleryMedia] = []
+    open var initialIndex: Int = 0
+    open private(set) var currentIndex: Int = 0
 
     private func index(from viewController: UIViewController) -> Int {
         switch viewController {
