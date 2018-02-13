@@ -15,7 +15,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     private var isShown: Bool = false
 
-    init() {
+    public init() {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 
         dataSource = self
