@@ -60,7 +60,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     open var items: [GalleryMedia] = []
     open var initialIndex: Int = 0
-    private(set) var currentIndex: Int = 0
+    open private(set) var currentIndex: Int = 0
 
     private func index(from viewController: UIViewController) -> Int {
         switch viewController {
