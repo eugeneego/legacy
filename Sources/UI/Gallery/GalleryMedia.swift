@@ -18,9 +18,7 @@ public enum GalleryMedia {
         var fullImage: UIImage?
         var fullImageLoader: FullImageLoader?
 
-        public init() {}
-
-        public init(index: Int = 0, previewImage: UIImage?, fullImage: UIImage?, fullImageLoader: FullImageLoader?) {
+        public init(index: Int = 0, previewImage: UIImage? = nil, fullImage: UIImage? = nil, fullImageLoader: FullImageLoader? = nil) {
             self.index = index
             self.previewImage = previewImage
             self.fullImage = fullImage
@@ -37,9 +35,8 @@ public enum GalleryMedia {
         var previewImageLoader: PreviewImageLoader?
         var videoLoader: VideoLoader?
 
-        public init() {}
-
-        public init(index: Int = 0, url: URL?, previewImage: UIImage?, previewImageLoader: PreviewImageLoader?, videoLoader: VideoLoader?) {
+        public init(index: Int = 0, url: URL? = nil, previewImage: UIImage? = nil, previewImageLoader: PreviewImageLoader? = nil,
+                videoLoader: VideoLoader? = nil) {
             self.index = index
             self.url = url
             self.previewImage = previewImage
