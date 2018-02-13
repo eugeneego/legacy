@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitionDelegate {
+open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitionDelegate {
     private let titleView: UIView = UIView()
     private let closeButton: UIButton = UIButton(type: .custom)
     private let shareButton: UIButton = UIButton(type: .custom)
@@ -40,7 +40,7 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
     private var lastFrame: CGRect?
     private var isTransitioning: Bool = false
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .black
@@ -168,7 +168,7 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
         setupAppearance?(self)
     }
 
-    override public func viewWillAppear(_ animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         if !isShown {
@@ -201,7 +201,7 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
         }
     }
 
-    override public func viewDidAppear(_ animated: Bool) {
+    override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         isTransitioning = false
@@ -209,7 +209,7 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
         showControls(false)
     }
 
-    override public func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         if !isLaidOut {
@@ -219,23 +219,23 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
         }
     }
 
-    override public var prefersStatusBarHidden: Bool {
+    override open var prefersStatusBarHidden: Bool {
         return statusBarHidden
     }
 
-    override public var preferredStatusBarStyle: UIStatusBarStyle {
+    override open var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 
-    override public var shouldAutorotate: Bool {
+    override open var shouldAutorotate: Bool {
         return true
     }
 
-    override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
     }
 
-    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         guard !isTransitioning else { return }
@@ -347,11 +347,11 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
 
     // MARK: - Scroll View
 
-    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
 
-    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    open func scrollViewDidZoom(_ scrollView: UIScrollView) {
         let contentSize = scrollView.contentSize
         guard contentSize != .zero else { return }
 
@@ -376,28 +376,28 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
         }
     }
 
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         showControls(false)
     }
 
-    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         showControls(false)
     }
 
     // MARK: - Transition
 
-    public var zoomTransitionAnimatingView: UIView? {
+    open var zoomTransitionAnimatingView: UIView? {
         animatingImageView.image = imageView.image
         animatingImageView.frame = lastFrame ?? imageView.convert(imageView.bounds, to: view)
         return animatingImageView
     }
 
-    public func zoomTransitionHideViews(hide: Bool) {
+    open func zoomTransitionHideViews(hide: Bool) {
         imageView.isHidden = hide
         titleView.isHidden = hide || !controlsAreVisible
     }
 
-    public func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
+    open func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
         var result = frame
         let viewSize = frame.size
 
@@ -425,11 +425,11 @@ public class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTr
 
     private var transition: ZoomTransition = ZoomTransition(interactive: false)
 
-    public var zoomTransition: ZoomTransition? {
+    open var zoomTransition: ZoomTransition? {
         return transition
     }
 
-    public var zoomTransitionInteractionController: UIViewControllerInteractiveTransitioning? {
+    open var zoomTransitionInteractionController: UIViewControllerInteractiveTransitioning? {
         return transition.interactive ? transition : nil
     }
 }
