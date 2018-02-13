@@ -9,7 +9,7 @@ import UIKit
 import AVKit
 import AVFoundation
 
-class VideoViewController: UIViewController, ZoomTransitionDelegate {
+open class VideoViewController: UIViewController, ZoomTransitionDelegate {
     private let titleView: UIView = UIView()
     private let titleContentView: UIView = UIView()
     private let closeButton: UIButton = UIButton(type: .custom)
@@ -39,7 +39,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
     private var isStarted: Bool = false
     private var isTransitioning: Bool = false
 
-    override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .black
@@ -172,7 +172,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         setupAppearance?(self)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         if !isShown {
@@ -196,25 +196,25 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         pause()
     }
 
-    override var prefersStatusBarHidden: Bool {
+    override open var prefersStatusBarHidden: Bool {
         return statusBarHidden
     }
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
+    override open var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 
-    override var shouldAutorotate: Bool {
+    override open var shouldAutorotate: Bool {
         return true
     }
 
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
     }
 
@@ -347,7 +347,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
 
     // MARK: - Transition
 
-    var zoomTransitionAnimatingView: UIView? {
+    open var zoomTransitionAnimatingView: UIView? {
         animatingImageView.image = video.previewImage
 
         var frame: CGRect = .zero
@@ -372,7 +372,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         return animatingImageView
     }
 
-    func zoomTransitionHideViews(hide: Bool) {
+    open func zoomTransitionHideViews(hide: Bool) {
         if !isStarted {
             previewImageView.isHidden = hide
         }
@@ -380,7 +380,7 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
         titleView.isHidden = hide
     }
 
-    func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
+    open func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
         var result = frame
         let viewSize = frame.size
 
@@ -408,11 +408,11 @@ class VideoViewController: UIViewController, ZoomTransitionDelegate {
 
     private var transition: ZoomTransition = ZoomTransition(interactive: false)
 
-    var zoomTransition: ZoomTransition? {
+    open var zoomTransition: ZoomTransition? {
         return transition
     }
 
-    var zoomTransitionInteractionController: UIViewControllerInteractiveTransitioning? {
+    open var zoomTransitionInteractionController: UIViewControllerInteractiveTransitioning? {
         return transition.interactive ? transition : nil
     }
 }

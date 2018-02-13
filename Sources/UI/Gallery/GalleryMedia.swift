@@ -7,18 +7,18 @@
 
 import UIKit
 
-enum GalleryMedia {
+public enum GalleryMedia {
     case image(Image)
     case video(Video)
 
-    struct Image {
+    public struct Image {
         var index: Int = 0
         var previewImage: UIImage?
         var fullImage: UIImage?
         var fullImageLoader: ((_ completion: @escaping (UIImage?, Error?) -> Void) -> Void)?
     }
 
-    struct Video {
+    public struct Video {
         var index: Int = 0
         var url: URL?
         var previewImage: UIImage?

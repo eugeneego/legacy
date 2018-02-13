@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol ZoomTransitionDelegate: class {
+public protocol ZoomTransitionDelegate: class {
     var zoomTransition: ZoomTransition? { get }
     var zoomTransitionInteractionController: UIViewControllerInteractiveTransitioning? { get }
 
@@ -17,7 +17,7 @@ protocol ZoomTransitionDelegate: class {
     func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect
 }
 
-class ZoomTransition: NSObject,
+public class ZoomTransition: NSObject,
         UIViewControllerAnimatedTransitioning, UIViewControllerInteractiveTransitioning, UIGestureRecognizerDelegate {
     weak var sourceTransition: ZoomTransitionDelegate?
     weak var destinationTransition: ZoomTransitionDelegate?
@@ -49,11 +49,11 @@ class ZoomTransition: NSObject,
 
     // MARK: - Non interactive transition
 
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return zoomDuration
     }
 
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+    public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard !interactive else { return }
 
         // Getting view controllers and views
@@ -113,7 +113,7 @@ class ZoomTransition: NSObject,
         )
     }
 
-    func animationEnded(_ transitionCompleted: Bool) {
+    public func animationEnded(_ transitionCompleted: Bool) {
         completion?(transitionCompleted)
 
         interactiveTransitionContext?.animatingView.removeFromSuperview()
@@ -144,7 +144,7 @@ class ZoomTransition: NSObject,
 
     private var interactiveTransitionContext: InteractiveTransitionContext?
 
-    func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
+    public func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
         guard interactive else { return }
 
         guard
@@ -365,7 +365,7 @@ class ZoomTransition: NSObject,
     private var isEnded: Bool = false
     private var isFullInteractive: Bool = true
 
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard gestureRecognizer === panGestureRecognizer else { return true }
 
         // Only vertical swipes
