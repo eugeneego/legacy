@@ -27,7 +27,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         fatalError("init(coder:) has not been implemented")
     }
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         view.accessibilityIdentifier = "galleryViewController"
@@ -41,19 +41,19 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         setupAppearance?(self)
     }
 
-    override public var prefersStatusBarHidden: Bool {
+    override open var prefersStatusBarHidden: Bool {
         return currentViewController.prefersStatusBarHidden
     }
 
-    override public var preferredStatusBarStyle: UIStatusBarStyle {
+    override open var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 
-    override public var shouldAutorotate: Bool {
+    override open var shouldAutorotate: Bool {
         return true
     }
 
-    override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
     }
 
