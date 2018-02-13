@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
+open class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
     ZoomTransitionDelegate {
     var closeTitle: String = "Close"
     var shareIcon: UIImage?
