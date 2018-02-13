@@ -12,17 +12,39 @@ public enum GalleryMedia {
     case video(Video)
 
     public struct Image {
+        public typealias FullImageLoader = (_ completion: @escaping (UIImage?, Error?) -> Void) -> Void
         var index: Int = 0
         var previewImage: UIImage?
         var fullImage: UIImage?
-        var fullImageLoader: ((_ completion: @escaping (UIImage?, Error?) -> Void) -> Void)?
+        var fullImageLoader: FullImageLoader?
+
+        public init() {}
+
+        public init(index: Int = 0, previewImage: UIImage?, fullImage: UIImage?, fullImageLoader: FullImageLoader?) {
+            self.index = index
+            self.previewImage = previewImage
+            self.fullImage = fullImage
+            self.fullImageLoader = fullImageLoader
+        }
     }
 
     public struct Video {
+        public typealias PreviewImageLoader = (_ completion: @escaping (UIImage?, Error?) -> Void) -> Void
+        public typealias VideoLoader = (_ completion: @escaping (URL?, Error?) -> Void) -> Void
         var index: Int = 0
         var url: URL?
         var previewImage: UIImage?
-        var previewImageLoader: ((_ completion: @escaping (UIImage?, Error?) -> Void) -> Void)?
-        var videoLoader: ((_ completion: @escaping (URL?, Error?) -> Void) -> Void)?
+        var previewImageLoader: PreviewImageLoader?
+        var videoLoader: VideoLoader?
+
+        public init() {}
+
+        public init(index: Int = 0, url: URL?, previewImage: UIImage?, previewImageLoader: PreviewImageLoader?, videoLoader: VideoLoader?) {
+            self.index = index
+            self.url = url
+            self.previewImage = previewImage
+            self.previewImageLoader = previewImageLoader
+            self.videoLoader = videoLoader
+        }
     }
 }
