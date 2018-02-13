@@ -16,7 +16,6 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     private var isShown: Bool = false
 
     init() {
-        // let options: [String: Any] = [ UIPageViewControllerOptionInterPageSpacingKey: CGFloat(8) ]
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 
         dataSource = self
@@ -113,7 +112,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     // MARK: - Data Source
 
-    public func pageViewController(
+    open func pageViewController(
         _ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController
     ) -> UIViewController? {
@@ -124,7 +123,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         return controller
     }
 
-    public func pageViewController(
+    open func pageViewController(
         _ pageViewController: UIPageViewController,
         viewControllerAfter viewController: UIViewController
     ) -> UIViewController? {
@@ -137,7 +136,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     // MARK: - Delegate
 
-    public func pageViewController(
+    open func pageViewController(
         _ pageViewController: UIPageViewController,
         didFinishAnimating finished: Bool,
         previousViewControllers: [UIViewController],
@@ -148,37 +147,37 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         }
     }
 
-    public func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
+    open func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
         return .all
     }
 
     // MARK: - Transition
 
-    public var zoomTransitionAnimatingView: UIView? {
+    open var zoomTransitionAnimatingView: UIView? {
         guard let transitionDelegate = currentViewController as? ZoomTransitionDelegate else { return nil }
 
         return transitionDelegate.zoomTransitionAnimatingView
     }
 
-    public func zoomTransitionHideViews(hide: Bool) {
+    open func zoomTransitionHideViews(hide: Bool) {
         guard let transitionDelegate = currentViewController as? ZoomTransitionDelegate else { return }
 
         transitionDelegate.zoomTransitionHideViews(hide: hide)
     }
 
-    public func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
+    open func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {
         guard let transitionDelegate = currentViewController as? ZoomTransitionDelegate else { return .zero }
 
         return transitionDelegate.zoomTransitionDestinationFrame(for: view, frame: frame)
     }
 
-    public var zoomTransition: ZoomTransition? {
+    open var zoomTransition: ZoomTransition? {
         guard let transitionDelegate = currentViewController as? ZoomTransitionDelegate else { return nil }
 
         return transitionDelegate.zoomTransition
     }
 
-    public var zoomTransitionInteractionController: UIViewControllerInteractiveTransitioning? {
+    open var zoomTransitionInteractionController: UIViewControllerInteractiveTransitioning? {
         guard let transitionDelegate = currentViewController as? ZoomTransitionDelegate else { return nil }
 
         return (transitionDelegate.zoomTransition?.interactive ?? false) ? transitionDelegate.zoomTransition : nil
