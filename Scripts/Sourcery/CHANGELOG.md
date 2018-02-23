@@ -6,14 +6,101 @@
 
 ### New Features
 
+- Supports adding new templates files while in watcher mode
+- Supports adding new source files while in watcher mode
+- Added support for subscripts
+- Added `isGeneric` property for `Method`
+- You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
+- Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
+- added `@objcMembers` attribute
+- Moved EJS and Swift templates to separate framework targets
+- EJS templates now can be used when building Sourcery with SPM
+- Added Closures to AutoMockable
+- You can now link generated files to projects using config file
+- You can now use AutoMockable with annotations
+
+** Breaking **
+
+- @objc attribute now has a `name` argument that contains Objective-C name of attributed declaration
+- Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
+This is a breaking change for template code like this:
+
+ ```swift
+<% for type in (types.implementing["SomeProtocol"] ?? []) { %>
+```
+
+ The new correct syntax would be:
+
+ ```swift
+<% for type in types.implementing["SomeProtocol"] { %>
+```
+
+### Internal changes
+
+- Migrate to Swift 4, SwiftPM 4 and Xcode 9.2
+- `selectorName` for methods without parameters now will not contain `()`
+- `returnTypeName` for initializers will be the type name of defining type, with `?` for failable initializers
+- Improved compile time of AutoHashable template
+
+### Bug fixes 
+
+- Fixes FSEvents errors reported in #465 that happen on Sierra
+- JS exceptions no more override syntax errors in JS templates 
+- Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
+- Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
+- Fixed `inline:auto` not inserting code if Sourcery is run with cache enabled #467
+- Fixed parsing @objc attributes on types  
+- Fixed parsing void return type in methods without spaces between method name and body open curly brace and in protocols
+- Fixed AutoMockable template generating throwing method with void return type 
+- Fixed parsing throwing initializers
+- Fixed trying to process files which do not exist
+- Automockable will not generate mocks for methods defined in protocol extensions
+- Fixed parsing typealiases of generic types
+- Fixed resolving actual type name for generics with inner types
+
+## 0.10.1
+
+* When installing Sourcery via CocoaPods, the unneeded `file.zip` is not kept in `Pods/Sourcery/` anymore _(freeing ~12MB on each install of Sourcery made via CocoaPods!)_.  
+
+## 0.10.0
+
+### New Features
+
+- Added test for count Stencil filter
+- Added new reversed Stencil filter
+- Added new isEmpty Stencil filter
+- Added new sorted and sortedDescending Stencil filters. This can sort arrays by calling e.g. `protocol.allVariables|sorted:"name"`
+- Added new toArray Stencil filter
+- Added a console warning when a yaml is available but any parameter between 'sources', templates', 'forceParse', 'output' are provided
+
+### Internal changes
+
+- Add release to Homebrew rake task
+- Fixed Swiftlint warnings
+- Fixed per file generation if there is long (approx. 150KB) output inside `sourcery:file` annotation
+- Do not generate default.profraw
+- Remove filters in favor of same filters from StencilSwiftKit
+
+## 0.9.0
+
+### New Features
+
 - Added support for file paths in `config` parameter
 - Added `isDeinitializer` property for methods
 - Improved config file validation and error reporting
+- Various improvements for `AutoMockable` template:
+  - support methods with reserved keywords name
+  - support methods that throws
+  - improved generated declarations names
 
 ### Bug fixes
 
 - Fixed single file generation not skipping writing the file when there is no generated content
 
+### Internal changes
+
+- Updated dependencies for Swift 4
+- Update internal ruby dependencies
 
 ## 0.8.0
 
