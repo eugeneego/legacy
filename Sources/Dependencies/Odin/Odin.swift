@@ -7,19 +7,24 @@
 //
 
 /// Simple dependency injection container
-open class Odin: DependencyInjectionContainer {
-    public typealias Resolver = (Any) -> Void
+public class Odin: DependencyInjectionContainer {
+    public typealias ProtocolResolver = (Any) -> Void
+    public typealias TypeResolver = () -> Any
 
-    private var resolvers: [Resolver] = []
+    private let parentContainers: [DependencyInjectionContainer]
 
-    public init() {
+    private var protocolResolvers: [ProtocolResolver] = []
+    private var typeResolvers: [String: TypeResolver] = [:]
+
+    public init(parentContainers: [DependencyInjectionContainer] = []) {
+        self.parentContainers = parentContainers
     }
 
-    open func register(_ resolver: @escaping Resolver) {
-        resolvers.append(resolver)
+    private func register(_ resolver: @escaping ProtocolResolver) {
+        protocolResolvers.append(resolver)
     }
 
-    open func register<D>(_ resolver: @escaping (inout D) -> Void) {
+    public func register<D>(_ resolver: @escaping (inout D) -> Void) {
         register { object in
             guard var object = object as? D else { return }
 
@@ -27,11 +32,27 @@ open class Odin: DependencyInjectionContainer {
         }
     }
 
-    open func resolve(_ object: Any?) {
+    public func resolve(_ object: Any?) {
         guard let object = object else { return }
 
-        resolvers.forEach { resolver in
+        parentContainers.forEach { container in
+            container.resolve(object)
+        }
+
+        protocolResolvers.forEach { resolver in
             resolver(object)
         }
+    }
+
+    private func key<D>(_ type: D.Type) -> String {
+        return String(reflecting: type)
+    }
+
+    public func register<D>(_ resolver: @escaping () -> D) {
+        typeResolvers[key(D.self)] = resolver
+    }
+
+    public func resolve<D>() -> D? {
+        return typeResolvers[key(D.self)]?() as? D ?? parentContainers.lazy.flatMap { container -> D? in container.resolve() }.first
     }
 }

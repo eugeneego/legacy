@@ -63,17 +63,12 @@ class RestConfigurator: Configurator {
         let imageLoader = HttpImageLoader(http: imagesHttp)
         let feedService = self.feedService(baseUrl: baseUrl, http: apiHttp)
 
-        container.register { (object: inout ImageLoaderDependency) in
-            object.imageLoader = imageLoader
-        }
+        container.register { (object: inout ImageLoaderDependency) in object.imageLoader = imageLoader }
+        container.register { (object: inout FeedServiceDependency) in object.feedService = feedService }
+        container.register { [unowned container] (object: inout DependencyContainerDependency) in object.container = container }
 
-        container.register { (object: inout FeedServiceDependency) in
-            object.feedService = feedService
-        }
-
-        container.register { [unowned container] (object: inout DependencyContainerDependency) in
-            object.container = container
-        }
+        container.register { () -> ImageLoader in imageLoader }
+        container.register { () -> FeedService in feedService }
 
         return container
     }
