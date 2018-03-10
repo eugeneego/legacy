@@ -11,13 +11,13 @@ public class Odin: DependencyInjectionContainer {
     public typealias ProtocolResolver = (Any) -> Void
     public typealias TypeResolver = () -> Any
 
-    private let parentContainers: [DependencyInjectionContainer]
+    private let parentContainer: DependencyInjectionContainer?
 
     private var protocolResolvers: [ProtocolResolver] = []
     private var typeResolvers: [String: TypeResolver] = [:]
 
-    public init(parentContainers: [DependencyInjectionContainer] = []) {
-        self.parentContainers = parentContainers
+    public init(parentContainer: DependencyInjectionContainer? = nil) {
+        self.parentContainer = parentContainer
     }
 
     private func register(_ resolver: @escaping ProtocolResolver) {
@@ -35,9 +35,7 @@ public class Odin: DependencyInjectionContainer {
     public func resolve(_ object: Any?) {
         guard let object = object else { return }
 
-        parentContainers.forEach { container in
-            container.resolve(object)
-        }
+        parentContainer?.resolve(object)
 
         protocolResolvers.forEach { resolver in
             resolver(object)
@@ -53,6 +51,6 @@ public class Odin: DependencyInjectionContainer {
     }
 
     public func resolve<D>() -> D? {
-        return typeResolvers[key(D.self)]?() as? D ?? parentContainers.lazy.flatMap { container -> D? in container.resolve() }.first
+        return typeResolvers[key(D.self)]?() as? D ?? parentContainer?.resolve()
     }
 }
