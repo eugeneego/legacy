@@ -2,7 +2,7 @@
 // DO NOT EDIT
 
 import Foundation
-import EEUtilities
+import Legacy
 
 // swiftlint:disable line_length type_name function_body_length
 struct FeedSubscriptionTransformer<From>: FullTransformer {

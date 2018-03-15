@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "447729DD1D7B121200D63FE7"
-               BuildableName = "EEUtilities.framework"
-               BlueprintName = "EEUtilities-iOS"
-               ReferencedContainer = "container:EEUtilities.xcodeproj">
+               BuildableName = "Legacy.framework"
+               BlueprintName = "Legacy-iOS"
+               ReferencedContainer = "container:Legacy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,9 +48,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "447729DD1D7B121200D63FE7"
-            BuildableName = "EEUtilities.framework"
-            BlueprintName = "EEUtilities-iOS"
-            ReferencedContainer = "container:EEUtilities.xcodeproj">
+            BuildableName = "Legacy.framework"
+            BlueprintName = "Legacy-iOS"
+            ReferencedContainer = "container:Legacy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,9 +66,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "447729DD1D7B121200D63FE7"
-            BuildableName = "EEUtilities.framework"
-            BlueprintName = "EEUtilities-iOS"
-            ReferencedContainer = "container:EEUtilities.xcodeproj">
+            BuildableName = "Legacy.framework"
+            BlueprintName = "Legacy-iOS"
+            ReferencedContainer = "container:Legacy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

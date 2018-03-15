@@ -3,7 +3,7 @@
 
 import Foundation
 import CoreGraphics
-import EEUtilities
+import Legacy
 
 // swiftlint:disable line_length type_name function_body_length
 struct FeedTransformer: FullTransformer {

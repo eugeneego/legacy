@@ -1,10 +1,10 @@
 <%_
 //
 // Light Transformer
-// EE Utilities
+// Legacy
 //
 // Copyright (c) 2017 Eugene Egorov.
-// License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
+// License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 func cleanTypeName(_ s: String) -> String {
@@ -59,7 +59,7 @@ for type in types.enums where type.annotations[enumTransformerName] != nil {
 -%>
 // sourcery:file:<%= name %>.swift
 import Foundation
-import EEUtilities
+import Legacy
 
 <%_ if type.hasAssociatedValues { -%>
 // Enums with associated values are not supported.
@@ -119,7 +119,7 @@ for type in types.all where type.annotations[transformerName] != nil {
 // sourcery:file:<%= name %>.swift
 import Foundation
 import CoreGraphics
-import EEUtilities
+import Legacy
 
 // swiftlint:disable line_length type_name function_body_length
 struct <%= name %>: LightTransformer {

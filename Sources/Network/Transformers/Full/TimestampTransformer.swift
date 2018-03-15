@@ -1,9 +1,9 @@
 //
 // TimestampTransformer
-// EE Utilities
+// Legacy
 //
 // Copyright (c) 2017 Eugene Egorov.
-// License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
+// License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 import Foundation

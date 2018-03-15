@@ -6,7 +6,7 @@
 // Copyright (c) 2017 Eugene Egorov. All rights reserved.
 //
 
-import EEUtilities
+import Legacy
 
 class RestFeedService: FeedService {
     private let rest: LightRestClient

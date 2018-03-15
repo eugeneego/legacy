@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		441A01D220407B540047349E /* EEUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 441A01D320407B540047349E /* EEUtilities.framework */; };
 		44EDDE021EAE0F06003948BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EDDE011EAE0F06003948BD /* AppDelegate.swift */; };
+		44F19F20205B282F008C7026 /* Legacy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44F19F21205B282F008C7026 /* Legacy.framework */; };
 		B2FA80E57845BE9DA0FED411 /* FeedKindLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */; };
 		B2FA8144D4C67BEFB867B1E0 /* FeedSubscriptionLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89FD8DF20967266E488E /* FeedSubscriptionLightTransformer.swift */; };
 		B2FA83002DF11E0F9A3E92FF /* FeedTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C48B459389546352F64 /* FeedTransformer.swift */; };
@@ -31,9 +31,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		441A01D320407B540047349E /* EEUtilities.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = EEUtilities.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44EDDDFE1EAE0F06003948BD /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		44EDDE011EAE0F06003948BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		44F19F21205B282F008C7026 /* Legacy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Legacy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2FA814E158A105ADE6265ED /* FeedService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedService.swift; sourceTree = "<group>"; };
 		B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedKindLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8279F04CEF09C8630DD6 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				441A01D220407B540047349E /* EEUtilities.framework in Frameworks */,
+				44F19F20205B282F008C7026 /* Legacy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,7 +101,7 @@
 		44EDDE131EAE2C2B003948BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				441A01D320407B540047349E /* EEUtilities.framework */,
+				44F19F21205B282F008C7026 /* Legacy.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

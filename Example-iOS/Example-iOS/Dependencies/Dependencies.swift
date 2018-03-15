@@ -6,7 +6,7 @@
 // Copyright (c) 2017 Eugene Egorov. All rights reserved.
 //
 
-import EEUtilities
+import Legacy
 
 protocol DependencyContainerDependency {
     var container: DependencyInjectionContainer! { get set }

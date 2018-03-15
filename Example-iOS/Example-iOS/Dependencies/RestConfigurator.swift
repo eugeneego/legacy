@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import EEUtilities
+import Legacy
 
 class RestConfigurator: Configurator {
     private let baseUrl: URL

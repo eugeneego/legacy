@@ -1,9 +1,9 @@
 //
 // SimpleSubscription
-// EE Utilities
+// Legacy
 //
 // Copyright (c) 2016 Eugene Egorov.
-// License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
+// License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 open class SimpleSubscription: Subscription {

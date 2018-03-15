@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import EEUtilities
+import Legacy
 
 final class MockConfigurator: Configurator {
     private var tabBarController: UITabBarController

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import EEUtilities
+import Legacy
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

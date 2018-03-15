@@ -2,10 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:EEUtilities.xcodeproj">
+      location = "container:Legacy.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:EEUtilities.playground">
+      location = "group:Legacy.playground">
    </FileRef>
    <FileRef
       location = "group:Example-iOS/Example-iOS.xcodeproj">

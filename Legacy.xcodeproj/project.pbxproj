@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		441D90351DDF70F800B4493B /* RequestAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441D90341DDF70F800B4493B /* RequestAuthorizer.swift */; };
 		441D90371DDF716A00B4493B /* Optional+With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441D90361DDF716A00B4493B /* Optional+With.swift */; };
-		447729E21D7B121200D63FE7 /* EEUtilities-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 447729E11D7B121200D63FE7 /* EEUtilities-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		447729E21D7B121200D63FE7 /* Legacy-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 447729E11D7B121200D63FE7 /* Legacy-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		44EE86011E92A4BD00E3F6AD /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EE86001E92A4BD00E3F6AD /* DeviceInfo.swift */; };
 		44EE86031E92A4DC00E3F6AD /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EE86021E92A4DC00E3F6AD /* Result.swift */; };
 		B2FA802B512F23D6E6E9E582 /* ColorTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA832A7D8E587420E22722 /* ColorTransformer.swift */; };
@@ -90,9 +90,9 @@
 /* Begin PBXFileReference section */
 		441D90341DDF70F800B4493B /* RequestAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestAuthorizer.swift; sourceTree = "<group>"; };
 		441D90361DDF716A00B4493B /* Optional+With.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Optional+With.swift"; sourceTree = "<group>"; };
-		447729DE1D7B121200D63FE7 /* EEUtilities.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EEUtilities.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		447729E11D7B121200D63FE7 /* EEUtilities-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EEUtilities-iOS.h"; sourceTree = "<group>"; };
-		447729E31D7B121200D63FE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		447729DE1D7B121200D63FE7 /* Legacy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Legacy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		447729E11D7B121200D63FE7 /* Legacy-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Legacy-iOS.h"; sourceTree = "<group>"; };
+		447729E31D7B121200D63FE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		44EE86001E92A4BD00E3F6AD /* DeviceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		44EE86021E92A4DC00E3F6AD /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		B2FA801B3A3421E7A5215206 /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
@@ -186,7 +186,7 @@
 		447729D21D7B0E7B00D63FE7 = {
 			isa = PBXGroup;
 			children = (
-				447729E01D7B121200D63FE7 /* EEUtilities-iOS */,
+				447729E01D7B121200D63FE7 /* Legacy-iOS */,
 				447729DF1D7B121200D63FE7 /* Products */,
 				B2FA8968D141B27388BB5140 /* Sources */,
 			);
@@ -195,18 +195,18 @@
 		447729DF1D7B121200D63FE7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				447729DE1D7B121200D63FE7 /* EEUtilities.framework */,
+				447729DE1D7B121200D63FE7 /* Legacy.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		447729E01D7B121200D63FE7 /* EEUtilities-iOS */ = {
+		447729E01D7B121200D63FE7 /* Legacy-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				447729E11D7B121200D63FE7 /* EEUtilities-iOS.h */,
+				447729E11D7B121200D63FE7 /* Legacy-iOS.h */,
 				447729E31D7B121200D63FE7 /* Info.plist */,
 			);
-			path = "EEUtilities-iOS";
+			path = "Legacy-iOS";
 			sourceTree = "<group>";
 		};
 		B2FA807D49557B1771377C58 /* Transformers */ = {
@@ -438,16 +438,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				447729E21D7B121200D63FE7 /* EEUtilities-iOS.h in Headers */,
+				447729E21D7B121200D63FE7 /* Legacy-iOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		447729DD1D7B121200D63FE7 /* EEUtilities-iOS */ = {
+		447729DD1D7B121200D63FE7 /* Legacy-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 447729E61D7B121200D63FE7 /* Build configuration list for PBXNativeTarget "EEUtilities-iOS" */;
+			buildConfigurationList = 447729E61D7B121200D63FE7 /* Build configuration list for PBXNativeTarget "Legacy-iOS" */;
 			buildPhases = (
 				447729E91D7B13E600D63FE7 /* Swiftlint */,
 				447729D91D7B121200D63FE7 /* Sources */,
@@ -459,9 +459,9 @@
 			);
 			dependencies = (
 			);
-			name = "EEUtilities-iOS";
-			productName = "EEUtilities-iOS";
-			productReference = 447729DE1D7B121200D63FE7 /* EEUtilities.framework */;
+			name = "Legacy-iOS";
+			productName = "Legacy-iOS";
+			productReference = 447729DE1D7B121200D63FE7 /* Legacy.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -478,7 +478,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 447729D61D7B0E7B00D63FE7 /* Build configuration list for PBXProject "EEUtilities" */;
+			buildConfigurationList = 447729D61D7B0E7B00D63FE7 /* Build configuration list for PBXProject "Legacy" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -490,7 +490,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				447729DD1D7B121200D63FE7 /* EEUtilities-iOS */,
+				447729DD1D7B121200D63FE7 /* Legacy-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -718,14 +718,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "EEUtilities-iOS/Info.plist";
+				INFOPLIST_FILE = "Legacy-iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.eugene.EEUtilities-iOS";
-				PRODUCT_NAME = EEUtilities;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.eugene.Legacy-iOS";
+				PRODUCT_NAME = Legacy;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -773,13 +773,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "EEUtilities-iOS/Info.plist";
+				INFOPLIST_FILE = "Legacy-iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.eugene.EEUtilities-iOS";
-				PRODUCT_NAME = EEUtilities;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.eugene.Legacy-iOS";
+				PRODUCT_NAME = Legacy;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -793,7 +793,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		447729D61D7B0E7B00D63FE7 /* Build configuration list for PBXProject "EEUtilities" */ = {
+		447729D61D7B0E7B00D63FE7 /* Build configuration list for PBXProject "Legacy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				447729D71D7B0E7B00D63FE7 /* Debug */,
@@ -802,7 +802,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		447729E61D7B121200D63FE7 /* Build configuration list for PBXNativeTarget "EEUtilities-iOS" */ = {
+		447729E61D7B121200D63FE7 /* Build configuration list for PBXNativeTarget "Legacy-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				447729E41D7B121200D63FE7 /* Debug */,

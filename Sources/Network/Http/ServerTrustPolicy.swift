@@ -1,12 +1,12 @@
 //
 // ServerTrustPolicy
-// EE Utilities
+// Legacy
 //
 // Copyright (c) 2014-2016 Alamofire Software Foundation (http://alamofire.org/)
 // License: MIT, https://github.com/Alamofire/Alamofire/blob/master/LICENSE
 //
 // Copyright (c) 2015 Eugene Egorov.
-// License: MIT, https://github.com/eugeneego/utilities-ios/blob/master/LICENSE
+// License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 import Foundation
