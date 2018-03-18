@@ -20,9 +20,7 @@ final class MockConfigurator: Configurator {
     private let imagesMemoryCapacity: Int = 50 * 1024 * 1024
     private let imagesDiskCapacity: Int = 100 * 1024 * 1024
 
-    private let logger: Logger = PrintLogger()
-
-    private func imagesHttp() -> Http {
+    private func imagesHttp(logger: Logger) -> Http {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = timeout
         configuration.timeoutIntervalForResource = timeout * 2
@@ -37,22 +35,22 @@ final class MockConfigurator: Configurator {
     func create() -> DependencyInjectionContainer {
         let container = Odin()
 
-        let imagesHttp = self.imagesHttp()
+        let logger: Logger = PrintLogger()
+        let imagesHttp = self.imagesHttp(logger: logger)
 
         let imageLoader = HttpImageLoader(http: imagesHttp)
         let feedService = MockFeedService()
 
-        container.register { (object: inout ImageLoaderDependency) in
-            object.imageLoader = imageLoader
-        }
+        // Registering protocols resolvers.
+        container.register { (object: inout LoggerDependency) in object.logger = logger }
+        container.register { (object: inout ImageLoaderDependency) in object.imageLoader = imageLoader }
+        container.register { (object: inout FeedServiceDependency) in object.feedService = feedService }
+        container.register { [unowned container] (object: inout DependencyContainerDependency) in object.container = container }
 
-        container.register { (object: inout FeedServiceDependency) in
-            object.feedService = feedService
-        }
-
-        container.register { [unowned container] (object: inout DependencyContainerDependency) in
-            object.container = container
-        }
+        // Registering type resolvers.
+        container.register { () -> Logger in logger }
+        container.register { () -> ImageLoader in imageLoader }
+        container.register { () -> FeedService in feedService }
 
         return container
     }

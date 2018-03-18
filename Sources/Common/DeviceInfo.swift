@@ -12,37 +12,84 @@ import UIKit
 import WatchKit
 #endif
 
-public class DeviceInfo {
-    public static let instance: DeviceInfo = DeviceInfo()
+/// Device and application information.
+public struct DeviceInfo: CustomStringConvertible {
+    /// Static instance with device and application information.
+    /// - note:
+    /// Application information is extracted from the main bundle.
+    public static let main: DeviceInfo = DeviceInfo(bundle: Bundle.main)
 
+    /// Machine name. Example: `iPhone10,6`
     public let machineName: String
+    /// Machine display name. Example: `iPhone X (GSM, LTE)`
     public let machineDisplayName: String
 
+    /// Operating system name. Example `iOS`
     public let system: String
+    /// Operating system version. Example `11.2`
     public let systemVersion: String
 
+    /// Application bundle name. Example: `MyApp`
+    /// - **Info.plist**: CFBundleName
+    public let bundleName: String
+    /// Application bundle display name. Example: `MyApp`
+    /// - **Xcode**: Target settings -> General -> Identity -> Display Name
+    /// - **Info.plist**: CFBundleDisplayName or CFBundleName
+    public let bundleDisplayName: String
+    /// Application bundle identifier. Example: `com.company.app`
+    /// - **Xcode**: Target settings -> General -> Identity -> Bundle Identifier
+    /// - **Info.plist**: CFBundleIdentifier
     public let bundleIdentifier: String
+    /// Application bundle version. Example: `3.14`
+    /// - **Xcode**: Target settings -> General -> Identity -> Version
+    /// - **Info.plist**: CFBundleShortVersionString
     public let bundleVersion: String
+    /// Application bundle build. Example: `159`
+    /// - **Xcode**: Target settings -> General -> Identity -> Build
+    /// - **Info.plist**: CFBundleVersion
     public let bundleBuild: String
 
-    private init() {
-        let bundle = Bundle.main
+    /// Initializes with a bundle with a reference class.
+    public init(class: AnyClass) {
+        self.init(bundle: Bundle(for: `class`))
+    }
+
+    /// Initializes with a bundle.
+    public init(bundle: Bundle) {
         #if os(iOS)
         let device = UIDevice.current
         #elseif os(watchOS)
         let device = WKInterfaceDevice.current()
         #endif
 
-        let name = DeviceInfo.getMachineName()
-        machineName = name
-        machineDisplayName = DeviceInfo.machineDisplayNames[machineName] ?? name
+        let localMachineName = DeviceInfo.getMachineName()
+        machineName = localMachineName
+        machineDisplayName = DeviceInfo.machineDisplayNames[machineName] ?? localMachineName
 
         system = device.systemName
         systemVersion = device.systemVersion
 
+        let localBundleName = bundle.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? ""
+        bundleName = localBundleName
+        bundleDisplayName = bundle.object(forInfoDictionaryKey: "CFBundleDisplayName" as String) as? String ?? localBundleName
         bundleIdentifier = bundle.object(forInfoDictionaryKey: kCFBundleIdentifierKey as String) as? String ?? ""
         bundleVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         bundleBuild = bundle.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String ?? ""
+    }
+
+    public var description: String {
+        return """
+        DeviceInfo:
+            machineName: \(machineName)
+            machineDisplayName: \(machineDisplayName)
+            system: \(system)
+            systemVersion: \(systemVersion)
+            bundleName: \(bundleName)
+            bundleDisplayName: \(bundleDisplayName)
+            bundleIdentifier: \(bundleIdentifier)
+            bundleVersion: \(bundleVersion)
+            bundleBuild: \(bundleBuild)
+        """
     }
 
     private static func getMachineName() -> String {
@@ -138,8 +185,8 @@ public class DeviceInfo {
         "Watch2,4": "Apple Watch Series 2 (42mm)",
         "Watch2,6": "Apple Watch Series 1 (38mm)",
         "Watch2,7": "Apple Watch Series 1 (42mm)",
-        "Watch3,3": "Apple Watch Series 3 (38mm, Cellular)",
-        "Watch3,4": "Apple Watch Series 3 (42mm, Cellular)",
+        "Watch3,1": "Apple Watch Series 3 (38mm, Cellular)",
+        "Watch3,2": "Apple Watch Series 3 (42mm, Cellular)",
         "Watch3,3": "Apple Watch Series 3 (38mm, GPS)",
         "Watch3,4": "Apple Watch Series 3 (42mm, GPS)",
 
