@@ -138,8 +138,8 @@ public class DeviceInfo {
         "Watch2,4": "Apple Watch Series 2 (42mm)",
         "Watch2,6": "Apple Watch Series 1 (38mm)",
         "Watch2,7": "Apple Watch Series 1 (42mm)",
-        "Watch3,3": "Apple Watch Series 3 (38mm, Cellular)",
-        "Watch3,4": "Apple Watch Series 3 (42mm, Cellular)",
+        "Watch3,1": "Apple Watch Series 3 (38mm, Cellular)",
+        "Watch3,2": "Apple Watch Series 3 (42mm, Cellular)",
         "Watch3,3": "Apple Watch Series 3 (38mm, GPS)",
         "Watch3,4": "Apple Watch Series 3 (42mm, GPS)",
 
