@@ -1,0 +1,6 @@
+language: objective-c
+osx_image: xcode9.2
+branches:
+  only:
+    - master
+script: xcodebuild test -project Legacy.xcodeproj -scheme Legacy-iOS -destination 'platform=iOS Simulator,name=iPhone 8' | xcpretty

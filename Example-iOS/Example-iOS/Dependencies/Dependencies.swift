@@ -12,6 +12,10 @@ protocol DependencyContainerDependency {
     var container: DependencyInjectionContainer! { get set }
 }
 
+protocol LoggerDependency {
+    var logger: Logger! { get set }
+}
+
 protocol FeedServiceDependency {
     var feedService: FeedService! { get set }
 }

@@ -30,6 +30,6 @@ public class PrintLogger: Logger {
     private let dateFormatter: DateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ")
 
     public func log(_ message: @autoclosure () -> String, level: LoggingLevel, for tag: String, function: String) {
-        print("\(dateFormatter.string(from: Date())) \(name(for: level)) \(tag)\(function.isEmpty ? "" : ",\(function)") \(message())")
+        print("\(dateFormatter.string(from: Date())) \(name(for: level)) \(tag)\(function.isEmpty ? "" : ".\(function)") \(message())")
     }
 }
