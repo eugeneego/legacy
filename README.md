@@ -6,4 +6,4 @@ Legacy
 
 A set of helpers for iOS application development written in Swift language.
 
-Add some **Legacy** to every project :)
+Add some **Legacy** to your project :)
