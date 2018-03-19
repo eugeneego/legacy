@@ -60,7 +60,7 @@ open class UrlSessionHttp: Http {
         let t = "←"
         let s = request.httpBody.flatMap { data -> String? in
             if let type = request.allHTTPHeaderFields?["Content-Type"], isText(type: type) && data.count <= maxLoggingBodySize {
-                return String(data: data, encoding: String.Encoding.utf8)
+                return String(data: data, encoding: .utf8) ?? String(data: data, encoding: .ascii)
             } else {
                 return "\(data.count) bytes"
             }
@@ -93,7 +93,7 @@ open class UrlSessionHttp: Http {
         let t = "→"
         let s = data.flatMap { data -> String? in
             if let type = urlResponse?.allHeaderFields["Content-Type"] as? String, isText(type: type) && data.count <= maxLoggingBodySize {
-                return String(data: data, encoding: String.Encoding.utf8)
+                return String(data: data, encoding: .utf8) ?? String(data: data, encoding: .ascii)
             } else {
                 return "\(data.count) bytes"
             }
@@ -124,7 +124,8 @@ open class UrlSessionHttp: Http {
             }
         }
 
-        let dataTask = session.dataTask(with: request) { data, response, error in
+        let dataTask = session.dataTask(with: request)
+        let task = Task(dataTask, startDate: start) { data, response, error in
             let end = Date()
             self.log(response, request, data, error as NSError?, time: end.timeIntervalSince(start), date: end)
 
@@ -145,7 +146,9 @@ open class UrlSessionHttp: Http {
             }
         }
 
-        return Task(dataTask)
+        delegateObject.tasks.append(task)
+
+        return task
     }
 
     open func processError(_ error: Error) -> HttpError {
@@ -164,10 +167,23 @@ open class UrlSessionHttp: Http {
     // MARK: - Task
 
     private class Task: HttpTask {
-        let task: URLSessionTask
+        var uploadBytes: Int64 = -1
+        var uploadTotalBytes: Int64 = -1
+        var uploadProgress: HttpProgress?
 
-        init(_ task: URLSessionTask) {
+        var downloadBytes: Int64 = -1
+        var downloadTotalBytes: Int64 = -1
+        var downloadProgress: HttpProgress?
+
+        let task: URLSessionTask
+        let startDate: Date
+        let completion: (Data?, URLResponse?, Error?) -> Void
+        var data: Data = Data()
+
+        init(_ task: URLSessionTask, startDate: Date, completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
             self.task = task
+            self.startDate = startDate
+            self.completion = completion
         }
 
         func resume() {
@@ -181,8 +197,9 @@ open class UrlSessionHttp: Http {
 
     // MARK: - Delegate
 
-    private class Delegate: NSObject, URLSessionDelegate {
+    private class Delegate: NSObject, URLSessionDataDelegate {
         var trustPolicies: [String: ServerTrustPolicy] = [:]
+        var tasks: [Task] = []
 
         func urlSession(
             _ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
@@ -202,6 +219,42 @@ open class UrlSessionHttp: Http {
             }
 
             completionHandler(disposition, credential)
+        }
+
+        func urlSession(
+            _ session: URLSession, task: URLSessionTask,
+            didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64
+        ) {
+            guard let httpTask = tasks.first(where: { $0.task === task }) else { return }
+
+            httpTask.uploadBytes = totalBytesSent
+            httpTask.uploadTotalBytes = totalBytesExpectedToSend
+            httpTask.uploadProgress?(totalBytesSent, totalBytesExpectedToSend)
+        }
+
+        func urlSession(
+            _ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse,
+            completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
+        ) {
+            guard let httpTask = tasks.first(where: { $0.task === dataTask }) else { return completionHandler(.cancel) }
+
+            httpTask.downloadTotalBytes = response.expectedContentLength
+            completionHandler(.allow)
+        }
+
+        func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+            guard let httpTask = tasks.first(where: { $0.task === dataTask }) else { return }
+
+            httpTask.data.append(data)
+            httpTask.downloadBytes = Int64(httpTask.data.count)
+            httpTask.downloadProgress?(httpTask.downloadBytes, httpTask.downloadTotalBytes)
+        }
+
+        func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+            guard let index = tasks.index(where: { $0.task === task }) else { return }
+
+            let httpTask = tasks.remove(at: index)
+            httpTask.completion(httpTask.data, httpTask.task.response, httpTask.task.error ?? error)
         }
     }
 }

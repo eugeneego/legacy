@@ -9,8 +9,17 @@
 import Foundation
 
 public typealias HttpCompletion = (HTTPURLResponse?, Data?, HttpError?) -> Void
+public typealias HttpProgress = (_ bytes: Int64, _ totalBytes: Int64) -> Void
 
 public protocol HttpTask {
+    var uploadBytes: Int64 { get }
+    var uploadTotalBytes: Int64 { get }
+    var uploadProgress: HttpProgress? { get set }
+
+    var downloadBytes: Int64 { get }
+    var downloadTotalBytes: Int64 { get }
+    var downloadProgress: HttpProgress? { get set }
+
     func resume()
     func cancel()
 }
