@@ -8,70 +8,48 @@
 
 import Foundation
 
-public enum RestError: Error {
-    case badUrl
-    case auth(error: Error?)
-    case http(code: Int, error: Error?, body: Data?)
-    case error(error: HttpError?, body: Data?)
-}
-
-public protocol RestTask {
-    func cancel()
-}
-
-public protocol RestClient {
-    var http: Http { get }
-    var baseURL: URL { get }
-
-    @discardableResult
-    func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestSerializer.Value?, headers: [String: String],
-        requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask
-
+public protocol RestClient: NetworkClient {
     @discardableResult
     func create<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         path: String, id: String?, object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask
 
     @discardableResult
     func create<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask
 
     @discardableResult
     func read<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask
 
     @discardableResult
     func update<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         path: String, id: String?, object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask
 
     @discardableResult
     func update<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask
 
     @discardableResult
     func delete<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask
 }
 
 public extension RestClient {
@@ -91,8 +69,8 @@ public extension RestClient {
     func create<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         path: String, id: String?, object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask {
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask {
         return request(
             method: .post,
             path: pathWithId(path: path, id: id),
@@ -109,8 +87,8 @@ public extension RestClient {
     func create<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask {
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask {
         return request(
             method: .post,
             path: pathWithId(path: path, id: id),
@@ -127,8 +105,8 @@ public extension RestClient {
     func read<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask {
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask {
         return request(
             method: .get,
             path: pathWithId(path: path, id: id),
@@ -145,8 +123,8 @@ public extension RestClient {
     func update<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         path: String, id: String?, object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask {
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask {
         return request(
             method: .put,
             path: pathWithId(path: path, id: id),
@@ -163,8 +141,8 @@ public extension RestClient {
     func update<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask {
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask {
         return request(
             method: .put,
             path: pathWithId(path: path, id: id),
@@ -181,8 +159,8 @@ public extension RestClient {
     func delete<ResponseSerializer: HttpSerializer>(
         path: String, id: String?, headers: [String: String],
         responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, RestError>) -> Void
-    ) -> RestTask {
+        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask {
         return request(
             method: .delete,
             path: pathWithId(path: path, id: id),
