@@ -11,8 +11,8 @@ import Foundation
 public enum NetworkError: Error {
     case badUrl
     case auth(error: Error?)
-    case http(code: Int, error: Error?, response: URLResponse?)
-    case error(error: HttpError?, response: URLResponse?)
+    case http(code: Int, error: Error?, response: URLResponse?, data: Data?)
+    case error(error: HttpError?, response: URLResponse?, data: Data?)
 }
 
 public protocol NetworkTask {
