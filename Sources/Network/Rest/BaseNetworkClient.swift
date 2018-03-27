@@ -73,17 +73,17 @@ open class BaseNetworkClient: NetworkClient {
             authorizer.authorize(request: request) { result in
                 switch result {
                     case .success(let request):
-                        let httpTask = http.data(request: request, serializer: responseSerializer) { _, object, data, error in
+                        let httpTask = http.data(request: request, serializer: responseSerializer) { response, object, _, error in
                             task.httpTask = nil
 
                             if case .status(let code, let error)? = error {
                                 if code == 401, let authCompletion = authCompletion {
                                     authCompletion()
                                 } else {
-                                    requestCompletion(.failure(.http(code: code, error: error, body: data)))
+                                    requestCompletion(.failure(.http(code: code, error: error, response: response)))
                                 }
                             } else {
-                                requestCompletion(Result(object, .error(error: error, body: data)))
+                                requestCompletion(Result(object, .error(error: error, response: response)))
                             }
                         }
                         task.httpTask = httpTask
@@ -100,13 +100,13 @@ open class BaseNetworkClient: NetworkClient {
                     authorizeAndRunRequest(requestAuthorizer, request, nil)
                 }
             } else {
-                let httpTask = http.data(request: request, serializer: responseSerializer) { _, object, data, error in
+                let httpTask = http.data(request: request, serializer: responseSerializer) { response, object, _, error in
                     task.httpTask = nil
 
                     if case .status(let code, let error)? = error {
-                        requestCompletion(.failure(.http(code: code, error: error, body: data)))
+                        requestCompletion(.failure(.http(code: code, error: error, response: response)))
                     } else {
-                        requestCompletion(Result(object, .error(error: error, body: data)))
+                        requestCompletion(Result(object, .error(error: error, response: response)))
                     }
                 }
                 task.httpTask = httpTask
