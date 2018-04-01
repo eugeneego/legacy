@@ -16,10 +16,10 @@ public struct ArrayLightTransformer<ElementTransformer: LightTransformer>: Light
     }
 
     public func from(any value: Any?) -> T? {
-        return (value as? [Any])?.flatMap(transformer.from(any:))
+        return (value as? [Any])?.compactMap(transformer.from(any:))
     }
 
     public func to(any value: T?) -> Any? {
-        return value?.flatMap(transformer.to(any:))
+        return value?.compactMap(transformer.to(any:))
     }
 }

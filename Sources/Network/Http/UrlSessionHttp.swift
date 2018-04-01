@@ -57,20 +57,20 @@ open class UrlSessionHttp: Http {
     private func log(_ request: URLRequest, date: Date) {
         guard let logger = logger else { return }
 
-        let t = "←"
-        let s = request.httpBody.flatMap { data -> String? in
+        let tag = "←"
+        let body = request.httpBody.flatMap { data -> String? in
             if let type = request.allHTTPHeaderFields?["Content-Type"], isText(type: type) && data.count <= maxLoggingBodySize {
                 return String(data: data, encoding: .utf8) ?? String(data: data, encoding: .ascii)
             } else {
                 return "\(data.count) bytes"
             }
         }
-        let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
+        let nils = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         let string =
             "__" +
-            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))" +
-            "\(t) Headers: \(ns(logHeaders(request.allHTTPHeaderFields)))" +
-            "\(t) Body: \(ns(s))" +
+            "\(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))" +
+            "\(tag) Headers: \(nils(logHeaders(request.allHTTPHeaderFields)))" +
+            "\(tag) Body: \(nils(body))" +
             "‾‾"
         logger.log(string, level: .info, for: loggerTag, function: "")
     }
@@ -90,22 +90,22 @@ open class UrlSessionHttp: Http {
 
         let loggingLevel: LoggingLevel = (urlResponse?.statusCode ?? 1000) < 400 ? .info : .error
 
-        let t = "→"
-        let s = data.flatMap { data -> String? in
+        let tag = "→"
+        let body = data.flatMap { data -> String? in
             if let type = urlResponse?.allHeaderFields["Content-Type"] as? String, isText(type: type) && data.count <= maxLoggingBodySize {
                 return String(data: data, encoding: .utf8) ?? String(data: data, encoding: .ascii)
             } else {
                 return "\(data.count) bytes"
             }
         }
-        let ns = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
+        let nils = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         let string =
             "__" +
-            "\(t) Request: \(ns(request.httpMethod)) \(ns(request.url))" +
-            "\(t) Response: \(ns(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s" +
-            "\(t) Headers: \(ns(logHeaders(urlResponse?.allHeaderFields)))" +
-            "\(t) Data: \(ns(s))" +
-            "\(t) Error: \(ns(error))" +
+            "\(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))" +
+            "\(tag) Response: \(nils(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s" +
+            "\(tag) Headers: \(nils(logHeaders(urlResponse?.allHeaderFields)))" +
+            "\(tag) Data: \(nils(body))" +
+            "\(tag) Error: \(nils(error))" +
             "‾‾"
         logger.log(string, level: loggingLevel, for: loggerTag, function: "")
     }

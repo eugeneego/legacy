@@ -96,9 +96,9 @@ public struct DeviceInfo: CustomStringConvertible {
         var name: [Int32] = [ CTL_HW, HW_MACHINE ]
         var size: Int = 2
         sysctl(&name, 2, nil, &size, nil, 0)
-        var hw_machine: [CChar] = Array(repeating: 0, count: size)
-        sysctl(&name, 2, &hw_machine, &size, nil, 0)
-        return String(cString: hw_machine)
+        var machine: [CChar] = Array(repeating: 0, count: size)
+        sysctl(&name, 2, &machine, &size, nil, 0)
+        return String(cString: machine)
     }
 
     private static let machineDisplayNames: [String: String] = [
