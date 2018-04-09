@@ -44,8 +44,8 @@ public struct JsonModelForwardTransformerHttpSerializer<T: ForwardTransformer>: 
     }
 
     public func deserialize(_ data: Data?) -> Value? {
+        guard let data = data, !data.isEmpty else { return transformer.transform(source: ()).value }
         guard
-            let data = data,
             let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments),
             let value = transformer.transform(source: json).value
         else { return nil }
@@ -102,8 +102,8 @@ public struct JsonModelFullTransformerHttpSerializer<T: FullTransformer>: HttpSe
     }
 
     public func deserialize(_ data: Data?) -> Value? {
+        guard let data = data, !data.isEmpty else { return transformer.transform(source: ()).value }
         guard
-            let data = data,
             let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments),
             let value = transformer.transform(source: json).value
         else { return nil }
