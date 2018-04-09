@@ -111,3 +111,54 @@ public struct JsonModelFullTransformerHttpSerializer<T: FullTransformer>: HttpSe
         return value
     }
 }
+
+public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
+    public typealias Value = T
+
+    public let contentType = "application/json"
+
+    private let decoder: JSONDecoder
+    private let encoder: JSONEncoder
+
+    public init(decoder: JSONDecoder, encoder: JSONEncoder) {
+        self.decoder = decoder
+        self.encoder = encoder
+    }
+
+    public init(
+        dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate,
+        dataDecodingStrategy: JSONDecoder.DataDecodingStrategy = .base64,
+        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+        dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .deferredToDate,
+        dataEncodingStrategy: JSONEncoder.DataEncodingStrategy = .base64,
+        keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+        outputFormatting: JSONEncoder.OutputFormatting = []
+    ) {
+        decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = dateDecodingStrategy
+        decoder.dataDecodingStrategy = dataDecodingStrategy
+        decoder.keyDecodingStrategy = keyDecodingStrategy
+
+        encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = dateEncodingStrategy
+        encoder.dataEncodingStrategy = dataEncodingStrategy
+        encoder.keyEncodingStrategy = keyEncodingStrategy
+        encoder.outputFormatting = outputFormatting
+    }
+
+    public func serialize(_ value: Value?) -> Data? {
+        guard let value = value else { return nil }
+
+        let data = try? encoder.encode(value)
+        return data
+    }
+
+    public func deserialize(_ data: Data?) -> Value? {
+        guard let data = data else { return nil }
+
+        let object = try? decoder.decode(T.self, from: data)
+        return object
+    }
+}
+
+public struct NilCodableModel: Codable {}

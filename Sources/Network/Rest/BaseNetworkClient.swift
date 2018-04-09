@@ -117,8 +117,29 @@ open class BaseNetworkClient: NetworkClient {
         return task
     }
 
+    private class Progress: HttpProgress {
+        var bytes: Int64? { return progress?.bytes }
+        var totalBytes: Int64? { return progress?.totalBytes }
+        var callback: HttpProgressCallback?
+
+        var progress: HttpProgress? {
+            didSet {
+                progress?.setCallback(callback)
+            }
+        }
+
+        func setCallback(_ callback: HttpProgressCallback?) {
+            self.callback = callback
+        }
+    }
+
     private class Task: NetworkTask {
         var httpTask: HttpTask?
+        var uploadProgress: HttpProgress { return upload }
+        var downloadProgress: HttpProgress { return download }
+
+        var upload: Progress = Progress()
+        var download: Progress = Progress()
 
         init() {
         }

@@ -16,6 +16,9 @@ public enum NetworkError: Error {
 }
 
 public protocol NetworkTask {
+    var uploadProgress: HttpProgress { get }
+    var downloadProgress: HttpProgress { get }
+
     func cancel()
 }
 
@@ -60,6 +63,24 @@ public extension NetworkClient {
     ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any {
         let requestSerializer = JsonModelBackwardTransformerHttpSerializer(transformer: requestTransformer)
         let responseSerializer = JsonModelForwardTransformerHttpSerializer(transformer: responseTransformer)
+
+        return request(
+            method: method,
+            path: path, parameters: parameters, object: object, headers: headers,
+            requestSerializer: requestSerializer, responseSerializer: responseSerializer,
+            completion: completion
+        )
+    }
+
+    @discardableResult
+    func request<RequestObject: Codable, ResponseObject: Codable>(
+        method: HttpMethod, path: String,
+        parameters: [String: String], object: RequestObject?, headers: [String: String],
+        decoder: JSONDecoder, encoder: JSONEncoder,
+        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+    ) -> NetworkTask {
+        let requestSerializer = JsonModelCodableHttpSerializer<RequestObject>(decoder: decoder, encoder: encoder)
+        let responseSerializer = JsonModelCodableHttpSerializer<ResponseObject>(decoder: decoder, encoder: encoder)
 
         return request(
             method: method,

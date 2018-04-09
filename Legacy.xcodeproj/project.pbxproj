@@ -25,6 +25,7 @@
 		B2FA81C2EE735B2686E1D52F /* DecimalTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */; };
 		B2FA81E8D4447B8F612F5DF1 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88F670994240D540032B /* Reusable.swift */; };
 		B2FA820DFC803C85E1B0FB9B /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8070910A5471F1C64F29 /* UIColor+Hex.swift */; };
+		B2FA8210D0C8751A449B602A /* CodableRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8948EA5267A724A05E3B /* CodableRestClient.swift */; };
 		B2FA8214C9CDA35EC397896A /* Http.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84BBE47AB20628675CBD /* Http.swift */; };
 		B2FA825EE069F2E9D192DC8E /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA852B1C43001C50964B88 /* GradientView.swift */; };
 		B2FA8280981995DF5DE4D900 /* FilteringLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8E16DAF6C4EA069392AA /* FilteringLogger.swift */; };
@@ -157,6 +158,7 @@
 		B2FA8915D4F0786B5A29F899 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		B2FA892E03F8A89CA27FEE9F /* DictionaryTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryTransformer.swift; sourceTree = "<group>"; };
 		B2FA89369D1C3F4AEC950146 /* BaseNetworkClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseNetworkClient.swift; sourceTree = "<group>"; };
+		B2FA8948EA5267A724A05E3B /* CodableRestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodableRestClient.swift; sourceTree = "<group>"; };
 		B2FA89997C8960D3CDBFF0BA /* JsonHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonHttpSerializer.swift; sourceTree = "<group>"; };
 		B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlTransformer.swift; sourceTree = "<group>"; };
 		B2FA89A6C7B0C66FA91C0A3C /* GalleryMedia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryMedia.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				B2FA8A70AC8E484E56F4A0FC /* FullRestClient.swift */,
 				B2FA8D7FD120351052DC3441 /* NetworkClient.swift */,
 				B2FA89369D1C3F4AEC950146 /* BaseNetworkClient.swift */,
+				B2FA8948EA5267A724A05E3B /* CodableRestClient.swift */,
 			);
 			path = Rest;
 			sourceTree = "<group>";
@@ -680,6 +683,7 @@
 				B2FA868FB22061CC005F6113 /* UIStoryboard+Intstantiate.swift in Sources */,
 				B2FA8CCA33CDFD85FDA4C4CF /* NetworkClient.swift in Sources */,
 				B2FA864B26CB1947F019E23F /* BaseNetworkClient.swift in Sources */,
+				B2FA8210D0C8751A449B602A /* CodableRestClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
