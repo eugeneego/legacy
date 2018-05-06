@@ -13,11 +13,19 @@ public struct JsonHttpSerializer: HttpSerializer {
 
     public let contentType = "application/json"
 
-    public func serialize(_ value: Value?) -> Data? {
-        return value.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
+    public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
+        guard let value = value else { return .failure(HttpSerializationError.noData) }
+
+        return Result {
+            try JSONSerialization.data(withJSONObject: value, options: [])
+        }
     }
 
-    public func deserialize(_ data: Data?) -> Value? {
-        return data.flatMap { try? JSONSerialization.jsonObject(with: $0, options: .allowFragments) }
+    public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
+        guard let data = data else { return .failure(HttpSerializationError.noData) }
+
+        return Result {
+            try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        }
     }
 }

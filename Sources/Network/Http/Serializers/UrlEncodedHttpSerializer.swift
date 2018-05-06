@@ -13,12 +13,14 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
 
     public let contentType = "application/x-www-form-urlencoded"
 
-    public func serialize(_ value: Value?) -> Data? {
-        return serialize(value).flatMap { $0.data(using: String.Encoding.utf8) }
+    public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
+        let data = serialize(value).flatMap { $0.data(using: String.Encoding.utf8) }
+        return Result(data, HttpSerializationError.noData)
     }
 
-    public func deserialize(_ data: Data?) -> Value? {
-        return deserialize(data.flatMap { String(data: $0, encoding: String.Encoding.utf8) })
+    public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
+        let value = deserialize(data.flatMap { String(data: $0, encoding: String.Encoding.utf8) })
+        return Result(value, HttpSerializationError.noData)
     }
 
     public func serialize(_ value: Value?) -> String? {

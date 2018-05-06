@@ -17,11 +17,11 @@ public struct DataHttpSerializer: HttpSerializer {
         self.contentType = contentType
     }
 
-    public func serialize(_ value: Value?) -> Data? {
-        return value
+    public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
+        return Result(value, HttpSerializationError.noData)
     }
 
-    public func deserialize(_ data: Data?) -> Value? {
-        return data
+    public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
+        return Result(data, HttpSerializationError.noData)
     }
 }

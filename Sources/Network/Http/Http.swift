@@ -36,10 +36,10 @@ public protocol Http {
 public enum HttpError: Error {
     case nonHttpResponse(response: URLResponse)
     case badUrl
-    case parsingFailed
     case unreachable(Error)
     case error(Error)
     case status(code: Int, error: Error?)
+    case serialization(HttpSerializationError)
 }
 
 public enum HttpMethod {
@@ -86,12 +86,17 @@ public extension Http {
         completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
     ) -> HttpTask {
         return data(request: request) { response, data, error in
-            let object = error == nil ? serializer.deserialize(data) : nil
-            var error = error
-            if error == nil && object == nil {
-                error = HttpError.parsingFailed
+            if let error = error {
+                completion(response, nil, data, error)
+            } else {
+                let result = serializer.deserialize(data)
+                switch result {
+                    case .success(let value):
+                        completion(response, value, data, error)
+                    case .failure(let error):
+                        completion(response, nil, data, .serialization(error))
+                }
             }
-            completion(response, object, data, error)
         }
     }
 
@@ -134,9 +139,19 @@ public extension Http {
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String],
         object: T.Value?, serializer: T
-    ) -> URLRequest {
-        var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: serializer.serialize(object))
+    ) -> Result<URLRequest, HttpError> {
+        let bodyResult = serializer.serialize(object)
+        let body: Data?
+        switch bodyResult {
+            case .success(let data):
+                body = data
+            case .failure(.noData):
+                body = nil
+            case .failure(let error):
+                return .failure(.serialization(error))
+        }
+        var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
         req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
-        return req
+        return .success(req)
     }
 }
