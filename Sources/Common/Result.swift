@@ -20,16 +20,6 @@ public enum Result<T, E> {
         self = .failure(error)
     }
 
-    public init(try closure: () throws -> T) {
-        do {
-            self = .success(try closure())
-        } catch let error as E {
-            self = .failure(error)
-        } catch {
-            fatalError("Error type mismatch. Expected \(E.self), but given \(type(of: error))")
-        }
-    }
-
     public init(_ value: T?, _ error: @autoclosure () -> E) {
         if let value = value {
             self = .success(value)
@@ -75,27 +65,6 @@ public enum Result<T, E> {
         return map(success: Result<T, E2>.success, failure: transform)
     }
 
-    // MARK: - Try
-
-    public func `try`() throws -> T {
-        switch self {
-            case .success(let value):
-                return value
-            case .failure(let error as Error):
-                throw error
-            default:
-                fatalError("\(E.self) should adopt Error.")
-        }
-    }
-
-    public func tryMap<U>(_ transform: (T) throws -> U) -> Result<U, E> {
-        return flatMap { value in
-            Result<U, E> {
-                try transform(value)
-            }
-        }
-    }
-
     // MARK: - Recover
 
     public func recover(_ value: @autoclosure () -> T) -> T {
@@ -110,6 +79,43 @@ public enum Result<T, E> {
 
     public var description: String {
         return map(success: { ".success(\($0))" }, failure: { ".failure(\($0))" })
+    }
+}
+
+// swiftlint:disable:next no_grouping_extension
+public extension Result where E: Error {
+    static func typeMismatchFatal(error: Error) -> E {
+        fatalError("Error type mismatch. Expected \(E.self), but given \(type(of: error))")
+    }
+
+    public init(try closure: () throws -> T, unknown: (Error) -> E = Result.typeMismatchFatal) {
+        do {
+            self = .success(try closure())
+        } catch let error as E {
+            self = .failure(error)
+        } catch {
+            self = .failure(unknown(error))
+        }
+    }
+
+    public func `try`() throws -> T {
+        switch self {
+            case .success(let value):
+                return value
+            case .failure(let error):
+                throw error
+        }
+    }
+
+    public func tryMap<U>(_ transform: (T) throws -> U, unknown: (Error) -> E = Result.typeMismatchFatal) -> Result<U, E> {
+        return flatMap { value in
+            Result<U, E>(
+                try: {
+                    try transform(value)
+                },
+                unknown: unknown
+            )
+        }
     }
 }
 
