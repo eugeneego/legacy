@@ -7,10 +7,7 @@
 
 import Foundation
 
-public protocol CodableRestClient: RestClient {
-    var decoder: JSONDecoder { get }
-    var encoder: JSONEncoder { get }
-
+public protocol CodableRestClient: RestClient, CodableNetworkClient {
     @discardableResult
     func request<RequestObject: Codable, ResponseObject: Codable>(
         method: HttpMethod, path: String,
@@ -83,7 +80,7 @@ public extension CodableRestClient {
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: JsonModelCodableHttpSerializer<ResponseObject>(),
+            responseSerializer: JsonModelCodableHttpSerializer<ResponseObject>(decoder: decoder, encoder: encoder),
             completion: completion
         )
     }
@@ -97,7 +94,7 @@ public extension CodableRestClient {
             method: .get,
             path: pathWithId(path: path, id: id),
             parameters: parameters,
-            object: nil as NilCodableModel?,
+            object: NilCodableModel?.none,
             headers: headers,
             completion: completion
         )
@@ -144,7 +141,7 @@ public extension CodableRestClient {
             method: .delete,
             path: pathWithId(path: path, id: id),
             parameters: [:],
-            object: nil as NilCodableModel?,
+            object: NilCodableModel?.none,
             headers: headers,
             completion: completion
         )

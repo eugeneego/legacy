@@ -8,25 +8,31 @@
 
 import Foundation
 
-open class BaseNetworkClient: NetworkClient {
+open class BaseNetworkClient: CodableNetworkClient {
     open let http: Http
     open let baseURL: URL
     open let workQueue: DispatchQueue
     open let completionQueue: DispatchQueue
     open let requestAuthorizer: RequestAuthorizer?
+    open let decoder: JSONDecoder
+    open let encoder: JSONEncoder
 
     public init(
         http: Http,
         baseURL: URL,
         workQueue: DispatchQueue,
         completionQueue: DispatchQueue,
-        requestAuthorizer: RequestAuthorizer? = nil
+        requestAuthorizer: RequestAuthorizer? = nil,
+        decoder: JSONDecoder? = nil,
+        encoder: JSONEncoder? = nil
     ) {
         self.http = http
         self.baseURL = baseURL
         self.workQueue = workQueue
         self.completionQueue = completionQueue
         self.requestAuthorizer = requestAuthorizer
+        self.decoder = decoder ?? JSONDecoder()
+        self.encoder = encoder ?? JSONEncoder()
     }
 
     @discardableResult

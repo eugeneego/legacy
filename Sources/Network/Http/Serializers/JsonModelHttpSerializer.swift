@@ -1,5 +1,5 @@
 //
-// JsonModelTransformerHttpSerializer
+// JsonModelHttpSerializer
 // Legacy
 //
 // Copyright (c) 2015 Eugene Egorov.

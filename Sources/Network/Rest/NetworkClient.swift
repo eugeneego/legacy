@@ -35,6 +35,18 @@ public protocol NetworkClient {
     ) -> NetworkTask
 }
 
+public protocol CodableNetworkClient: NetworkClient {
+    var decoder: JSONDecoder { get }
+    var encoder: JSONEncoder { get }
+
+    @discardableResult
+    func request<RequestObject: Codable, ResponseObject: Codable>(
+        method: HttpMethod, path: String,
+        parameters: [String: String], object: RequestObject?, headers: [String: String],
+        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+    ) -> NetworkTask
+}
+
 public extension NetworkClient {
     @discardableResult
     public func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
@@ -86,6 +98,26 @@ public extension NetworkClient {
             method: method,
             path: path, parameters: parameters, object: object, headers: headers,
             requestSerializer: requestSerializer, responseSerializer: responseSerializer,
+            completion: completion
+        )
+    }
+}
+
+public extension CodableNetworkClient {
+    @discardableResult
+    public func request<RequestObject: Codable, ResponseObject: Codable>(
+        method: HttpMethod, path: String,
+        parameters: [String: String], object: RequestObject?, headers: [String: String],
+        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+    ) -> NetworkTask {
+        return request(
+            method: method,
+            path: path,
+            parameters: parameters,
+            object: object,
+            headers: headers,
+            decoder: decoder,
+            encoder: encoder,
             completion: completion
         )
     }

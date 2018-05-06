@@ -6,5 +6,5 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-open class BaseRestClient: BaseNetworkClient, LightRestClient, FullRestClient {
+open class BaseRestClient: BaseNetworkClient, LightRestClient, FullRestClient, CodableRestClient {
 }
