@@ -14,18 +14,20 @@ public struct JsonHttpSerializer: HttpSerializer {
     public let contentType = "application/json"
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        guard let value = value else { return .failure(HttpSerializationError.noData) }
+        guard let value = value else { return .success(Data()) }
 
-        return Result {
-            try JSONSerialization.data(withJSONObject: value, options: [])
-        }
+        return Result(
+            try: { try JSONSerialization.data(withJSONObject: value, options: []) },
+            unknown: HttpSerializationError.jsonSerialization
+        )
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        guard let data = data else { return .failure(HttpSerializationError.noData) }
+        guard let data = data, !data.isEmpty else { return .success([:]) }
 
-        return Result {
-            try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        }
+        return Result(
+            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            unknown: HttpSerializationError.jsonDeserialization
+        )
     }
 }

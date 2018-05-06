@@ -14,18 +14,20 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
     public let contentType = "application/x-www-form-urlencoded"
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        let data = serialize(value).flatMap { $0.data(using: String.Encoding.utf8) }
+        guard let value = value else { return .success(Data()) }
+
+        let data = serialize(value).data(using: String.Encoding.utf8)
         return Result(data, HttpSerializationError.noData)
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        let value = deserialize(data.flatMap { String(data: $0, encoding: String.Encoding.utf8) })
+        guard let data = data, !data.isEmpty else { return .success([:]) }
+
+        let value = String(data: data, encoding: String.Encoding.utf8).map(deserialize)
         return Result(value, HttpSerializationError.noData)
     }
 
-    public func serialize(_ value: Value?) -> String? {
-        guard let value = value else { return nil }
-
+    public func serialize(_ value: Value) -> String {
         let result = value
             .map { name, value in
                 UrlEncodedHttpSerializer.encode(name) + "=" + UrlEncodedHttpSerializer.encode("\(value)")
@@ -34,9 +36,7 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
         return result
     }
 
-    public func deserialize(_ string: String?) -> Value? {
-        guard let string = string else { return nil }
-
+    public func deserialize(_ string: String) -> Value {
         var params: Value = [:]
         let cmp = string.components(separatedBy: "&")
         cmp.forEach { param in

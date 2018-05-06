@@ -105,7 +105,7 @@ public extension Http {
 
         if !parameters.isEmpty {
             let serializer = UrlEncodedHttpSerializer()
-            var params = serializer.deserialize(components.query) ?? [:]
+            var params = serializer.deserialize(components.query ?? "")
             parameters.forEach { key, value in
                 params[key] = value
             }
@@ -140,18 +140,14 @@ public extension Http {
         headers: [String: String],
         object: T.Value?, serializer: T
     ) -> Result<URLRequest, HttpError> {
-        let bodyResult = serializer.serialize(object)
-        let body: Data?
-        switch bodyResult {
-            case .success(let data):
-                body = data
-            case .failure(.noData):
-                body = nil
-            case .failure(let error):
-                return .failure(.serialization(error))
-        }
-        var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
-        return .success(req)
+        let body = serializer.serialize(object)
+        return body.map(
+            success: {
+                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: $0)
+                req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
+                return .success(req)
+            },
+            failure: { .failure(.serialization($0)) }
+        )
     }
 }

@@ -18,10 +18,10 @@ public struct DataHttpSerializer: HttpSerializer {
     }
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        return Result(value, HttpSerializationError.noData)
+        return .success(value ?? Data())
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        return Result(data, HttpSerializationError.noData)
+        return .success(data ?? Data())
     }
 }
