@@ -2,7 +2,8 @@
 // CodableRestClient
 // Legacy
 //
-// Created by Eugene Egorov on 08 April 2018.
+// Copyright (c) 2018 Eugene Egorov.
+// License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 import Foundation
@@ -94,7 +95,7 @@ public extension CodableRestClient {
             method: .get,
             path: pathWithId(path: path, id: id),
             parameters: parameters,
-            object: NilCodableModel?.none,
+            object: Nil?.none,
             headers: headers,
             completion: completion
         )
@@ -141,7 +142,7 @@ public extension CodableRestClient {
             method: .delete,
             path: pathWithId(path: path, id: id),
             parameters: [:],
-            object: NilCodableModel?.none,
+            object: Nil?.none,
             headers: headers,
             completion: completion
         )

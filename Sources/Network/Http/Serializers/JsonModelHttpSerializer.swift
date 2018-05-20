@@ -189,7 +189,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        if let nilValue = NilCodableModel() as? Value {
+        if let nilValue = Nil() as? Value {
             return .success(nilValue)
         }
 
@@ -202,5 +202,5 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
     }
 }
 
-public struct NilCodableModel: Codable {
+public struct Nil: Codable {
 }

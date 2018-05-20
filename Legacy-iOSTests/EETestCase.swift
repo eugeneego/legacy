@@ -2,21 +2,20 @@
 // EETestCase
 // Legacy
 //
-// Created by Eugene Egorov on 20 May 2018.
+// Copyright (c) 2018 Eugene Egorov.
+// License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 import Foundation
 import XCTest
 @testable import Legacy
 
-class EETestCase: XCTestCase {
-    static let defaultTimeout: TimeInterval = 15
-
+extension XCTestCase {
     typealias ExpectationHandler = (_ desctiption: String, _ expectation: XCTestExpectation) -> Void
 
     /// Asynchronous expectation helper.
     func expect(
-        _ description: String, timeout: TimeInterval = defaultTimeout,
+        _ description: String, timeout: TimeInterval = 15,
         file: StaticString = #file, line: UInt = #line,
         handler: ExpectationHandler
     ) {

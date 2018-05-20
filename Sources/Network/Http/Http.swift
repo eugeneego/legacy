@@ -152,8 +152,9 @@ public extension Http {
     ) -> Result<URLRequest, HttpError> {
         let body = serializer.serialize(object)
         return body.map(
-            success: {
-                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: $0, bodyStream: nil)
+            success: { body in
+                let data = !body.isEmpty ? body : nil
+                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: data, bodyStream: nil)
                 req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
                 return .success(req)
             },
