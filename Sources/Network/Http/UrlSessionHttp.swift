@@ -45,12 +45,12 @@ open class UrlSessionHttp: Http {
 
     // MARK: - Log
 
+    private func nils(_ object: Any?) -> String {
+        return object.map { "\($0)" } ?? "nil"
+    }
+
     private func logHeaders(_ httpHeaders: [AnyHashable: Any]?) -> String? {
-        let headers = httpHeaders?.map { key, value -> String in
-            let key = (key as? String) ?? "\(key)"
-            let value = (value as? String) ?? "\(value)"
-            return "\(key): \(value)"
-        }
+        let headers = httpHeaders?.map { key, value -> String in "\(key): \(value)" }
         return headers.map { "[\n    " + $0.joined(separator: "\n    ") + "\n  ]" }
     }
 
@@ -65,12 +65,11 @@ open class UrlSessionHttp: Http {
                 return "\(data.count) bytes"
             }
         }
-        let nils = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         let string =
-            "__" +
-            "\(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))" +
-            "\(tag) Headers: \(nils(logHeaders(request.allHTTPHeaderFields)))" +
-            "\(tag) Body: \(nils(body))" +
+            "\n__\n" +
+            "\(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))\n" +
+            "\(tag) Headers: \(nils(logHeaders(request.allHTTPHeaderFields)))\n" +
+            "\(tag) Body: \(nils(body))\n" +
             "‾‾"
         logger.log(string, level: .info, for: loggerTag, function: "")
     }
@@ -82,7 +81,7 @@ open class UrlSessionHttp: Http {
     private func log(
         _ response: URLResponse?, _ request: URLRequest,
         _ data: Data?, _ error: NSError?,
-        time: TimeInterval, date: Date
+        duration: TimeInterval, date: Date
     ) {
         guard let logger = logger else { return }
 
@@ -98,14 +97,13 @@ open class UrlSessionHttp: Http {
                 return "\(data.count) bytes"
             }
         }
-        let nils = { (object: Any?) -> String in object.flatMap { "\($0)" } ?? "nil" }
         let string =
-            "__" +
-            "\(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))" +
-            "\(tag) Response: \(nils(urlResponse?.statusCode)), Time: \(String(format: "%0.3f", time)) s" +
-            "\(tag) Headers: \(nils(logHeaders(urlResponse?.allHeaderFields)))" +
-            "\(tag) Data: \(nils(body))" +
-            "\(tag) Error: \(nils(error))" +
+            "\n__\n" +
+            "\(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))\n" +
+            "\(tag) Response: \(nils(urlResponse?.statusCode)), Duration: \(String(format: "%0.3f", duration)) s\n" +
+            "\(tag) Headers: \(nils(logHeaders(urlResponse?.allHeaderFields)))\n" +
+            "\(tag) Data: \(nils(body))\n" +
+            "\(tag) Error: \(nils(error))\n" +
             "‾‾"
         logger.log(string, level: loggingLevel, for: loggerTag, function: "")
     }
@@ -127,7 +125,7 @@ open class UrlSessionHttp: Http {
         let dataTask = session.dataTask(with: request)
         let task = Task(dataTask, startDate: start) { data, response, error in
             let end = Date()
-            self.log(response, request, data, error as NSError?, time: end.timeIntervalSince(start), date: end)
+            self.log(response, request, data, error as NSError?, duration: end.timeIntervalSince(start), date: end)
 
             guard let response = response, let data = data else {
                 cmpl(nil, nil, error.map(self.processError))
