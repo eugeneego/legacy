@@ -5,7 +5,7 @@ import Foundation
 import CoreGraphics
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length
+// swiftlint:disable line_length type_name function_body_length identifier_name
 struct FeedTransformer: FullTransformer {
     typealias Source = Any
     typealias Destination = Feed
@@ -22,14 +22,14 @@ struct FeedTransformer: FullTransformer {
     let metaName = "meta"
 
     let idTransformer = CastTransformer<Any, String>()
-    let kindTransformer = FeedKindTransformer<Any>()
+    let kindTransformer = FeedKindTransformer()
     let titleTransformer = CastTransformer<Any, String>()
     let descriptionTransformer = CastTransformer<Any, String>()
     let createdTransformer = TimestampTransformer<Any>()
     let authorTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
     let tagsTransformer = ArrayTransformer(from: Any.self, transformer: CastTransformer<Any, String>(), skipFailures: true)
     let likesTransformer = CastTransformer<Any, Int>()
-    let subscriptionTransformer = FeedSubscriptionTransformer<Any>()
+    let subscriptionTransformer = FeedSubscriptionTransformer()
     let metaTransformer = DictionaryTransformer(from: Any.self, keyTransformer: CastTransformer<AnyHashable, String>(), valueTransformer: CastTransformer<Any, String>(), skipFailures: true)
 
     func transform(source value: Source) -> TransformerResult<Destination> {
@@ -144,4 +144,4 @@ struct FeedTransformer: FullTransformer {
         return .success(dictionary)
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name

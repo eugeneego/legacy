@@ -28,9 +28,6 @@ public protocol HttpTask {
 public protocol Http {
     @discardableResult
     func data(request: URLRequest, completion: @escaping HttpCompletion) -> HttpTask
-
-    func urlWithParameters(url: URL, parameters: [String: String]) -> URL
-    func request(method: String, url: URL, urlParameters: [String: String], headers: [String: String], body: Data?) -> URLRequest
 }
 
 public enum HttpError: Error {
@@ -76,7 +73,16 @@ public extension Http {
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?, completion: @escaping HttpCompletion
     ) -> HttpTask {
-        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
+        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: nil)
+        return data(request: req, completion: completion)
+    }
+
+    @discardableResult
+    public func data(
+        method: HttpMethod, url: URL, urlParameters: [String: String],
+        headers: [String: String], bodyStream: InputStream?, completion: @escaping HttpCompletion
+    ) -> HttpTask {
+        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: nil, bodyStream: bodyStream)
         return data(request: req, completion: completion)
     }
 
@@ -117,11 +123,15 @@ public extension Http {
 
     public func request(
         method: String, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?
+        headers: [String: String], body: Data?, bodyStream: InputStream?
     ) -> URLRequest {
         var request = URLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
         request.httpMethod = method
-        request.httpBody = body
+        if let bodyStream = bodyStream {
+            request.httpBodyStream = bodyStream
+        } else {
+            request.httpBody = body
+        }
         headers.forEach { name, value in
             request.setValue(value, forHTTPHeaderField: name)
         }
@@ -130,9 +140,9 @@ public extension Http {
 
     public func request(
         method: HttpMethod, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?
+        headers: [String: String], body: Data?, bodyStream: InputStream?
     ) -> URLRequest {
-        return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body)
+        return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: bodyStream)
     }
 
     public func request<T: HttpSerializer>(
@@ -143,7 +153,7 @@ public extension Http {
         let body = serializer.serialize(object)
         return body.map(
             success: {
-                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: $0)
+                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: $0, bodyStream: nil)
                 req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
                 return .success(req)
             },

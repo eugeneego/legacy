@@ -4,7 +4,7 @@
 import Foundation
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length
+// swiftlint:disable line_length type_name function_body_length identifier_name
 struct FeedKindLightTransformer: LightTransformer {
     typealias T = Feed.Kind
 
@@ -38,4 +38,4 @@ struct FeedKindLightTransformer: LightTransformer {
         }
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name

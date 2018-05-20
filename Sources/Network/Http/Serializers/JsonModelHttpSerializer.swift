@@ -30,14 +30,16 @@ public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: Http
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
         guard let data = data, !data.isEmpty else {
-            return Result(transformer.from(any: ()), HttpSerializationError.noData)
+            return Result(transformer.from(any: ()), .transformation(nil))
         }
 
-        let json = Result<Any, Error> { try JSONSerialization.jsonObject(with: data, options: .allowFragments) }
-        return json.map(
-            success: { Result(transformer.from(any: $0), HttpSerializationError.noData) },
-            failure: { .failure(.jsonDeserialization($0)) }
+        let json = Result(
+            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            unknown: HttpSerializationError.jsonDeserialization
         )
+        return json.flatMap { json in
+            Result(transformer.from(any: json), .transformation(nil))
+        }
     }
 }
 
@@ -61,11 +63,13 @@ public struct JsonModelForwardTransformerHttpSerializer<T: ForwardTransformer>: 
             return transformer.transform(source: ()).mapError(HttpSerializationError.transformation)
         }
 
-        let json = Result<Any, Error> { try JSONSerialization.jsonObject(with: data, options: .allowFragments) }
-        return json.map(
-            success: { transformer.transform(source: $0).mapError(HttpSerializationError.transformation) },
-            failure: { .failure(.jsonDeserialization($0)) }
+        let json = Result(
+            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            unknown: HttpSerializationError.jsonDeserialization
         )
+        return json.flatMap { json in
+            transformer.transform(source: json).mapError(HttpSerializationError.transformation)
+        }
     }
 }
 
@@ -131,11 +135,13 @@ public struct JsonModelFullTransformerHttpSerializer<T: FullTransformer>: HttpSe
             return transformer.transform(source: ()).mapError(HttpSerializationError.transformation)
         }
 
-        let json = Result<Any, Error> { try JSONSerialization.jsonObject(with: data, options: .allowFragments) }
-        return json.map(
-            success: { transformer.transform(source: $0).mapError(HttpSerializationError.transformation) },
-            failure: { .failure(.jsonDeserialization($0)) }
+        let json = Result(
+            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            unknown: HttpSerializationError.jsonDeserialization
         )
+        return json.flatMap { json in
+            transformer.transform(source: json).mapError(HttpSerializationError.transformation)
+        }
     }
 }
 
@@ -183,6 +189,10 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
+        if let nilValue = NilCodableModel() as? Value {
+            return .success(nilValue)
+        }
+
         guard let data = data else { return .failure(.noData) }
 
         return Result(

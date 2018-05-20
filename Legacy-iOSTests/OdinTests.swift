@@ -23,7 +23,7 @@ private class TestDependencyObject: TestDependency {
     var test: Test!
 }
 
-class OdinTests: XCTestCase {
+class OdinTests: EETestCase {
     func testTypes() {
         let container = Odin()
         let testObject = TestObject()
