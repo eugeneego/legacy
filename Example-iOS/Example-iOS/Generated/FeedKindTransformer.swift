@@ -5,11 +5,11 @@ import Foundation
 import Legacy
 
 // swiftlint:disable line_length type_name function_body_length identifier_name
-struct FeedKindTransformer<From>: FullTransformer {
-    typealias Source = From
+struct FeedKindTransformer: FullTransformer {
+    typealias Source = Any
     typealias Destination = Feed.Kind
 
-    private let transformer = CastTransformer<From, String>()
+    private let transformer = CastTransformer<Source, String>()
 
     func transform(source value: Source) -> TransformerResult<Destination> {
         guard let rawValue = transformer.transform(source: value).value else { return .failure(.transform) }
