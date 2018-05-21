@@ -1,10 +1,10 @@
-// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length
+// swiftlint:disable line_length type_name function_body_length identifier_name
 struct FeedSubscriptionLightTransformer: LightTransformer {
     typealias T = Feed.Subscription
 
@@ -38,4 +38,4 @@ struct FeedSubscriptionLightTransformer: LightTransformer {
         }
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name

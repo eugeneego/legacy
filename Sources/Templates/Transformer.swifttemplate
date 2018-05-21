@@ -20,7 +20,7 @@ func transformer(for type: String, from: String = "Any") -> String {
     if casts.contains(type) {
         return "CastTransformer<\(from), \(type)>"
     } else {
-        return "\(type)Transformer<\(from)>"
+        return "\(type)Transformer"
     }
 }
 
@@ -65,13 +65,13 @@ import Legacy
 // Enums with associated values are not supported.
 // sourcery:end
 <%_ continue } -%>
-<%_ guard let valueTransformer = enumValueTransformer(for: type, from: "From", prefix: enumTransformerName) else { -%>
+<%_ guard let valueTransformer = enumValueTransformer(for: type, from: "Source", prefix: enumTransformerName) else { -%>
 // No raw type detected.
 // sourcery:end
 <%_ continue } -%>
-// swiftlint:disable line_length type_name function_body_length
-struct <%= name %><From>: FullTransformer {
-    typealias Source = From
+// swiftlint:disable line_length type_name function_body_length identifier_name
+struct <%= name %>: FullTransformer {
+    typealias Source = Any
     typealias Destination = <%= type.name %>
 
     private let transformer = <%= valueTransformer %>
@@ -98,7 +98,7 @@ struct <%= name %><From>: FullTransformer {
         }
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name
 
 // sourcery:end
 <% } -%>
@@ -120,7 +120,7 @@ import Foundation
 import CoreGraphics
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length
+// swiftlint:disable line_length type_name function_body_length identifier_name
 struct <%= name %>: FullTransformer {
     typealias Source = Any
     typealias Destination = <%= type.name %>
@@ -224,7 +224,7 @@ struct <%= name %>: FullTransformer {
         return .success(dictionary)
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name
 
 // sourcery:end
 <% } -%>

@@ -8,25 +8,31 @@
 
 import Foundation
 
-open class BaseNetworkClient: NetworkClient {
+open class BaseNetworkClient: CodableNetworkClient {
     open let http: Http
     open let baseURL: URL
     open let workQueue: DispatchQueue
     open let completionQueue: DispatchQueue
     open let requestAuthorizer: RequestAuthorizer?
+    open let decoder: JSONDecoder
+    open let encoder: JSONEncoder
 
     public init(
         http: Http,
         baseURL: URL,
         workQueue: DispatchQueue,
         completionQueue: DispatchQueue,
-        requestAuthorizer: RequestAuthorizer? = nil
+        requestAuthorizer: RequestAuthorizer? = nil,
+        decoder: JSONDecoder? = nil,
+        encoder: JSONEncoder? = nil
     ) {
         self.http = http
         self.baseURL = baseURL
         self.workQueue = workQueue
         self.completionQueue = completionQueue
         self.requestAuthorizer = requestAuthorizer
+        self.decoder = decoder ?? JSONDecoder()
+        self.encoder = encoder ?? JSONEncoder()
     }
 
     @discardableResult
@@ -44,7 +50,7 @@ open class BaseNetworkClient: NetworkClient {
         let completionQueue = self.completionQueue
         let requestAuthorizer = self.requestAuthorizer
 
-        let requestCompletion = { result in
+        let requestCompletion = { (result: Result<ResponseSerializer.Value, NetworkError>) in
             completionQueue.async {
                 completion(result)
             }
@@ -57,7 +63,7 @@ open class BaseNetworkClient: NetworkClient {
             return task
         }
 
-        let createRequest = { (createCompletion: @escaping (URLRequest) -> Void) -> Void in
+        let createRequest = { (createCompletion: @escaping (Result<URLRequest, HttpError>) -> Void) -> Void in
             workQueue.async {
                 let request = http.request(
                     method: method, url: url, urlParameters: parameters, headers: headers,
@@ -94,31 +100,57 @@ open class BaseNetworkClient: NetworkClient {
             }
         }
 
-        createRequest { request in
-            if let requestAuthorizer = requestAuthorizer {
-                authorizeAndRunRequest(requestAuthorizer, request) {
-                    authorizeAndRunRequest(requestAuthorizer, request, nil)
-                }
-            } else {
-                let httpTask = http.data(request: request, serializer: responseSerializer) { response, object, data, error in
-                    task.httpTask = nil
-
-                    if case .status(let code, let error)? = error {
-                        requestCompletion(.failure(.http(code: code, error: error, response: response, data: data)))
+        createRequest { result in
+            switch result {
+                case .success(let request):
+                    if let requestAuthorizer = requestAuthorizer {
+                        authorizeAndRunRequest(requestAuthorizer, request) {
+                            authorizeAndRunRequest(requestAuthorizer, request, nil)
+                        }
                     } else {
-                        requestCompletion(Result(object, .error(error: error, response: response, data: data)))
+                        let httpTask = http.data(request: request, serializer: responseSerializer) { response, object, data, error in
+                            task.httpTask = nil
+
+                            if case .status(let code, let error)? = error {
+                                requestCompletion(.failure(.http(code: code, error: error, response: response, data: data)))
+                            } else {
+                                requestCompletion(Result(object, .error(error: error, response: response, data: data)))
+                            }
+                        }
+                        task.httpTask = httpTask
+                        httpTask.resume()
                     }
-                }
-                task.httpTask = httpTask
-                httpTask.resume()
+                case .failure(let error):
+                    requestCompletion(.failure(.error(error: error, response: nil, data: nil)))
             }
         }
 
         return task
     }
 
+    private class Progress: HttpProgress {
+        var bytes: Int64? { return progress?.bytes }
+        var totalBytes: Int64? { return progress?.totalBytes }
+        var callback: HttpProgressCallback?
+
+        var progress: HttpProgress? {
+            didSet {
+                progress?.setCallback(callback)
+            }
+        }
+
+        func setCallback(_ callback: HttpProgressCallback?) {
+            self.callback = callback
+        }
+    }
+
     private class Task: NetworkTask {
         var httpTask: HttpTask?
+        var uploadProgress: HttpProgress { return upload }
+        var downloadProgress: HttpProgress { return download }
+
+        var upload: Progress = Progress()
+        var download: Progress = Progress()
 
         init() {
         }

@@ -69,7 +69,7 @@ import Legacy
 // No raw type detected.
 // sourcery:end
 <%_ continue } -%>
-// swiftlint:disable line_length type_name function_body_length
+// swiftlint:disable line_length type_name function_body_length identifier_name
 struct <%= name %>: LightTransformer {
     typealias T = <%= type.name %>
 
@@ -99,7 +99,7 @@ struct <%= name %>: LightTransformer {
         }
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name
 
 // sourcery:end
 <% } -%>
@@ -121,7 +121,7 @@ import Foundation
 import CoreGraphics
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length
+// swiftlint:disable line_length type_name function_body_length identifier_name
 struct <%= name %>: LightTransformer {
     typealias T = <%= type.name %>
 
@@ -189,7 +189,7 @@ struct <%= name %>: LightTransformer {
         return dictionary
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name
 
 // sourcery:end
 <% } -%>

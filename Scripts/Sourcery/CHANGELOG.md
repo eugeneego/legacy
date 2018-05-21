@@ -6,6 +6,62 @@
 
 ### New Features
 
+- You can now use AutoEquatable with annotations
+
+### Bug fixes
+
+- Fixed AutoEquatable access level for `==` func
+- Fixed path of generated files when linked to Xcode project
+
+## 0.13.1
+
+### New Features
+
+- Added support for enums in AutoCodable template
+- You can now specify the base path for the Sourcery cache directory with a `cacheBasePath` key in the config file
+
+## 0.13.0
+
+### New Features
+
+- Added AutoCodable template
+
+### Bug fixes
+
+- Fixed parsing protocol method return type followed by declaration with attribute
+- Fixed inserting auto-inlined code on the last line of declaration body
+- AutoEquatable and AutoHashable templates should not add protocol conformances in extensions
+
+## 0.12.0
+
+### Internal Changes
+
+- Migrate to Swift 4.1 and Xcode 9.3
+
+## 0.11.2
+
+### Bug fixes
+
+- Autocases template not respecting type access level
+- Ensure SPM and CocoaPods dependencies match
+- Improve AutoMockable template to handle methods with optional return values
+- Fixed crash while compiling swift templates
+
+## 0.11.1
+
+### Internal changes
+
+- Do not fail the build if slather fails
+- Updated SourceKitten to 0.20.0
+
+### Bug fixes
+
+- Fixed parsing protocol methods return type (#579)
+
+## 0.11.0
+
+### New Features
+
 - Supports adding new templates files while in watcher mode
 - Supports adding new source files while in watcher mode
 - Added support for subscripts
@@ -66,6 +122,7 @@ This is a breaking change for template code like this:
 - Fixed removing back ticks in types names
 - Fixed creating output folder if it does not exist
 - Fixed inferring variable types with closures and improved inferring types of enum default values
+- Fixed enum cases with empty parenthesis not having () associated value
 
 ## 0.10.1
 

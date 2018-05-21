@@ -40,8 +40,8 @@ struct Feed {
     var kind: Kind
     var title: String
     var description: String
-    // sourcery: transformer = TimestampTransformer<Any>()
-    // sourcery: lightTransformer = TimestampLightTransformer()
+    // sourcery: transformer = "TimestampTransformer<Any>(scale: 1)"
+    // sourcery: lightTransformer = "TimestampLightTransformer(scale: 1)"
     var created: Date
     var author: String?
     var tags: [String]

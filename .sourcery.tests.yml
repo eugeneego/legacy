@@ -1,0 +1,13 @@
+templates:
+    - Sources/Templates
+output:
+    Legacy-iOSTests/Generated
+prune:
+    true
+verbose:
+    true
+project:
+    file:
+        Legacy.xcodeproj
+    target:
+        name: Legacy-iOSTests

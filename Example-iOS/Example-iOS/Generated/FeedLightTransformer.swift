@@ -1,11 +1,11 @@
-// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
 import CoreGraphics
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length
+// swiftlint:disable line_length type_name function_body_length identifier_name
 struct FeedLightTransformer: LightTransformer {
     typealias T = Feed
 
@@ -24,7 +24,7 @@ struct FeedLightTransformer: LightTransformer {
     let kindTransformer = FeedKindLightTransformer()
     let titleTransformer = CastLightTransformer<String>()
     let descriptionTransformer = CastLightTransformer<String>()
-    let createdTransformer = TimestampLightTransformer()
+    let createdTransformer = TimestampLightTransformer(scale: 1)
     let authorTransformer = CastLightTransformer<String>()
     let tagsTransformer = ArrayLightTransformer(transformer: CastLightTransformer<String>())
     let likesTransformer = CastLightTransformer<Int>()
@@ -76,4 +76,4 @@ struct FeedLightTransformer: LightTransformer {
         return dictionary
     }
 }
-// swiftlint:enable line_length type_name function_body_length
+// swiftlint:enable line_length type_name function_body_length identifier_name

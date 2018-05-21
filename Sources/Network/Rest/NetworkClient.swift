@@ -16,6 +16,9 @@ public enum NetworkError: Error {
 }
 
 public protocol NetworkTask {
+    var uploadProgress: HttpProgress { get }
+    var downloadProgress: HttpProgress { get }
+
     func cancel()
 }
 
@@ -29,6 +32,18 @@ public protocol NetworkClient {
         parameters: [String: String], object: RequestSerializer.Value?, headers: [String: String],
         requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
         completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
+    ) -> NetworkTask
+}
+
+public protocol CodableNetworkClient: NetworkClient {
+    var decoder: JSONDecoder { get }
+    var encoder: JSONEncoder { get }
+
+    @discardableResult
+    func request<RequestObject: Codable, ResponseObject: Codable>(
+        method: HttpMethod, path: String,
+        parameters: [String: String], object: RequestObject?, headers: [String: String],
+        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 }
 
@@ -65,6 +80,44 @@ public extension NetworkClient {
             method: method,
             path: path, parameters: parameters, object: object, headers: headers,
             requestSerializer: requestSerializer, responseSerializer: responseSerializer,
+            completion: completion
+        )
+    }
+
+    @discardableResult
+    func request<RequestObject: Codable, ResponseObject: Codable>(
+        method: HttpMethod, path: String,
+        parameters: [String: String], object: RequestObject?, headers: [String: String],
+        decoder: JSONDecoder, encoder: JSONEncoder,
+        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+    ) -> NetworkTask {
+        let requestSerializer = JsonModelCodableHttpSerializer<RequestObject>(decoder: decoder, encoder: encoder)
+        let responseSerializer = JsonModelCodableHttpSerializer<ResponseObject>(decoder: decoder, encoder: encoder)
+
+        return request(
+            method: method,
+            path: path, parameters: parameters, object: object, headers: headers,
+            requestSerializer: requestSerializer, responseSerializer: responseSerializer,
+            completion: completion
+        )
+    }
+}
+
+public extension CodableNetworkClient {
+    @discardableResult
+    public func request<RequestObject: Codable, ResponseObject: Codable>(
+        method: HttpMethod, path: String,
+        parameters: [String: String], object: RequestObject?, headers: [String: String],
+        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+    ) -> NetworkTask {
+        return request(
+            method: method,
+            path: path,
+            parameters: parameters,
+            object: object,
+            headers: headers,
+            decoder: decoder,
+            encoder: encoder,
             completion: completion
         )
     }

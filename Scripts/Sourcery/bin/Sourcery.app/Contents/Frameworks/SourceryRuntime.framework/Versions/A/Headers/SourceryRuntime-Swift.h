@@ -301,6 +301,8 @@ SWIFT_CLASS("_TtC15SourceryRuntime9Attribute")
 /// Attribute arguments
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, NSObject *> * _Nonnull arguments;
 /// :nodoc:
+@property (nonatomic) id _Nullable __parserData;
+/// :nodoc:
 - (nonnull instancetype)initWithName:(NSString * _Nonnull)name arguments:(NSDictionary<NSString *, NSObject *> * _Nonnull)arguments description:(NSString * _Nullable)description OBJC_DESIGNATED_INITIALIZER;
 /// Attribute description that can be used in a template.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
@@ -327,14 +329,11 @@ SWIFT_CLASS("_TtC15SourceryRuntime9Attribute")
 
 
 
-/// Represents a range of bytes
+/// :nodoc:
 SWIFT_CLASS("_TtC15SourceryRuntime10BytesRange")
 @interface BytesRange : NSObject
-/// :nodoc:
 @property (nonatomic, readonly) int64_t offset;
-/// :nodoc:
 @property (nonatomic, readonly) int64_t length;
-/// :nodoc:
 - (nonnull instancetype)initWithOffset:(int64_t)offset length:(int64_t)length OBJC_DESIGNATED_INITIALIZER;
 /// :nodoc:
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
@@ -717,8 +716,7 @@ SWIFT_CLASS("_TtC15SourceryRuntime16FileParserResult")
 /// Descibes Swift generic type
 SWIFT_CLASS("_TtC15SourceryRuntime11GenericType")
 @interface GenericType : NSObject
-/// the name of the base type.
-/// <code>Array<Int></code>’s GenericType.name is <code>Array</code>
+/// The name of the base type, i.e. <code>Array</code> for <code>Array<Int></code>
 @property (nonatomic, readonly, copy) NSString * _Nonnull name;
 /// This generic type parameters
 @property (nonatomic, readonly, copy) NSArray<GenericTypeParameter *> * _Nonnull typeParameters;
@@ -758,7 +756,7 @@ SWIFT_CLASS("_TtC15SourceryRuntime20GenericTypeParameter")
 @interface GenericTypeParameter : NSObject
 /// Generic parameter type name
 @property (nonatomic, readonly, strong) TypeName * _Nonnull typeName;
-/// Generic parameter type name
+/// Generic parameter type, if known
 @property (nonatomic, strong) Type * _Nullable type;
 /// :nodoc:
 - (nonnull instancetype)initWithTypeName:(TypeName * _Nonnull)typeName type:(Type * _Nullable)type OBJC_DESIGNATED_INITIALIZER;
@@ -909,9 +907,9 @@ SWIFT_CLASS("_TtC15SourceryRuntime15MethodParameter")
 /// :nodoc:
 @property (nonatomic) id _Nullable __parserData;
 /// :nodoc:
-- (nonnull instancetype)initWithArgumentLabel:(NSString * _Nullable)argumentLabel name:(NSString * _Nonnull)name typeName:(TypeName * _Nonnull)typeName type:(Type * _Nullable)type defaultValue:(NSString * _Nullable)defaultValue annotations:(NSDictionary<NSString *, NSObject *> * _Nonnull)annotations inout:(BOOL)inout OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithArgumentLabel:(NSString * _Nullable)argumentLabel name:(NSString * _Nonnull)name typeName:(TypeName * _Nonnull)typeName type:(Type * _Nullable)type defaultValue:(NSString * _Nullable)defaultValue annotations:(NSDictionary<NSString *, NSObject *> * _Nonnull)annotations isInout:(BOOL)isInout OBJC_DESIGNATED_INITIALIZER;
 /// :nodoc:
-- (nonnull instancetype)initWithName:(NSString * _Nonnull)name typeName:(TypeName * _Nonnull)typeName type:(Type * _Nullable)type defaultValue:(NSString * _Nullable)defaultValue annotations:(NSDictionary<NSString *, NSObject *> * _Nonnull)annotations inout:(BOOL)inout OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithName:(NSString * _Nonnull)name typeName:(TypeName * _Nonnull)typeName type:(Type * _Nullable)type defaultValue:(NSString * _Nullable)defaultValue annotations:(NSDictionary<NSString *, NSObject *> * _Nonnull)annotations isInout:(BOOL)isInout OBJC_DESIGNATED_INITIALIZER;
 /// :nodoc:
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 /// :nodoc:

@@ -28,18 +28,15 @@ public protocol HttpTask {
 public protocol Http {
     @discardableResult
     func data(request: URLRequest, completion: @escaping HttpCompletion) -> HttpTask
-
-    func urlWithParameters(url: URL, parameters: [String: String]) -> URL
-    func request(method: String, url: URL, urlParameters: [String: String], headers: [String: String], body: Data?) -> URLRequest
 }
 
 public enum HttpError: Error {
     case nonHttpResponse(response: URLResponse)
     case badUrl
-    case parsingFailed
     case unreachable(Error)
     case error(Error)
     case status(code: Int, error: Error?)
+    case serialization(HttpSerializationError)
 }
 
 public enum HttpMethod {
@@ -76,7 +73,16 @@ public extension Http {
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?, completion: @escaping HttpCompletion
     ) -> HttpTask {
-        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
+        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: nil)
+        return data(request: req, completion: completion)
+    }
+
+    @discardableResult
+    public func data(
+        method: HttpMethod, url: URL, urlParameters: [String: String],
+        headers: [String: String], bodyStream: InputStream?, completion: @escaping HttpCompletion
+    ) -> HttpTask {
+        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: nil, bodyStream: bodyStream)
         return data(request: req, completion: completion)
     }
 
@@ -86,12 +92,17 @@ public extension Http {
         completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
     ) -> HttpTask {
         return data(request: request) { response, data, error in
-            let object = error == nil ? serializer.deserialize(data) : nil
-            var error = error
-            if error == nil && object == nil {
-                error = HttpError.parsingFailed
+            if let error = error {
+                completion(response, nil, data, error)
+            } else {
+                let result = serializer.deserialize(data)
+                switch result {
+                    case .success(let value):
+                        completion(response, value, data, error)
+                    case .failure(let error):
+                        completion(response, nil, data, .serialization(error))
+                }
             }
-            completion(response, object, data, error)
         }
     }
 
@@ -100,7 +111,7 @@ public extension Http {
 
         if !parameters.isEmpty {
             let serializer = UrlEncodedHttpSerializer()
-            var params = serializer.deserialize(components.query) ?? [:]
+            var params = serializer.deserialize(components.query ?? "")
             parameters.forEach { key, value in
                 params[key] = value
             }
@@ -112,11 +123,15 @@ public extension Http {
 
     public func request(
         method: String, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?
+        headers: [String: String], body: Data?, bodyStream: InputStream?
     ) -> URLRequest {
         var request = URLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
         request.httpMethod = method
-        request.httpBody = body
+        if let bodyStream = bodyStream {
+            request.httpBodyStream = bodyStream
+        } else {
+            request.httpBody = body
+        }
         headers.forEach { name, value in
             request.setValue(value, forHTTPHeaderField: name)
         }
@@ -125,18 +140,25 @@ public extension Http {
 
     public func request(
         method: HttpMethod, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?
+        headers: [String: String], body: Data?, bodyStream: InputStream?
     ) -> URLRequest {
-        return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body)
+        return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: bodyStream)
     }
 
     public func request<T: HttpSerializer>(
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String],
         object: T.Value?, serializer: T
-    ) -> URLRequest {
-        var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: serializer.serialize(object))
-        req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
-        return req
+    ) -> Result<URLRequest, HttpError> {
+        let body = serializer.serialize(object)
+        return body.map(
+            success: { body in
+                let data = !body.isEmpty ? body : nil
+                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: data, bodyStream: nil)
+                req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
+                return .success(req)
+            },
+            failure: { .failure(.serialization($0)) }
+        )
     }
 }
