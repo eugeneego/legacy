@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -25,7 +25,7 @@ struct FeedTransformer: FullTransformer {
     let kindTransformer = FeedKindTransformer()
     let titleTransformer = CastTransformer<Any, String>()
     let descriptionTransformer = CastTransformer<Any, String>()
-    let createdTransformer = TimestampTransformer<Any>()
+    let createdTransformer = TimestampTransformer<Any>(scale: 1)
     let authorTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
     let tagsTransformer = ArrayTransformer(from: Any.self, transformer: CastTransformer<Any, String>(), skipFailures: true)
     let likesTransformer = CastTransformer<Any, Int>()
