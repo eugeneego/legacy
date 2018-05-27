@@ -18,7 +18,6 @@ public enum NetworkError: Error {
 public protocol NetworkTask {
     var uploadProgress: HttpProgress { get }
     var downloadProgress: HttpProgress { get }
-
     func cancel()
 }
 
@@ -57,7 +56,6 @@ public extension NetworkClient {
     ) -> NetworkTask {
         let requestSerializer = JsonModelLightTransformerHttpSerializer(transformer: requestTransformer)
         let responseSerializer = JsonModelLightTransformerHttpSerializer(transformer: responseTransformer)
-
         return request(
             method: method,
             path: path, parameters: parameters, object: object, headers: headers,
@@ -67,15 +65,14 @@ public extension NetworkClient {
     }
 
     @discardableResult
-    func request<RequestTransformer: BackwardTransformer, ResponseTransformer: ForwardTransformer>(
+    func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestTransformer.Destination?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any {
-        let requestSerializer = JsonModelBackwardTransformerHttpSerializer(transformer: requestTransformer)
-        let responseSerializer = JsonModelForwardTransformerHttpSerializer(transformer: responseTransformer)
-
+        let requestSerializer = JsonModelTransformerHttpSerializer(transformer: requestTransformer)
+        let responseSerializer = JsonModelTransformerHttpSerializer(transformer: responseTransformer)
         return request(
             method: method,
             path: path, parameters: parameters, object: object, headers: headers,
@@ -93,7 +90,6 @@ public extension NetworkClient {
     ) -> NetworkTask {
         let requestSerializer = JsonModelCodableHttpSerializer<RequestObject>(decoder: decoder, encoder: encoder)
         let responseSerializer = JsonModelCodableHttpSerializer<ResponseObject>(decoder: decoder, encoder: encoder)
-
         return request(
             method: method,
             path: path, parameters: parameters, object: object, headers: headers,

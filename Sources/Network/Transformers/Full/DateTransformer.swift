@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct DateTransformer<From>: FullTransformer {
+public struct DateTransformer<From>: Transformer {
     public typealias Source = From
     public typealias Destination = Date
 

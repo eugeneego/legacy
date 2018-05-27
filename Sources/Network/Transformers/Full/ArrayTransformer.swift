@@ -6,7 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-public struct ArrayTransformer<From, ElementTransformer: FullTransformer>: FullTransformer {
+public struct ArrayTransformer<From, ElementTransformer: Transformer>: Transformer {
     public typealias Source = From
     public typealias Destination = [ElementTransformer.Destination]
 

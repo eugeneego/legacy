@@ -7,8 +7,8 @@
 //
 
 public struct DictionaryTransformer
-        <From, KeyTransformer: FullTransformer, ValueTransformer: FullTransformer>
-        : FullTransformer where KeyTransformer.Source: Hashable, KeyTransformer.Destination: Hashable {
+        <From, KeyTransformer: Transformer, ValueTransformer: Transformer>
+        : Transformer where KeyTransformer.Source: Hashable, KeyTransformer.Destination: Hashable {
     public typealias Source = From
     public typealias Destination = [KeyTransformer.Destination: ValueTransformer.Destination]
 

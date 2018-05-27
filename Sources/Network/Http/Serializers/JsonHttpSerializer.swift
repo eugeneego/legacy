@@ -11,6 +11,11 @@ import Foundation
 public struct JsonHttpSerializer: HttpSerializer {
     public typealias Value = Any
 
+    public enum Error: Swift.Error {
+        case serialization(Swift.Error)
+        case deserialization(Swift.Error)
+    }
+
     public let contentType = "application/json"
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
@@ -18,7 +23,7 @@ public struct JsonHttpSerializer: HttpSerializer {
 
         return Result(
             try: { try JSONSerialization.data(withJSONObject: value, options: []) },
-            unknown: HttpSerializationError.jsonSerialization
+            unknown: { HttpSerializationError.error(Error.serialization($0)) }
         )
     }
 
@@ -27,7 +32,7 @@ public struct JsonHttpSerializer: HttpSerializer {
 
         return Result(
             try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
-            unknown: HttpSerializationError.jsonDeserialization
+            unknown: { HttpSerializationError.error(Error.deserialization($0)) }
         )
     }
 }

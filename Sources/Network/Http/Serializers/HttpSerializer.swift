@@ -10,11 +10,6 @@ import Foundation
 
 public enum HttpSerializationError: Error {
     case noData
-    case jsonSerialization(Error)
-    case jsonDeserialization(Error)
-    case jsonDecoder(Error)
-    case jsonEncoder(Error)
-    case transformation(Error?)
     case error(Error)
 }
 

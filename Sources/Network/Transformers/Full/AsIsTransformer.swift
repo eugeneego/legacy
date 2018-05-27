@@ -6,7 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-public struct AsIsTransformer<From>: FullTransformer {
+public struct AsIsTransformer<From>: Transformer {
     public typealias Source = From
     public typealias Destination = From
 

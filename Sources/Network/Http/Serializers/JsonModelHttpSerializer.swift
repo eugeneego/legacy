@@ -11,6 +11,12 @@ import Foundation
 public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: HttpSerializer {
     public typealias Value = T.T
 
+    public enum Error: Swift.Error {
+        case serialization(Swift.Error)
+        case deserialization(Swift.Error)
+        case transformation
+    }
+
     public let contentType = "application/json"
 
     public let transformer: T
@@ -24,57 +30,33 @@ public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: Http
 
         return Result(
             try: { try JSONSerialization.data(withJSONObject: value, options: []) },
-            unknown: HttpSerializationError.jsonSerialization
+            unknown: { HttpSerializationError.error(Error.serialization($0)) }
         )
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
         guard let data = data, !data.isEmpty else {
-            return Result(transformer.from(any: ()), .transformation(nil))
+            return Result(transformer.from(any: ()), HttpSerializationError.error(Error.transformation))
         }
 
         let json = Result(
             try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
-            unknown: HttpSerializationError.jsonDeserialization
+            unknown: { HttpSerializationError.error(Error.deserialization($0)) }
         )
         return json.flatMap { json in
-            Result(transformer.from(any: json), .transformation(nil))
+            Result(transformer.from(any: json), HttpSerializationError.error(Error.transformation))
         }
     }
 }
 
-public struct JsonModelForwardTransformerHttpSerializer<T: ForwardTransformer>: HttpSerializer where T.Source == Any {
+public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer where T.Source == Any {
     public typealias Value = T.Destination
 
-    public let contentType = "application/json"
-
-    public let transformer: T
-
-    public init(transformer: T) {
-        self.transformer = transformer
+    public enum Error: Swift.Error {
+        case serialization(Swift.Error)
+        case deserialization(Swift.Error)
+        case transformation(Swift.Error)
     }
-
-    public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        return .failure(.noData)
-    }
-
-    public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        guard let data = data, !data.isEmpty else {
-            return transformer.transform(source: ()).mapError(HttpSerializationError.transformation)
-        }
-
-        let json = Result(
-            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
-            unknown: HttpSerializationError.jsonDeserialization
-        )
-        return json.flatMap { json in
-            transformer.transform(source: json).mapError(HttpSerializationError.transformation)
-        }
-    }
-}
-
-public struct JsonModelBackwardTransformerHttpSerializer<T: BackwardTransformer>: HttpSerializer where T.Source == Any {
-    public typealias Value = T.Destination
 
     public let contentType = "application/json"
 
@@ -92,61 +74,35 @@ public struct JsonModelBackwardTransformerHttpSerializer<T: BackwardTransformer>
             success: { json in
                 Result(
                     try: { try JSONSerialization.data(withJSONObject: json, options: []) },
-                    unknown: HttpSerializationError.jsonSerialization
+                    unknown: { HttpSerializationError.error(Error.serialization($0)) }
                 )
             },
-            failure: { .failure(.transformation($0)) }
-        )
-    }
-
-    public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        return .failure(.noData)
-    }
-}
-
-public struct JsonModelFullTransformerHttpSerializer<T: FullTransformer>: HttpSerializer where T.Source == Any {
-    public typealias Value = T.Destination
-
-    public let contentType = "application/json"
-
-    public let transformer: T
-
-    public init(transformer: T) {
-        self.transformer = transformer
-    }
-
-    public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        guard let value = value else { return .success(Data()) }
-
-        let json = transformer.transform(destination: value)
-        return json.map(
-            success: { json in
-                Result(
-                    try: { try JSONSerialization.data(withJSONObject: json, options: []) },
-                    unknown: HttpSerializationError.jsonSerialization
-                )
-            },
-            failure: { .failure(.transformation($0)) }
+            failure: { .failure(HttpSerializationError.error(Error.transformation($0))) }
         )
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
         guard let data = data, !data.isEmpty else {
-            return transformer.transform(source: ()).mapError(HttpSerializationError.transformation)
+            return transformer.transform(source: ()).mapError { HttpSerializationError.error(Error.transformation($0)) }
         }
 
         let json = Result(
             try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
-            unknown: HttpSerializationError.jsonDeserialization
+            unknown: { HttpSerializationError.error(Error.deserialization($0)) }
         )
         return json.flatMap { json in
-            transformer.transform(source: json).mapError(HttpSerializationError.transformation)
+            transformer.transform(source: json).mapError { HttpSerializationError.error(Error.transformation($0)) }
         }
     }
 }
 
 public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
     public typealias Value = T
+
+    public enum Error: Swift.Error {
+        case decoding(Swift.Error)
+        case encoding(Swift.Error)
+    }
 
     public let contentType = "application/json"
 
@@ -184,7 +140,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
 
         return Result(
             try: { try encoder.encode(value) },
-            unknown: HttpSerializationError.jsonEncoder
+            unknown: { HttpSerializationError.error(Error.encoding($0)) }
         )
     }
 
@@ -197,7 +153,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
 
         return Result(
             try: { try decoder.decode(T.self, from: data) },
-            unknown: HttpSerializationError.jsonDecoder
+            unknown: { HttpSerializationError.error(Error.decoding($0)) }
         )
     }
 }

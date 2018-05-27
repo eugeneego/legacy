@@ -12,7 +12,7 @@ import UIKit
 import AppKit
 #endif
 
-public struct ColorTransformer<From>: FullTransformer {
+public struct ColorTransformer<From>: Transformer {
     public typealias Source = From
     public typealias Destination = EEColor
 

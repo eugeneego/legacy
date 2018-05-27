@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct UrlTransformer<From>: FullTransformer {
+public struct UrlTransformer<From>: Transformer {
     public typealias Source = From
     public typealias Destination = URL
 
