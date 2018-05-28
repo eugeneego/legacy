@@ -47,11 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Resolving using a type.
         let resolvedLogger: Logger? = container.resolve()
-        resolvedLogger?.debug("Resolved", for: logTag)
+        resolvedLogger?.debug("Resolved", tag: logTag)
 
         // Force resolving using a type.
         let forceResolvedLogger: Logger = container.resolveOrDie()
-        forceResolvedLogger.debug("Force resolved", for: logTag)
+        forceResolvedLogger.debug("Force resolved", tag: logTag)
 
         // Force resolving using a type with an optional result.
         logger = container.resolveOrDie() as Logger
@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         container.resolve(self)
 
         let deviceInfo = DeviceInfo.main
-        logger?.debug("\(deviceInfo)", for: logTag)
+        logger?.debug("\(deviceInfo)", tag: logTag)
 
         tabBarController.viewControllers?.forEach { controller in
             container.resolve(controller)

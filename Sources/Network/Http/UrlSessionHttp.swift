@@ -71,7 +71,7 @@ open class UrlSessionHttp: Http {
             "\(tag) Headers: \(nils(logHeaders(request.allHTTPHeaderFields)))\n" +
             "\(tag) Body: \(nils(body))\n" +
             "‾‾"
-        logger.log(string, level: .info, for: loggerTag, function: "")
+        logger.log(string, level: .info, tag: loggerTag, function: "")
     }
 
     private func isText(type: String) -> Bool {
@@ -105,7 +105,7 @@ open class UrlSessionHttp: Http {
             "\(tag) Data: \(nils(body))\n" +
             "\(tag) Error: \(nils(error))\n" +
             "‾‾"
-        logger.log(string, level: loggingLevel, for: loggerTag, function: "")
+        logger.log(string, level: loggingLevel, tag: loggerTag, function: "")
     }
 
     // MARK: - Request

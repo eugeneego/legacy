@@ -9,6 +9,7 @@
 
 import Foundation
 
+/// Simple NSLog logger. Please be warned that NSLog is not able to show long messages.
 public class NSLogLogger: Logger {
     public init() {
     }
@@ -28,7 +29,7 @@ public class NSLogLogger: Logger {
         }
     }
 
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, for tag: String, function: String) {
+    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
         NSLog("%@ %@%@ %@", name(for: level), tag, function.isEmpty ? "" : ".\(function)", message())
     }
 }

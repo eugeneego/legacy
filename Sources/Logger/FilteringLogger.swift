@@ -7,6 +7,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+/// Logger that can filter log messages by levels and process only ones that have "higher error level" than specified.
+/// Levels can be specified for each tag separately.
 public class FilteringLogger: Logger {
     private let logger: Logger
 
@@ -19,10 +21,10 @@ public class FilteringLogger: Logger {
         self.defaultLoggingLevel = defaultLoggingLevel
     }
 
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, for tag: String, function: String) {
+    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
         let configLevel = tagLoggingLevels[tag] ?? defaultLoggingLevel
         guard level.isEnabled(for: configLevel) else { return }
 
-        logger.log(message, level: level, for: tag, function: function)
+        logger.log(message, level: level, tag: tag, function: function)
     }
 }

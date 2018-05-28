@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DBA1CBB96282DA5FCEB7C8B /* SimpleTaggedLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA15D16B07F5B535041B4A /* SimpleTaggedLogger.swift */; };
+		2DBA1D8CA7C6E0C769FAEDFF /* TaggedLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA18571A6382BC05B1668F /* TaggedLogger.swift */; };
 		441D90351DDF70F800B4493B /* RequestAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441D90341DDF70F800B4493B /* RequestAuthorizer.swift */; };
 		441D90371DDF716A00B4493B /* Optional+With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441D90361DDF716A00B4493B /* Optional+With.swift */; };
 		447729E21D7B121200D63FE7 /* Legacy-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 447729E11D7B121200D63FE7 /* Legacy-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -121,6 +123,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2DBA11428BAD6612F06C7C98 /* DefaultValueTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultValueTransformer.swift; sourceTree = "<group>"; };
+		2DBA15D16B07F5B535041B4A /* SimpleTaggedLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleTaggedLogger.swift; sourceTree = "<group>"; };
+		2DBA18571A6382BC05B1668F /* TaggedLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaggedLogger.swift; sourceTree = "<group>"; };
 		441D90341DDF70F800B4493B /* RequestAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestAuthorizer.swift; sourceTree = "<group>"; };
 		441D90361DDF716A00B4493B /* Optional+With.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Optional+With.swift"; sourceTree = "<group>"; };
 		447729DE1D7B121200D63FE7 /* Legacy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Legacy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -437,6 +442,9 @@
 				B2FA8E16DAF6C4EA069392AA /* FilteringLogger.swift */,
 				B2FA8489E4C4DDA254CF5F3A /* LoggerConfiguration.swift */,
 				B2FA801B3A3421E7A5215206 /* PrintLogger.swift */,
+				2DBA18571A6382BC05B1668F /* TaggedLogger.swift */,
+				2DBA1729670573818197E7F2,
+				2DBA15D16B07F5B535041B4A /* SimpleTaggedLogger.swift */,
 			);
 			path = Logger;
 			sourceTree = "<group>";
@@ -759,6 +767,8 @@
 				B2FA8CCA33CDFD85FDA4C4CF /* NetworkClient.swift in Sources */,
 				B2FA864B26CB1947F019E23F /* BaseNetworkClient.swift in Sources */,
 				B2FA8210D0C8751A449B602A /* CodableRestClient.swift in Sources */,
+				2DBA1D8CA7C6E0C769FAEDFF /* TaggedLogger.swift in Sources */,
+				2DBA1CBB96282DA5FCEB7C8B /* SimpleTaggedLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

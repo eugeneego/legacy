@@ -7,6 +7,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+/// Logging levels for configuration. Should be the same as LoggingLevel, usually with "disabled" addition.
 public enum LoggingConfigurationLevel {
     case verbose
     case debug
@@ -24,6 +25,7 @@ public enum LoggingLevel {
     case warning
     case error
 
+    /// Defines order of logging levels for comparison with configuration level.
     private static let loggingLevels: [LoggingLevel] = [
         .verbose,
         .debug,
@@ -32,6 +34,7 @@ public enum LoggingLevel {
         .error,
     ]
 
+    /// Defines order of configuration levels for comparison with logging level.
     private static let loggingConfigurationLevels: [LoggingConfigurationLevel] = [
         .verbose,
         .debug,
