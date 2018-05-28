@@ -6,7 +6,7 @@ import CoreGraphics
 import Legacy
 
 // swiftlint:disable line_length type_name function_body_length identifier_name
-struct PostTransformer: FullTransformer {
+struct PostTransformer: Transformer {
     typealias Source = Any
     typealias Destination = Post
 

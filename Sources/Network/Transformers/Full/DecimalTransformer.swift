@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct DecimalTransformer<From>: FullTransformer {
+public struct DecimalTransformer<From>: Transformer {
     public typealias Source = From
     public typealias Destination = Decimal
 

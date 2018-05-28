@@ -9,7 +9,7 @@
 import Foundation
 import CoreGraphics
 
-public struct NumberStringTransformer<From, To: TransformerStringConvertible>: FullTransformer {
+public struct NumberStringTransformer<From, To: TransformerStringConvertible>: Transformer {
     public typealias Source = From
     public typealias Destination = To
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct OptionalTransformer<ValueTransformer: FullTransformer>: FullTransformer {
+public struct OptionalTransformer<ValueTransformer: Transformer>: Transformer {
     public typealias Source = ValueTransformer.Source?
     public typealias Destination = ValueTransformer.Destination?
 

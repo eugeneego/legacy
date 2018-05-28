@@ -17,18 +17,10 @@ public indirect enum TransformerError: Error {
 public typealias TransformerResult<T> = Result<T, TransformerError>
 public typealias TransformerValidator<T> = (T) -> Error?
 
-public protocol ForwardTransformer {
+public protocol Transformer {
     associatedtype Source
     associatedtype Destination
 
     func transform(source value: Source) -> TransformerResult<Destination>
-}
-
-public protocol BackwardTransformer {
-    associatedtype Source
-    associatedtype Destination
-
     func transform(destination value: Destination) -> TransformerResult<Source>
 }
-
-public protocol FullTransformer: ForwardTransformer, BackwardTransformer {}

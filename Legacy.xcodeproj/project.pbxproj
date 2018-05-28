@@ -49,7 +49,7 @@
 		B2FA857115314515DC2F1BDD /* NSLogLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84F9B0679E131DCA216E /* NSLogLogger.swift */; };
 		B2FA857740A73E82F7311C14 /* UrlLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */; };
 		B2FA8591D163BDDD0FA6C746 /* CastLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */; };
-		B2FA85EA2B6961E0E6DE1D79 /* NetworkFullTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C7BA23DC92203EDB8E0 /* NetworkFullTransformerTests.swift */; };
+		B2FA85EA2B6961E0E6DE1D79 /* NetworkTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C7BA23DC92203EDB8E0 /* NetworkTransformerTests.swift */; };
 		B2FA8644795BD25290D54AF0 /* UserAddressGeoPointTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8FA85B91E15035E85A65 /* UserAddressGeoPointTransformer.swift */; };
 		B2FA864B26CB1947F019E23F /* BaseNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89369D1C3F4AEC950146 /* BaseNetworkClient.swift */; };
 		B2FA86502454995579D98F4B /* LightRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F1DBE228BC4CE0DCECA /* LightRestClient.swift */; };
@@ -202,7 +202,7 @@
 		B2FA8BAD2FA91CB5CC3817D2 /* RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
 		B2FA8BCEA1534833B2491627 /* LightTransformer.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = file.swifttemplate; path = LightTransformer.swifttemplate; sourceTree = "<group>"; };
 		B2FA8C5817F094BA4B04D6AC /* UserAddressTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAddressTransformer.swift; sourceTree = "<group>"; };
-		B2FA8C7BA23DC92203EDB8E0 /* NetworkFullTransformerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFullTransformerTests.swift; sourceTree = "<group>"; };
+		B2FA8C7BA23DC92203EDB8E0 /* NetworkTransformerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkTransformerTests.swift; sourceTree = "<group>"; };
 		B2FA8C8081CA3AE76072B7CB /* PostTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTransformer.swift; sourceTree = "<group>"; };
 		B2FA8C8F891B8EEC67935F9A /* ColorLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8CBA874F87DB059F82B6 /* UIStoryboard+Intstantiate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Intstantiate.swift"; sourceTree = "<group>"; };
@@ -500,7 +500,7 @@
 			children = (
 				B2FA87EEB1A6721B00E69021 /* NetworkCodableTests.swift */,
 				B2FA84EF1A00858D8ECBDB41 /* NetworkLightTransformerTests.swift */,
-				B2FA8C7BA23DC92203EDB8E0 /* NetworkFullTransformerTests.swift */,
+				B2FA8C7BA23DC92203EDB8E0 /* NetworkTransformerTests.swift */,
 				B2FA8FFA8D01E28A684145D6 /* NetworkTestCase.swift */,
 			);
 			path = Network;
@@ -783,7 +783,7 @@
 				B2FA84632C12FFBC903529C3 /* UserCompanyLightTransformer.swift in Sources */,
 				B2FA88E4BB5159D3DA1308BB /* NetworkCodableTests.swift in Sources */,
 				B2FA8CF3B40709A884BB20E9 /* NetworkLightTransformerTests.swift in Sources */,
-				B2FA85EA2B6961E0E6DE1D79 /* NetworkFullTransformerTests.swift in Sources */,
+				B2FA85EA2B6961E0E6DE1D79 /* NetworkTransformerTests.swift in Sources */,
 				B2FA80417518D90CEF83190E /* NetworkTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

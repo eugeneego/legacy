@@ -5,7 +5,7 @@ import Foundation
 import Legacy
 
 // swiftlint:disable line_length type_name function_body_length identifier_name
-struct FeedKindTransformer: FullTransformer {
+struct FeedKindTransformer: Transformer {
     typealias Source = Any
     typealias Destination = Feed.Kind
 

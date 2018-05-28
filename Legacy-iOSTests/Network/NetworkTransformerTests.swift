@@ -1,5 +1,5 @@
 //
-// NetworkFullTransformerTests
+// NetworkTransformerTests
 // Legacy
 //
 // Copyright (c) 2018 Eugene Egorov.
@@ -10,7 +10,7 @@ import Foundation
 import XCTest
 @testable import Legacy
 
-class NetworkFullTransformerTests: NetworkTestCase {
+class NetworkTransformerTests: NetworkTestCase {
     // MARK: - Posts
 
     func testPostsRead() {
