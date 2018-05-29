@@ -9,6 +9,7 @@
 
 import UIKit
 
+/// Logger that sends data to the backend using Elastic Search API.
 public class ElasticLogger: Logger {
     private let restClient: LightRestClient
     private let token: String
@@ -87,7 +88,7 @@ public class ElasticLogger: Logger {
         }
     }
 
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, for tag: String, function: String) {
+    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
         let timestamp = ElasticLogger.timestampFormatter.string(from: Date())
         let message = message()
 
