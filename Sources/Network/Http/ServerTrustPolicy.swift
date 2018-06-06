@@ -5,7 +5,7 @@
 // Copyright (c) 2014-2016 Alamofire Software Foundation (http://alamofire.org/)
 // License: MIT, https://github.com/Alamofire/Alamofire/blob/master/LICENSE
 //
-// Copyright (c) 2015 Eugene Egorov.
+// Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
@@ -15,8 +15,9 @@ public enum ServerTrustPolicy {
     case `default`(checkHost: Bool)
     case certificates(certificates: [SecCertificate], checkChain: Bool, checkHost: Bool)
     case publicKeys(keys: [SecKey], checkChain: Bool, checkHost: Bool)
-    case disabled
+    case hpkp(hashes: [String: Set<Data>], algorithms: [Hpkp.PublicKeyAlgorithm], checkChain: Bool, checkHost: Bool)
     case custom((_ serverTrust: SecTrust, _ host: String) -> Bool)
+    case disabled
 
     public func evaluate(serverTrust: SecTrust, host: String) -> Bool {
         switch self {
@@ -50,7 +51,6 @@ public enum ServerTrustPolicy {
                 if checkChain {
                     let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
                     SecTrustSetPolicies(serverTrust, policy)
-
                     if !trustIsValid(serverTrust) {
                         return false
                     }
@@ -65,10 +65,14 @@ public enum ServerTrustPolicy {
                 }
 
                 return false
-            case .disabled:
-                return true
+            case .hpkp(let hashes, let algorithms, let checkChain, let checkHost):
+                let hostHashes = hashes[host] ?? []
+                return Hpkp.check(serverTrust: serverTrust, host: host, hashes: hostHashes, algorithms: algorithms,
+                    checkChain: checkChain, checkHost: checkHost)
             case let .custom(closure):
                 return closure(serverTrust, host)
+            case .disabled:
+                return true
         }
     }
 
@@ -76,28 +80,20 @@ public enum ServerTrustPolicy {
 
     private func trustIsValid(_ trust: SecTrust) -> Bool {
         var isValid = false
-
-        var result = SecTrustResultType.invalid
-        let status = SecTrustEvaluate(trust, &result)
-
-        if status == errSecSuccess {
-            let unspecified = SecTrustResultType.unspecified
-            let proceed = SecTrustResultType.proceed
-            isValid = result == unspecified || result == proceed
+        var result: SecTrustResultType = .invalid
+        if SecTrustEvaluate(trust, &result) == errSecSuccess {
+            isValid = result == .unspecified || result == .proceed
         }
-
         return isValid
     }
 
     private func dataForTrust(_ trust: SecTrust) -> [Data] {
         var certificates: [SecCertificate] = []
-
         for index in 0 ..< SecTrustGetCertificateCount(trust) {
             if let certificate = SecTrustGetCertificateAtIndex(trust, index) {
                 certificates.append(certificate)
             }
         }
-
         return dataForCertificates(certificates)
     }
 
@@ -107,13 +103,11 @@ public enum ServerTrustPolicy {
 
     private func publicKeysForTrust(_ trust: SecTrust) -> [SecKey] {
         var keys: [SecKey] = []
-
         for index in 0 ..< SecTrustGetCertificateCount(trust) {
             if let cert = SecTrustGetCertificateAtIndex(trust, index), let key = ServerTrustPolicy.publicKeyForCertificate(cert) {
                 keys.append(key)
             }
         }
-
         return keys
     }
 

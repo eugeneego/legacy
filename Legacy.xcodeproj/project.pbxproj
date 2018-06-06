@@ -83,6 +83,7 @@
 		B2FA8A0DF9FDBCEC216879A5 /* TimestampTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88EE3C82A5FAA97CF24B /* TimestampTransformer.swift */; };
 		B2FA8A5AC450E6D4B76A17B8 /* UserTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8952D19DFDE64C8D55E9 /* UserTransformer.swift */; };
 		B2FA8A884FCEDDC22A9E1D9B /* StringMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89D51C66A26B2D105F83 /* StringMatcher.swift */; };
+		B2FA8A8C6D80661DD2D1BBAC /* Hpkp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F6694A08CA964E4612E /* Hpkp.swift */; };
 		B2FA8AF9A7B6F8743294BE40 /* UserAddressGeoPointLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84534DB7DB97709D64A7 /* UserAddressGeoPointLightTransformer.swift */; };
 		B2FA8B6F222B852039B6B89B /* AsIsTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EA228D0CD3E18F673DA /* AsIsTransformer.swift */; };
 		B2FA8BA01E3CF8971385D1A5 /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA801B3A3421E7A5215206 /* PrintLogger.swift */; };
@@ -108,6 +109,7 @@
 		B2FA8ECF83711F7B35DDAAE5 /* OptionalTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88C5C52A570B17B93ADC /* OptionalTransformer.swift */; };
 		B2FA8EE725814DEA592BF43F /* CastTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA871E8CDD13651A0653C9 /* CastTransformer.swift */; };
 		B2FA8F23130E1EB2B3CB0555 /* UserAddressTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C5817F094BA4B04D6AC /* UserAddressTransformer.swift */; };
+		B2FA8F36BE97130A361CF272 /* BridgingHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = B2FA8218EDF10CFD1F46C1EE /* BridgingHeader.h */; };
 		B2FA8F6E7FDEA6CFC6E56E76 /* LoggingLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8BA2916372FD1C1B622A /* LoggingLevel.swift */; };
 		B2FA8F9C0064102A3D025F06 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D39F9D55F0D66FEE3F5 /* ImageLoader.swift */; };
 /* End PBXBuildFile section */
@@ -147,6 +149,7 @@
 		B2FA81B9B48B6F6CD61E53CD /* ServerTrustPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerTrustPolicy.swift; sourceTree = "<group>"; };
 		B2FA81C3C6CFE9B879F44CBF /* ShadowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
 		B2FA81EADC34644BE80F3DC4 /* UIView+Nib.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Nib.swift"; sourceTree = "<group>"; };
+		B2FA8218EDF10CFD1F46C1EE /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		B2FA821B587ACD8434FFAA0F /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA82C5A9F2428939EB9981 /* VoidHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidHttpSerializer.swift; sourceTree = "<group>"; };
@@ -226,6 +229,7 @@
 		B2FA8EA228D0CD3E18F673DA /* AsIsTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsIsTransformer.swift; sourceTree = "<group>"; };
 		B2FA8EC38AC1BAA7D7066674 /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		B2FA8F1DBE228BC4CE0DCECA /* LightRestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightRestClient.swift; sourceTree = "<group>"; };
+		B2FA8F6694A08CA964E4612E /* Hpkp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hpkp.swift; sourceTree = "<group>"; };
 		B2FA8F77747871C67C68EDF3 /* DecimalTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalTransformer.swift; sourceTree = "<group>"; };
 		B2FA8FA85B91E15035E85A65 /* UserAddressGeoPointTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAddressGeoPointTransformer.swift; sourceTree = "<group>"; };
 		B2FA8FCE558D3984B7C03D18 /* HttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpSerializer.swift; sourceTree = "<group>"; };
@@ -276,6 +280,7 @@
 			children = (
 				447729E11D7B121200D63FE7 /* Legacy-iOS.h */,
 				447729E31D7B121200D63FE7 /* Info.plist */,
+				B2FA8218EDF10CFD1F46C1EE /* BridgingHeader.h */,
 			);
 			path = "Legacy-iOS";
 			sourceTree = "<group>";
@@ -347,6 +352,7 @@
 				B2FA84BBE47AB20628675CBD /* Http.swift */,
 				B2FA85D4956ADEAF7B13BFD8 /* UrlSessionHttp.swift */,
 				B2FA81B9B48B6F6CD61E53CD /* ServerTrustPolicy.swift */,
+				B2FA8F6694A08CA964E4612E /* Hpkp.swift */,
 			);
 			path = Http;
 			sourceTree = "<group>";
@@ -566,6 +572,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				447729E21D7B121200D63FE7 /* Legacy-iOS.h in Headers */,
+				B2FA8F36BE97130A361CF272 /* BridgingHeader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -767,6 +774,7 @@
 				B2FA8210D0C8751A449B602A /* CodableRestClient.swift in Sources */,
 				2DBA1D8CA7C6E0C769FAEDFF /* TaggedLogger.swift in Sources */,
 				2DBA1CBB96282DA5FCEB7C8B /* SimpleTaggedLogger.swift in Sources */,
+				B2FA8A8C6D80661DD2D1BBAC /* Hpkp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -926,6 +934,7 @@
 				PRODUCT_NAME = Legacy;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Legacy-iOS/BridgingHeader.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -977,6 +986,7 @@
 				PRODUCT_NAME = Legacy;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Legacy-iOS/BridgingHeader.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
