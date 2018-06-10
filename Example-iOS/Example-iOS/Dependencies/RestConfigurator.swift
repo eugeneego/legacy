@@ -28,8 +28,20 @@ class RestConfigurator: Configurator {
         configuration.timeoutIntervalForResource = timeout * 2
         configuration.urlCache = nil
 
+        let trustPolicies: [String: ServerTrustPolicy] = [
+            "test.com": .disabled,
+            "google.com": .default(checkHost: true),
+            "eego.pro": .hpkp(
+                hashes: Set([ "ByG1podSp1TMfs8+uEHLkV8vPVjTJv0K2ftHppjzKB8=" ].compactMap { Data(base64Encoded: $0) }),
+                algorithms: [ .rsa2048, .rsa4096 ],
+                checkChain: true,
+                checkHost: true
+            )
+        ]
+
         let queue = DispatchQueue.global(qos: .default)
         let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: logger)
+        http.trustPolicies = trustPolicies
         return http
     }
 
