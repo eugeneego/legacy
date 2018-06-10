@@ -11,11 +11,9 @@ import Legacy
 
 class RestConfigurator: Configurator {
     private let baseUrl: URL
-    private var tabBarController: UITabBarController
 
-    init(baseUrl: URL, tabBarController: UITabBarController) {
+    init(baseUrl: URL) {
         self.baseUrl = baseUrl
-        self.tabBarController = tabBarController
     }
 
     private let timeout: TimeInterval = 60

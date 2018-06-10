@@ -210,7 +210,7 @@ open class UrlSessionHttp: Http {
             _ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
             completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
         ) {
-            var disposition: Foundation.URLSession.AuthChallengeDisposition = .performDefaultHandling
+            var disposition: URLSession.AuthChallengeDisposition = .performDefaultHandling
             var credential: URLCredential?
 
             let host = challenge.protectionSpace.host

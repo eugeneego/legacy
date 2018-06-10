@@ -24,23 +24,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.backgroundColor = .white
         self.window = window
 
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let tabBarController: UITabBarController = mainStoryboard.instantiateInitial()
-
         #if MOCK
-        let configurator = MockConfigurator(tabBarController: tabBarController)
+        let configurator = MockConfigurator()
         #elseif DEV
         let baseUrl = "https://dev.base.url"
         guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
-        let configurator = RestConfigurator(baseUrl: url, tabBarController: tabBarController)
+        let configurator = RestConfigurator(baseUrl: url)
         #elseif STAGING
         let baseUrl = "https://staging.base.url"
         guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
-        let configurator = RestConfigurator(baseUrl: url, tabBarController: tabBarController)
+        let configurator = RestConfigurator(baseUrl: url)
         #else
         let baseUrl = "https://base.url"
         guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
-        let configurator = RestConfigurator(baseUrl: url, tabBarController: tabBarController)
+        let configurator = RestConfigurator(baseUrl: url)
         #endif
 
         let container = configurator.create()
@@ -62,6 +59,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let deviceInfo = DeviceInfo.main
         logger?.debug("\(deviceInfo)", tag: logTag)
 
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let tabBarController: UITabBarController = mainStoryboard.instantiateInitial()
         tabBarController.viewControllers?.forEach { controller in
             container.resolve(controller)
             (controller as? UINavigationController)?.viewControllers.forEach(container.resolve)
