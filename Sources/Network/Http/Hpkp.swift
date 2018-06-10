@@ -34,6 +34,10 @@ public class Hpkp {
         return result == .success
     }
 
+    public static func hashes(_ hashes: [String]) -> Set<Data> {
+        return Set(hashes.compactMap { Data(base64Encoded: $0) })
+    }
+
     private class Cache {
         private let lockQueue: DispatchQueue = DispatchQueue(label: "HPKPCache")
         private var hashes: [PublicKeyAlgorithm: [Data: Data]] = [:]

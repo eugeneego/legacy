@@ -32,7 +32,7 @@ class RestConfigurator: Configurator {
             "test.com": .disabled,
             "google.com": .default(checkHost: true),
             "eego.pro": .hpkp(
-                hashes: Set([ "ByG1podSp1TMfs8+uEHLkV8vPVjTJv0K2ftHppjzKB8=" ].compactMap { Data(base64Encoded: $0) }),
+                hashes: Hpkp.hashes([ "ByG1podSp1TMfs8+uEHLkV8vPVjTJv0K2ftHppjzKB8=" ]),
                 algorithms: [ .rsa2048, .rsa4096 ],
                 checkChain: true,
                 checkHost: true
