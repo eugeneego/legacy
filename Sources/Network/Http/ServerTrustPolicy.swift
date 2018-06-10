@@ -15,7 +15,8 @@ public enum ServerTrustPolicy {
     case `default`(checkHost: Bool)
     case certificates(certificates: [SecCertificate], checkChain: Bool, checkHost: Bool)
     case publicKeys(keys: [SecKey], checkChain: Bool, checkHost: Bool)
-    case hpkp(hashes: [String: Set<Data>], algorithms: [Hpkp.PublicKeyAlgorithm], checkChain: Bool, checkHost: Bool)
+    @available(iOS 10.0, *)
+    case hpkp(hashes: Set<Data>, algorithms: [Hpkp.PublicKeyAlgorithm], checkChain: Bool, checkHost: Bool)
     case custom((_ serverTrust: SecTrust, _ host: String) -> Bool)
     case disabled
 
@@ -24,7 +25,6 @@ public enum ServerTrustPolicy {
             case .default(let checkHost):
                 let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
                 SecTrustSetPolicies(serverTrust, policy)
-
                 return trustIsValid(serverTrust)
             case .certificates(let certificates, let checkChain, let checkHost):
                 if checkChain {
@@ -57,17 +57,16 @@ public enum ServerTrustPolicy {
                 }
 
                 for serverKey in publicKeysForTrust(serverTrust) as [AnyObject] {
-                    for key in keys as [AnyObject] {
-                        if serverKey.isEqual(key) {
-                            return true
-                        }
+                    for key in keys as [AnyObject] where serverKey.isEqual(key) {
+                        return true
                     }
                 }
 
                 return false
             case .hpkp(let hashes, let algorithms, let checkChain, let checkHost):
-                let hostHashes = hashes[host] ?? []
-                return Hpkp.check(serverTrust: serverTrust, host: host, hashes: hostHashes, algorithms: algorithms,
+                guard #available(iOS 10.0, *) else { return false }
+
+                return Hpkp.check(serverTrust: serverTrust, host: host, hashes: hashes, algorithms: algorithms,
                     checkChain: checkChain, checkHost: checkHost)
             case let .custom(closure):
                 return closure(serverTrust, host)

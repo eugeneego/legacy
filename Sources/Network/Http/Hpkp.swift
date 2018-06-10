@@ -12,6 +12,7 @@
 
 import Foundation
 
+@available(iOS 10.0, *)
 public class Hpkp {
     public enum PublicKeyAlgorithm {
         case rsa2048
@@ -28,11 +29,6 @@ public class Hpkp {
         checkChain: Bool,
         checkHost: Bool
     ) -> Bool {
-        guard #available(iOS 10.0, *) else {
-            print("Error: HPKP requires iOS 10 or higher")
-            return false
-        }
-
         let result = verifyPublicKeys(serverTrust: serverTrust, host: host, algorithms: algorithms,
             hashes: hashes, hashCache: Cache.instance, checkChain: checkChain, checkHost: checkHost)
         return result == .success
@@ -132,12 +128,8 @@ public class Hpkp {
         SecTrustEvaluate(trust, nil)
         guard let publicKey = SecTrustCopyPublicKey(trust) else { return nil }
 
-        if #available(iOS 10.0, *) {
-            let publicKeyData = SecKeyCopyExternalRepresentation(publicKey, nil) as Data?
-            return publicKeyData
-        } else {
-            return nil
-        }
+        let publicKeyData = SecKeyCopyExternalRepresentation(publicKey, nil) as Data?
+        return publicKeyData
     }
 
     // Hash Calculation

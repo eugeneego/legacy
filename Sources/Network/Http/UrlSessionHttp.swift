@@ -213,9 +213,10 @@ open class UrlSessionHttp: Http {
             var disposition: Foundation.URLSession.AuthChallengeDisposition = .performDefaultHandling
             var credential: URLCredential?
 
+            let host = challenge.protectionSpace.host
             if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-                let serverTrust = challenge.protectionSpace.serverTrust, let policy = trustPolicies[challenge.protectionSpace.host] {
-                if policy.evaluate(serverTrust: serverTrust, host: challenge.protectionSpace.host) {
+                let serverTrust = challenge.protectionSpace.serverTrust, let policy = trustPolicies[host] {
+                if policy.evaluate(serverTrust: serverTrust, host: host) {
                     disposition = .useCredential
                     credential = URLCredential(trust: serverTrust)
                 } else {
