@@ -10,10 +10,7 @@ import UIKit
 import Legacy
 
 final class MockConfigurator: Configurator {
-    private var tabBarController: UITabBarController
-
-    init(tabBarController: UITabBarController) {
-        self.tabBarController = tabBarController
+    init() {
     }
 
     private let timeout: TimeInterval = 60

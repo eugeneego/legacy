@@ -11,11 +11,9 @@ import Legacy
 
 class RestConfigurator: Configurator {
     private let baseUrl: URL
-    private var tabBarController: UITabBarController
 
-    init(baseUrl: URL, tabBarController: UITabBarController) {
+    init(baseUrl: URL) {
         self.baseUrl = baseUrl
-        self.tabBarController = tabBarController
     }
 
     private let timeout: TimeInterval = 60
@@ -28,8 +26,20 @@ class RestConfigurator: Configurator {
         configuration.timeoutIntervalForResource = timeout * 2
         configuration.urlCache = nil
 
+        let trustPolicies: [String: ServerTrustPolicy] = [
+            "test.com": .disabled,
+            "google.com": .default(checkHost: true),
+            "eego.pro": .hpkp(
+                hashes: Hpkp.hashes([ "ByG1podSp1TMfs8+uEHLkV8vPVjTJv0K2ftHppjzKB8=" ]),
+                algorithms: [ .rsa2048, .rsa4096 ],
+                checkChain: true,
+                checkHost: true
+            )
+        ]
+
         let queue = DispatchQueue.global(qos: .default)
         let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: logger)
+        http.trustPolicies = trustPolicies
         return http
     }
 
