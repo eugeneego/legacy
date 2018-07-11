@@ -54,7 +54,7 @@ public protocol RestClient: NetworkClient {
 
 public extension RestClient {
     @discardableResult
-    public func pathWithId(path: String, id: String?) -> String {
+    func pathWithId(path: String, id: String?) -> String {
         let path = (path.isEmpty || path[path.startIndex] != "/") ? path : String(path[path.index(after: path.startIndex)...])
 
         if let id = id {
