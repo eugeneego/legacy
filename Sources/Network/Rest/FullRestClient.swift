@@ -8,15 +8,7 @@
 
 import Foundation
 
-public protocol FullRestClient: RestClient {
-    @discardableResult
-    func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestTransformer.Destination?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
-    ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any
-
+public protocol FullRestClient: RestClient, FullNetworkClient {
     @discardableResult
     func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],

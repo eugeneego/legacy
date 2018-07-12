@@ -8,15 +8,7 @@
 
 import Foundation
 
-public protocol LightRestClient: RestClient {
-    @discardableResult
-    func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
-    ) -> NetworkTask
-
+public protocol LightRestClient: RestClient, LightNetworkClient {
     @discardableResult
     func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
         path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
