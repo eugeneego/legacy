@@ -7,50 +7,83 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44AF2FCC2107250A0066AE20 /* Legacy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44AF2FCB2107250A0066AE20 /* Legacy.framework */; };
+		44AF2FCD2107250A0066AE20 /* Legacy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 44AF2FCB2107250A0066AE20 /* Legacy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		44EDDE021EAE0F06003948BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EDDE011EAE0F06003948BD /* AppDelegate.swift */; };
-		44F19F20205B282F008C7026 /* Legacy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44F19F21205B282F008C7026 /* Legacy.framework */; };
 		B2FA80E57845BE9DA0FED411 /* FeedKindLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */; };
 		B2FA8144D4C67BEFB867B1E0 /* FeedSubscriptionLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89FD8DF20967266E488E /* FeedSubscriptionLightTransformer.swift */; };
+		B2FA816109D4C256228FD988 /* FeedFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8E12EB941A6A05E948C1 /* FeedFlow.swift */; };
 		B2FA83002DF11E0F9A3E92FF /* FeedTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C48B459389546352F64 /* FeedTransformer.swift */; };
+		B2FA8492154233EDF9ACDE20 /* RestImagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA881FB0E0D43C4BCADBA1 /* RestImagesService.swift */; };
+		B2FA8583D7D2281BD7730EDA /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA866053568C63FCF6F9B4 /* ImageCell.swift */; };
 		B2FA861F95E4886123F88EE4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2FA82D2AAB7CB42665C4ABE /* LaunchScreen.storyboard */; };
 		B2FA862F20BD4EA12A9D077C /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA835700C9E58AE78EA11A /* Feed.swift */; };
-		B2FA86A34ADA727B019DB9A2 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8279F04CEF09C8630DD6 /* FeedViewController.swift */; };
 		B2FA86A6AFAA421008796290 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2FA84FDF994BB607022A6DF /* Main.storyboard */; };
+		B2FA8869C16F08CBD9F79349 /* ImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8667E20EC8D9A960CD35 /* ImagesViewController.swift */; };
 		B2FA8871AB3FB59CCD345B40 /* MockConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F9922B3E06351FE7540 /* MockConfigurator.swift */; };
+		B2FA88D8BB77EB1245F7D4F4 /* AppFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87ADE43A8FA80D20ED1F /* AppFlow.swift */; };
 		B2FA898093BD2DD81B9D4F89 /* FeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA814E158A105ADE6265ED /* FeedService.swift */; };
-		B2FA8B3EB40C7EDD4A73DC1B /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84377325E88F6D4BB29A /* ProfileViewController.swift */; };
+		B2FA89EFA9949A69389A2E6D /* ProfileFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8B562EF447B08ED4CE09 /* ProfileFlow.swift */; };
+		B2FA8A62ACA991A9E240ECA9 /* MockImagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89FDB3C9DE85814C8A9B /* MockImagesService.swift */; };
+		B2FA8A68E714E1A19F5A9D44 /* ImagesFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EB4C200C85D88C88BEC /* ImagesFlow.swift */; };
 		B2FA8B54EB7EC8C598C5959D /* RestFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C16BB817C036A147020 /* RestFeedService.swift */; };
+		B2FA8CDF7480A6128CEF118C /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D936A72FBC5FEE4DB69 /* FeedViewController.swift */; };
 		B2FA8D15E467316F16075ED9 /* Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85DEA88CBB9441946CCF /* Dependencies.swift */; };
 		B2FA8D1836EF440A211FBEBD /* FeedKindTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8773D5C40988B58775BF /* FeedKindTransformer.swift */; };
 		B2FA8D55E8395C328A810532 /* RestConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EB41C0D1F48107F1963 /* RestConfigurator.swift */; };
 		B2FA8E326BE3BF7A871C49D5 /* FeedSubscriptionTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA870E75265BD81CC7B083 /* FeedSubscriptionTransformer.swift */; };
+		B2FA8E52A6E33FE3E3731884 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C90CBF469E86FD1F436 /* ProfileViewController.swift */; };
 		B2FA8E6F55980B8E460E8A9F /* Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F556B8B9183D0BE2EBF /* Configurator.swift */; };
+		B2FA8EEE1E35B2764A7EDE14 /* ImagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA80FB1A2A41CB21F9B2FA /* ImagesService.swift */; };
 		B2FA8EF38DCEAC60EE05D875 /* FeedLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */; };
 		B2FA8FCB785AEE8D838DDF1F /* MockFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88E0993B2841F1111042 /* MockFeedService.swift */; };
 		B2FA8FE08A340843EC1F8C12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2FA8A203E7A8D44F7890FD4 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		44AF2FCE2107250A0066AE20 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				44AF2FCD2107250A0066AE20 /* Legacy.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		44AF2FCB2107250A0066AE20 /* Legacy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Legacy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44EDDDFE1EAE0F06003948BD /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		44EDDE011EAE0F06003948BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		44F19F21205B282F008C7026 /* Legacy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Legacy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2FA80FB1A2A41CB21F9B2FA /* ImagesService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesService.swift; sourceTree = "<group>"; };
 		B2FA814E158A105ADE6265ED /* FeedService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedService.swift; sourceTree = "<group>"; };
 		B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedKindLightTransformer.swift; sourceTree = "<group>"; };
-		B2FA8279F04CEF09C8630DD6 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		B2FA835700C9E58AE78EA11A /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedLightTransformer.swift; sourceTree = "<group>"; };
-		B2FA84377325E88F6D4BB29A /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		B2FA85DEA88CBB9441946CCF /* Dependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dependencies.swift; sourceTree = "<group>"; };
+		B2FA866053568C63FCF6F9B4 /* ImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		B2FA8667E20EC8D9A960CD35 /* ImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesViewController.swift; sourceTree = "<group>"; };
 		B2FA870E75265BD81CC7B083 /* FeedSubscriptionTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSubscriptionTransformer.swift; sourceTree = "<group>"; };
 		B2FA8773D5C40988B58775BF /* FeedKindTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedKindTransformer.swift; sourceTree = "<group>"; };
+		B2FA87ADE43A8FA80D20ED1F /* AppFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppFlow.swift; sourceTree = "<group>"; };
+		B2FA881FB0E0D43C4BCADBA1 /* RestImagesService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestImagesService.swift; sourceTree = "<group>"; };
 		B2FA88E0993B2841F1111042 /* MockFeedService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFeedService.swift; sourceTree = "<group>"; };
 		B2FA89FD8DF20967266E488E /* FeedSubscriptionLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSubscriptionLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA89FDB3C9DE85814C8A9B /* MockImagesService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockImagesService.swift; sourceTree = "<group>"; };
 		B2FA8A203E7A8D44F7890FD4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2FA8A49DD648E8B8C5A90B2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Example-iOS/Base.lproj/LaunchScreen.storyboard"; sourceTree = SOURCE_ROOT; };
 		B2FA8B2C50A65D4AA98A45DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		B2FA8B562EF447B08ED4CE09 /* ProfileFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileFlow.swift; sourceTree = "<group>"; };
 		B2FA8C16BB817C036A147020 /* RestFeedService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestFeedService.swift; sourceTree = "<group>"; };
 		B2FA8C48B459389546352F64 /* FeedTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTransformer.swift; sourceTree = "<group>"; };
+		B2FA8C90CBF469E86FD1F436 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		B2FA8D936A72FBC5FEE4DB69 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
+		B2FA8E12EB941A6A05E948C1 /* FeedFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedFlow.swift; sourceTree = "<group>"; };
 		B2FA8EB41C0D1F48107F1963 /* RestConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestConfigurator.swift; sourceTree = "<group>"; };
+		B2FA8EB4C200C85D88C88BEC /* ImagesFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesFlow.swift; sourceTree = "<group>"; };
 		B2FA8F556B8B9183D0BE2EBF /* Configurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configurator.swift; sourceTree = "<group>"; };
 		B2FA8F9922B3E06351FE7540 /* MockConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockConfigurator.swift; sourceTree = "<group>"; };
 		B2FA8FFC380089A6BC708925 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Example-iOS/Base.lproj/Main.storyboard"; sourceTree = SOURCE_ROOT; };
@@ -61,7 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44F19F20205B282F008C7026 /* Legacy.framework in Frameworks */,
+				44AF2FCC2107250A0066AE20 /* Legacy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,9 +134,18 @@
 		44EDDE131EAE2C2B003948BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				44F19F21205B282F008C7026 /* Legacy.framework */,
+				44AF2FCB2107250A0066AE20 /* Legacy.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B2FA80BD44E0BB1D47E0372C /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				B2FA8C90CBF469E86FD1F436 /* ProfileViewController.swift */,
+				B2FA8B562EF447B08ED4CE09 /* ProfileFlow.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		B2FA8748C594B483ED46628F /* Presentation */ = {
@@ -111,10 +153,22 @@
 			children = (
 				B2FA84FDF994BB607022A6DF /* Main.storyboard */,
 				B2FA82D2AAB7CB42665C4ABE /* LaunchScreen.storyboard */,
-				B2FA8279F04CEF09C8630DD6 /* FeedViewController.swift */,
-				B2FA84377325E88F6D4BB29A /* ProfileViewController.swift */,
+				B2FA87ADE43A8FA80D20ED1F /* AppFlow.swift */,
+				B2FA8B839611A924D51020C6 /* Images */,
+				B2FA8DB4FC6A43239F98C583 /* Feed */,
+				B2FA80BD44E0BB1D47E0372C /* Profile */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		B2FA88D2427DD30D3F6A2D1A /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				B2FA80FB1A2A41CB21F9B2FA /* ImagesService.swift */,
+				B2FA89FDB3C9DE85814C8A9B /* MockImagesService.swift */,
+				B2FA881FB0E0D43C4BCADBA1 /* RestImagesService.swift */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		B2FA8A03F25611705323B027 /* Resources */ = {
@@ -130,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				B2FA8BF3E85D8BEF65F75840 /* Feed */,
+				B2FA88D2427DD30D3F6A2D1A /* Images */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -140,6 +195,16 @@
 				B2FA835700C9E58AE78EA11A /* Feed.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		B2FA8B839611A924D51020C6 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				B2FA8667E20EC8D9A960CD35 /* ImagesViewController.swift */,
+				B2FA8EB4C200C85D88C88BEC /* ImagesFlow.swift */,
+				B2FA866053568C63FCF6F9B4 /* ImageCell.swift */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		B2FA8BF3E85D8BEF65F75840 /* Feed */ = {
@@ -166,6 +231,15 @@
 			path = Generated;
 			sourceTree = "<group>";
 		};
+		B2FA8DB4FC6A43239F98C583 /* Feed */ = {
+			isa = PBXGroup;
+			children = (
+				B2FA8D936A72FBC5FEE4DB69 /* FeedViewController.swift */,
+				B2FA8E12EB941A6A05E948C1 /* FeedFlow.swift */,
+			);
+			path = Feed;
+			sourceTree = "<group>";
+		};
 		B2FA8EF1ECE13015DF170198 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,6 +262,7 @@
 				44EDDDFA1EAE0F06003948BD /* Sources */,
 				44EDDDFB1EAE0F06003948BD /* Frameworks */,
 				44EDDDFC1EAE0F06003948BD /* Resources */,
+				44AF2FCE2107250A0066AE20 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -269,8 +344,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				44EDDE021EAE0F06003948BD /* AppDelegate.swift in Sources */,
-				B2FA86A34ADA727B019DB9A2 /* FeedViewController.swift in Sources */,
-				B2FA8B3EB40C7EDD4A73DC1B /* ProfileViewController.swift in Sources */,
 				B2FA83002DF11E0F9A3E92FF /* FeedTransformer.swift in Sources */,
 				B2FA8FCB785AEE8D838DDF1F /* MockFeedService.swift in Sources */,
 				B2FA8B54EB7EC8C598C5959D /* RestFeedService.swift in Sources */,
@@ -285,6 +358,17 @@
 				B2FA80E57845BE9DA0FED411 /* FeedKindLightTransformer.swift in Sources */,
 				B2FA8144D4C67BEFB867B1E0 /* FeedSubscriptionLightTransformer.swift in Sources */,
 				B2FA8EF38DCEAC60EE05D875 /* FeedLightTransformer.swift in Sources */,
+				B2FA88D8BB77EB1245F7D4F4 /* AppFlow.swift in Sources */,
+				B2FA8869C16F08CBD9F79349 /* ImagesViewController.swift in Sources */,
+				B2FA8A68E714E1A19F5A9D44 /* ImagesFlow.swift in Sources */,
+				B2FA8CDF7480A6128CEF118C /* FeedViewController.swift in Sources */,
+				B2FA816109D4C256228FD988 /* FeedFlow.swift in Sources */,
+				B2FA8E52A6E33FE3E3731884 /* ProfileViewController.swift in Sources */,
+				B2FA89EFA9949A69389A2E6D /* ProfileFlow.swift in Sources */,
+				B2FA8583D7D2281BD7730EDA /* ImageCell.swift in Sources */,
+				B2FA8EEE1E35B2764A7EDE14 /* ImagesService.swift in Sources */,
+				B2FA8A62ACA991A9E240ECA9 /* MockImagesService.swift in Sources */,
+				B2FA8492154233EDF9ACDE20 /* RestImagesService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

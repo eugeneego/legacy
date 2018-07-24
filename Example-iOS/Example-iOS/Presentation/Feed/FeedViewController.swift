@@ -1,5 +1,5 @@
 //
-// ProfileViewController
+// FeedViewController
 // Example-iOS
 //
 // Created by Eugene Egorov on 24 April 2017.
@@ -8,8 +8,12 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController {
+class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
     }
 }

@@ -39,6 +39,7 @@ excluded:
   - Vendor
   - Scripts
   - Generated
+  - Example-iOS
 
 force_cast: error
 force_try: error
