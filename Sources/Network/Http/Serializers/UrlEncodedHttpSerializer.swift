@@ -13,6 +13,8 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
 
     public let contentType = "application/x-www-form-urlencoded"
 
+    public init() {}
+
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
         guard let value = value else { return .success(Data()) }
 

@@ -13,6 +13,8 @@ public struct VoidHttpSerializer: HttpSerializer {
 
     public let contentType = "application/json"
 
+    public init() {}
+
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
         return .success(Data())
     }

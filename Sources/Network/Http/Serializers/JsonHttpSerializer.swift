@@ -18,6 +18,8 @@ public struct JsonHttpSerializer: HttpSerializer {
 
     public let contentType = "application/json"
 
+    public init() {}
+
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
         guard let value = value else { return .success(Data()) }
 
