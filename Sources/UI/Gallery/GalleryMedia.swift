@@ -1,9 +1,10 @@
 //
 // GalleryMedia
-// EE Gallery
+// Legacy
 //
 // Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
+//
 
 import UIKit
 
@@ -12,7 +13,8 @@ public enum GalleryMedia {
     case video(Video)
 
     public struct Image {
-        public typealias FullImageLoader = (_ completion: @escaping (UIImage?, Error?) -> Void) -> Void
+        public typealias FullImageLoader = (_ completion: @escaping (Result<UIImage, Error>) -> Void) -> Void
+
         var index: Int = 0
         var previewImage: UIImage?
         var fullImage: UIImage?
@@ -27,8 +29,9 @@ public enum GalleryMedia {
     }
 
     public struct Video {
-        public typealias PreviewImageLoader = (_ completion: @escaping (UIImage?, Error?) -> Void) -> Void
-        public typealias VideoLoader = (_ completion: @escaping (URL?, Error?) -> Void) -> Void
+        public typealias PreviewImageLoader = (_ completion: @escaping (Result<UIImage, Error>) -> Void) -> Void
+        public typealias VideoLoader = (_ completion: @escaping (Result<URL, Error>) -> Void) -> Void
+
         var index: Int = 0
         var url: URL?
         var previewImage: UIImage?

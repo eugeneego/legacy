@@ -1,36 +1,39 @@
 //
-// ImageViewController
-// EE Gallery
+// GalleryImageViewController
+// Legacy
 //
 // Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
+//
 
 import UIKit
 
-open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTransitionDelegate {
-    private let titleView: UIView = UIView()
-    private let closeButton: UIButton = UIButton(type: .custom)
-    private let shareButton: UIButton = UIButton(type: .custom)
+open class GalleryImageViewController: UIViewController, GalleryItemViewController, UIScrollViewDelegate, ZoomTransitionDelegate {
+    public let titleView: UIView = UIView()
+    public let closeButton: UIButton = UIButton(type: .custom)
+    public let shareButton: UIButton = UIButton(type: .custom)
     private let scrollView: UIScrollView = UIScrollView()
     private let imageView: UIImageView = UIImageView()
     private let animatingImageView: UIImageView = UIImageView()
-    private let loadingIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    public let loadingIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
 
     private let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
 
-    var image: GalleryMedia.Image = GalleryMedia.Image()
+    open var image: GalleryMedia.Image = GalleryMedia.Image()
 
-    var closeAction: (() -> Void)?
-    var setupAppearance: ((UIViewController) -> Void)?
-    var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
+    open var closeAction: (() -> Void)?
+    open var setupAppearance: ((GalleryAppearance) -> Void)?
+    open var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
+    open var statusBarStyle: UIStatusBarStyle = .lightContent
+    open var initialControlsVisibility: Bool = false
 
-    var closeTitle: String = "Close"
-    var shareIcon: UIImage?
+    open var closeTitle: String = "Close"
+    open var shareIcon: UIImage?
 
     private var scrollSize: CGSize = .zero
     private var imageSize: CGSize = .zero
 
-    private var controlsAreVisible: Bool = false
+    open private(set) var controlsVisibility: Bool = false
     private var statusBarHidden: Bool = false
     private var isShown: Bool = false
     private var isLaidOut: Bool = false
@@ -43,6 +46,9 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
     override open func viewDidLoad() {
         super.viewDidLoad()
 
+        extendedLayoutIncludesOpaqueBars = true
+        automaticallyAdjustsScrollViewInsets = false
+
         view.backgroundColor = .black
 
         // Scroll View
@@ -50,7 +56,10 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.canCancelContentTouches = false
         scrollView.delegate = self
-        scrollView.backgroundColor = .black
+        scrollView.backgroundColor = .clear
+        if #available(iOS 11.0, *) {
+            scrollView.contentInsetAdjustmentBehavior = .never
+        }
         view.addSubview(scrollView)
 
         imageView.translatesAutoresizingMaskIntoConstraints = true
@@ -67,7 +76,7 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
 
         titleView.translatesAutoresizingMaskIntoConstraints = false
         titleView.backgroundColor = UIColor(white: 0, alpha: 0.7)
-        titleView.isHidden = !controlsAreVisible
+        titleView.isHidden = !controlsVisibility
         view.addSubview(titleView)
 
         closeButton.accessibilityIdentifier = "closeButton"
@@ -100,13 +109,19 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
 
         // Constraints
 
+        var topInset: CGFloat = 0
+        if #available(iOS 11.0, *) {
+            topInset = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0
+        }
+        topInset = max(topInset, 20)
+
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             titleView.topAnchor.constraint(equalTo: view.topAnchor),
-            titleView.heightAnchor.constraint(equalToConstant: 64),
+            titleView.heightAnchor.constraint(equalToConstant: topInset + 44),
             titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             closeButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
@@ -164,8 +179,9 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
 
         // Other
 
+        showControls(initialControlsVisibility, animated: false)
         updateShare()
-        setupAppearance?(self)
+        setupAppearance?(.image(self))
     }
 
     override open func viewWillAppear(_ animated: Bool) {
@@ -173,31 +189,7 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
 
         if !isShown {
             isShown = true
-
-            if let fullImageLoader = image.fullImageLoader, image.fullImage == nil {
-                loadingIndicatorView.startAnimating()
-
-                fullImageLoader { [weak self] image, _ in
-                    guard let `self` = self else { return }
-
-                    self.loadingIndicatorView.stopAnimating()
-
-                    if let image = image {
-                        self.image.fullImage = image
-                        self.imageView.image = image
-
-                        let size = image.size
-                        let equal = abs(self.imageSize.width - size.width) < 0.1 && abs(self.imageSize.height - size.height) < 0.1
-                        if !equal {
-                            self.imageSize = size
-                            self.scrollSize = self.scrollView.frame.size
-                            self.setupScrollView(with: self.scrollSize)
-                        }
-                    }
-
-                    self.updateShare()
-                }
-            }
+            load()
         }
     }
 
@@ -205,8 +197,6 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
         super.viewDidAppear(animated)
 
         isTransitioning = false
-
-        showControls(false)
     }
 
     override open func viewDidLayoutSubviews() {
@@ -224,7 +214,7 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
     }
 
     override open var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return statusBarStyle
     }
 
     override open var shouldAutorotate: Bool {
@@ -252,8 +242,8 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
 
     // MARK: - Controls
 
-    private func showControls(_ show: Bool) {
-        controlsAreVisible = show
+    open func showControls(_ show: Bool, animated: Bool) {
+        controlsVisibility = show
         statusBarHidden = !show
 
         if show {
@@ -261,10 +251,9 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
             titleView.isHidden = false
         }
 
-        UIView.animate(withDuration: 0.15, delay: 0, options: [],
+        UIView.animate(withDuration: animated ? 0.15 : 0, delay: 0, options: [],
             animations: {
                 self.setNeedsStatusBarAppearanceUpdate()
-
                 self.titleView.alpha = show ? 1 : 0
             },
             completion: { finished in
@@ -276,7 +265,7 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
     }
 
     @objc private func toggleTap() {
-        showControls(!controlsAreVisible)
+        showControls(!controlsVisibility, animated: true)
     }
 
     @objc private func closeTap() {
@@ -305,6 +294,33 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
     }
 
     // MARK: - Image
+
+    private func load() {
+        guard let fullImageLoader = image.fullImageLoader, image.fullImage == nil else { return }
+
+        loadingIndicatorView.startAnimating()
+
+        fullImageLoader { [weak self] result in
+            guard let `self` = self else { return }
+
+            self.loadingIndicatorView.stopAnimating()
+
+            if let image = result.value {
+                self.image.fullImage = image
+                self.imageView.image = image
+
+                let size = image.size
+                let equal = abs(self.imageSize.width - size.width) < 0.1 && abs(self.imageSize.height - size.height) < 0.1
+                if !equal {
+                    self.imageSize = size
+                    self.scrollSize = self.scrollView.frame.size
+                    self.setupScrollView(with: self.scrollSize)
+                }
+            }
+
+            self.updateShare()
+        }
+    }
 
     private func setupScrollView(with size: CGSize) {
         scrollView.minimumZoomScale = 1.0
@@ -377,11 +393,11 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
     }
 
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        showControls(false)
+        // showControls(false, animated: true)
     }
 
     open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        showControls(false)
+        // showControls(false, animated: true)
     }
 
     // MARK: - Transition
@@ -394,7 +410,7 @@ open class ImageViewController: UIViewController, UIScrollViewDelegate, ZoomTran
 
     open func zoomTransitionHideViews(hide: Bool) {
         imageView.isHidden = hide
-        titleView.isHidden = hide || !controlsAreVisible
+        titleView.isHidden = hide || !controlsVisibility
     }
 
     open func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {

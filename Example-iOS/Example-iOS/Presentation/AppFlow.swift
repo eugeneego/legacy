@@ -23,8 +23,10 @@ class AppFlow {
         self.container = container
 
         feedFlow = FeedFlow(container: container)
-        imagesFlow = ImagesFlow(container: container, imagesService: container.resolveOrDie())
+        imagesFlow = ImagesFlow(container: container, imagesService: container.resolveOrDie(), imageLoader: container.resolveOrDie())
         profileFlow = ProfileFlow(container: container)
+
+        window.tintColor = .orange
 
         tabBarController = UITabBarController()
         tabBarController.viewControllers = [

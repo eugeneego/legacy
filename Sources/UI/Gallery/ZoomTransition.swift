@@ -1,9 +1,10 @@
 //
 // ZoomTransition
-// EE Gallery
+// Legacy
 //
 // Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
+//
 
 import UIKit
 
@@ -17,28 +18,28 @@ public protocol ZoomTransitionDelegate: class {
     func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect
 }
 
-public class ZoomTransition: NSObject,
+open class ZoomTransition: NSObject,
         UIViewControllerAnimatedTransitioning, UIViewControllerInteractiveTransitioning, UIGestureRecognizerDelegate {
-    weak var sourceTransition: ZoomTransitionDelegate?
-    weak var destinationTransition: ZoomTransitionDelegate?
+    open weak var sourceTransition: ZoomTransitionDelegate?
+    open weak var destinationTransition: ZoomTransitionDelegate?
 
-    var interactive: Bool
+    open var interactive: Bool
 
-    var shouldStartInteractiveTransition: (() -> Bool)?
-    var startTransition: (() -> Void)?
-    var sourceRootView: (() -> UIView?)?
+    open var shouldStartInteractiveTransition: (() -> Bool)?
+    open var startTransition: (() -> Void)?
+    open var sourceRootView: (() -> UIView?)?
 
-    var animationSetup: ((_ view: UIView) -> Void)?
-    var animation: ((_ view: UIView, _ duration: TimeInterval) -> Void)?
+    open var animationSetup: ((_ view: UIView) -> Void)?
+    open var animation: ((_ view: UIView, _ duration: TimeInterval) -> Void)?
 
-    var completion: ((_ completed: Bool) -> Void)?
+    open var completion: ((_ completed: Bool) -> Void)?
 
     private let zoomDuration: TimeInterval = 0.3
     private let minimumZoomDuration: TimeInterval = 0.15
 
     let panGestureRecognizer: UIPanGestureRecognizer = UIPanGestureRecognizer()
 
-    init(interactive: Bool) {
+    public init(interactive: Bool) {
         self.interactive = interactive
 
         super.init()
@@ -49,11 +50,11 @@ public class ZoomTransition: NSObject,
 
     // MARK: - Non interactive transition
 
-    public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    open func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return zoomDuration
     }
 
-    public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+    open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard !interactive else { return }
 
         // Getting view controllers and views
@@ -113,7 +114,7 @@ public class ZoomTransition: NSObject,
         )
     }
 
-    public func animationEnded(_ transitionCompleted: Bool) {
+    open func animationEnded(_ transitionCompleted: Bool) {
         completion?(transitionCompleted)
 
         interactiveTransitionContext?.animatingView.removeFromSuperview()
@@ -144,7 +145,7 @@ public class ZoomTransition: NSObject,
 
     private var interactiveTransitionContext: InteractiveTransitionContext?
 
-    public func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
+    open func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
         guard interactive else { return }
 
         guard
@@ -198,7 +199,7 @@ public class ZoomTransition: NSObject,
         }
     }
 
-    func update(progress: CGFloat, translation: CGPoint) {
+    open func update(progress: CGFloat, translation: CGPoint) {
         guard isFullInteractive else {
             updateSemiInteractiveTransition(progress: progress, translation: translation)
             return
@@ -221,7 +222,7 @@ public class ZoomTransition: NSObject,
         self.interactiveTransitionContext = context
     }
 
-    func finish() {
+    open func finish() {
         guard isFullInteractive else {
             finishSemiInteractiveTransition()
             return
@@ -258,7 +259,7 @@ public class ZoomTransition: NSObject,
         )
     }
 
-    func cancel() {
+    open func cancel() {
         guard isFullInteractive else {
             cancelSemiInteractiveTransition()
             return
