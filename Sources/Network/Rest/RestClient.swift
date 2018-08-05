@@ -55,10 +55,9 @@ public protocol RestClient: NetworkClient {
 public extension RestClient {
     @discardableResult
     func pathWithId(path: String, id: String?) -> String {
-        let path = (path.isEmpty || path[path.startIndex] != "/") ? path : String(path[path.index(after: path.startIndex)...])
-
+        let path = path.first == "/" ? String(path.dropFirst()) : path
         if let id = id {
-            let delimiter = (!path.isEmpty && path[path.index(before: path.endIndex)] != "/") ? "/" : ""
+            let delimiter = (!path.isEmpty && path.last != "/") ? "/" : ""
             return path + delimiter + id
         } else {
             return path

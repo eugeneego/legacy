@@ -18,8 +18,7 @@ public extension UIImage {
         context?.setFillColor(color.cgColor)
         context?.fill(rect)
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
-            fatalError("Cannot create image with parameters: " +
-                "color: \(color), size: \(size.width)x\(size.height), scale: \(scale), opaque: \(opaque).")
+            fatalError("Cannot create image from color \(color)")
         }
         UIGraphicsEndImageContext()
         return image
