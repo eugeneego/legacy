@@ -50,6 +50,7 @@
 		B2FA855F1E59C64BA008037F /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA821B587ACD8434FFAA0F /* Action.swift */; };
 		B2FA857115314515DC2F1BDD /* NSLogLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84F9B0679E131DCA216E /* NSLogLogger.swift */; };
 		B2FA857740A73E82F7311C14 /* UrlLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */; };
+		B2FA8579CE768C3821D524C9 /* GalleryPreviewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */; };
 		B2FA8591D163BDDD0FA6C746 /* CastLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */; };
 		B2FA85EA2B6961E0E6DE1D79 /* NetworkTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C7BA23DC92203EDB8E0 /* NetworkTransformerTests.swift */; };
 		B2FA8644795BD25290D54AF0 /* UserAddressGeoPointTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8FA85B91E15035E85A65 /* UserAddressGeoPointTransformer.swift */; };
@@ -86,6 +87,7 @@
 		B2FA8A5AC450E6D4B76A17B8 /* UserTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8952D19DFDE64C8D55E9 /* UserTransformer.swift */; };
 		B2FA8A884FCEDDC22A9E1D9B /* StringMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89D51C66A26B2D105F83 /* StringMatcher.swift */; };
 		B2FA8A8C6D80661DD2D1BBAC /* Hpkp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F6694A08CA964E4612E /* Hpkp.swift */; };
+		B2FA8ABCF1DBA77D33C69DD3 /* GalleryPreviewCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA876A1A19B89801D9D040 /* GalleryPreviewCollectionView.swift */; };
 		B2FA8AF9A7B6F8743294BE40 /* UserAddressGeoPointLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84534DB7DB97709D64A7 /* UserAddressGeoPointLightTransformer.swift */; };
 		B2FA8B6F222B852039B6B89B /* AsIsTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EA228D0CD3E18F673DA /* AsIsTransformer.swift */; };
 		B2FA8BA01E3CF8971385D1A5 /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA801B3A3421E7A5215206 /* PrintLogger.swift */; };
@@ -175,6 +177,7 @@
 		B2FA851A9B04FA4D133EA879 /* DateLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA852B1C43001C50964B88 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		B2FA85586B2FCF3923C037AB /* NumberStringLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberStringLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryPreviewCollectionCell.swift; sourceTree = "<group>"; };
 		B2FA858A3D77F6B7C5DBB895 /* DependencyInjectionContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyInjectionContainer.swift; sourceTree = "<group>"; };
 		B2FA85D4956ADEAF7B13BFD8 /* UrlSessionHttp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlSessionHttp.swift; sourceTree = "<group>"; };
 		B2FA85D8439F462794AA5ED1 /* NumberStringTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberStringTransformer.swift; sourceTree = "<group>"; };
@@ -184,6 +187,7 @@
 		B2FA871E8CDD13651A0653C9 /* CastTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastTransformer.swift; sourceTree = "<group>"; };
 		B2FA873002C781AA701C4253 /* UIView+Fade.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Fade.swift"; sourceTree = "<group>"; };
 		B2FA874D96896C94DD3FD899 /* UserAddressLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAddressLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA876A1A19B89801D9D040 /* GalleryPreviewCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryPreviewCollectionView.swift; sourceTree = "<group>"; };
 		B2FA877C4F8708E00C9D6F1B /* Transformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transformer.swift; sourceTree = "<group>"; };
 		B2FA878FCCBF587FE70C5A5F /* OdinTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OdinTests.swift; sourceTree = "<group>"; };
 		B2FA87C1FF4033D603F217FC /* UserLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLightTransformer.swift; sourceTree = "<group>"; };
@@ -500,6 +504,8 @@
 				B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */,
 				B2FA8225C0BBBB32CB030751 /* GalleryItemViewController.swift */,
 				B2FA82053D78B81A16709252 /* ZoomTransitionController.swift */,
+				B2FA876A1A19B89801D9D040 /* GalleryPreviewCollectionView.swift */,
+				B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -791,6 +797,8 @@
 				B2FA87BEAD3A4EA89B1A3419 /* GalleryAppearance.swift in Sources */,
 				B2FA8C8936BE74145C7A040B /* GalleryItemViewController.swift in Sources */,
 				B2FA887F0A2B1C668680614A /* ZoomTransitionController.swift in Sources */,
+				B2FA8ABCF1DBA77D33C69DD3 /* GalleryPreviewCollectionView.swift in Sources */,
+				B2FA8579CE768C3821D524C9 /* GalleryPreviewCollectionCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

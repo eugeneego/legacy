@@ -21,21 +21,28 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
 
     private let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
 
-    open var video: GalleryMedia.Video = GalleryMedia.Video()
-    open var autoplay: Bool = true
+    open var item: GalleryMedia = .video(.init()) {
+        didSet {
+            if case .video(let video) = item {
+                self.video = video
+            }
+        }
+    }
 
     open var closeAction: (() -> Void)?
     open var setupAppearance: ((GalleryAppearance) -> Void)?
     open var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
-    open var initialControlsVisibility: Bool = false
 
-    open var closeTitle: String = "Close"
-    open var shareIcon: UIImage?
+    open var initialControlsVisibility: Bool = false
+    open private(set) var controlsVisibility: Bool = true
+    open var controlsVisibilityChanged: ((Bool) -> Void)?
+
+    open var video: GalleryMedia.Video = .init()
+    open var autoplay: Bool = true
 
     private var imageSize: CGSize = .zero
 
-    open private(set) var controlsVisibility: Bool = true
     private var statusBarHidden: Bool = false
     private var isShown: Bool = false
     private var isStarted: Bool = false
@@ -71,10 +78,9 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
         titleView.isUserInteractionEnabled = true
         view.addSubview(titleView)
 
-        closeButton.accessibilityIdentifier = "closeButton"
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
-        closeButton.setTitle(closeTitle, for: .normal)
+        closeButton.setTitle("Close", for: .normal)
         closeButton.setTitleColor(.white, for: .normal)
         closeButton.backgroundColor = .clear
         closeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
@@ -82,10 +88,10 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
 
         shareButton.translatesAutoresizingMaskIntoConstraints = false
         shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
-        shareButton.setImage(shareIcon, for: .normal)
+        shareButton.setTitle("Share", for: .normal)
+        shareButton.setTitleColor(.white, for: .normal)
         shareButton.backgroundColor = .clear
         shareButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        shareButton.tintColor = .white
         titleView.addSubview(shareButton)
 
         tapGesture.addTarget(self, action: #selector(toggleTap))
@@ -107,7 +113,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
         topInset = max(topInset, 20)
 
         NSLayoutConstraint.activate([
-            // Adding 20 point to the top constraint to avoid AVPlayerViewController's bugs of fullscreen determination.
+            // Adding an inset to the top constraint to avoid AVPlayerViewController's bugs of fullscreen determination.
             playerController.view.topAnchor.constraint(equalTo: view.topAnchor, constant: topInset),
             playerController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             playerController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -257,7 +263,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
             previewImageView.image = previewImage
             imageSize = previewImage.size
         } else if let previewImageLoader = video.previewImageLoader {
-            previewImageLoader {  [weak self] result in
+            previewImageLoader(.zero) { [weak self] result in
                 guard let `self` = self else { return }
 
                 if let image = result.value {
@@ -306,6 +312,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
             animations: {
                 self.setNeedsStatusBarAppearanceUpdate()
                 self.titleView.alpha = show ? 1 : 0
+                self.controlsVisibilityChanged?(self.controlsVisibility)
             },
             completion: { finished in
                 if finished {
@@ -345,7 +352,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
 
     private func updateShare() {
         // Share only local videos
-        shareButton.isHidden = !(video.url?.isFileURL ?? false) || shareIcon == nil
+        shareButton.isEnabled = video.url?.isFileURL ?? false
     }
 
     // MARK: - Transition

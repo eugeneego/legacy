@@ -9,15 +9,15 @@
 import UIKit
 
 public protocol GalleryItemViewController: class {
+    var item: GalleryMedia { get set }
+
     var closeAction: (() -> Void)? { get set }
     var setupAppearance: ((GalleryAppearance) -> Void)? { get set }
     var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)? { get set }
     var statusBarStyle: UIStatusBarStyle { get set }
+
     var initialControlsVisibility: Bool { get set }
     var controlsVisibility: Bool { get }
-
-    var closeTitle: String { get set }
-    var shareIcon: UIImage? { get set }
-
+    var controlsVisibilityChanged: ((Bool) -> Void)? { get set }
     func showControls(_ show: Bool, animated: Bool)
 }

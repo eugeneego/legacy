@@ -19,21 +19,28 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
 
     private let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
 
-    open var image: GalleryMedia.Image = GalleryMedia.Image()
+    open var item: GalleryMedia = .image(.init()) {
+        didSet {
+            if case .image(let image) = item {
+                self.image = image
+            }
+        }
+    }
 
     open var closeAction: (() -> Void)?
     open var setupAppearance: ((GalleryAppearance) -> Void)?
     open var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
-    open var initialControlsVisibility: Bool = false
 
-    open var closeTitle: String = "Close"
-    open var shareIcon: UIImage?
+    open var initialControlsVisibility: Bool = false
+    open private(set) var controlsVisibility: Bool = false
+    open var controlsVisibilityChanged: ((Bool) -> Void)?
+
+    open var image: GalleryMedia.Image = .init()
 
     private var scrollSize: CGSize = .zero
     private var imageSize: CGSize = .zero
 
-    open private(set) var controlsVisibility: Bool = false
     private var statusBarHidden: Bool = false
     private var isShown: Bool = false
     private var isLaidOut: Bool = false
@@ -79,10 +86,9 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
         titleView.isHidden = !controlsVisibility
         view.addSubview(titleView)
 
-        closeButton.accessibilityIdentifier = "closeButton"
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
-        closeButton.setTitle(closeTitle, for: .normal)
+        closeButton.setTitle("Close", for: .normal)
         closeButton.setTitleColor(.white, for: .normal)
         closeButton.backgroundColor = .clear
         closeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
@@ -90,11 +96,10 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
 
         shareButton.translatesAutoresizingMaskIntoConstraints = false
         shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
-        shareButton.setImage(shareIcon, for: .normal)
+        shareButton.setTitle("Share", for: .normal)
+        shareButton.setTitleColor(.white, for: .normal)
         shareButton.backgroundColor = .clear
         shareButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        shareButton.tintColor = .white
-        shareButton.isHidden = shareIcon == nil
         titleView.addSubview(shareButton)
 
         tapGesture.addTarget(self, action: #selector(toggleTap))
@@ -255,6 +260,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
             animations: {
                 self.setNeedsStatusBarAppearanceUpdate()
                 self.titleView.alpha = show ? 1 : 0
+                self.controlsVisibilityChanged?(self.controlsVisibility)
             },
             completion: { finished in
                 if finished {

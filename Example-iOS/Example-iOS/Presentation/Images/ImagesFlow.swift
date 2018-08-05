@@ -37,8 +37,6 @@ class ImagesFlow {
         navigationController.setViewControllers([ imagesViewController ], animated: false)
     }
 
-    private weak var galleryViewController: GalleryViewController?
-
     private func gallery(images: [URL], index: Int, image: UIImage?) {
         let imageLoader: ImageLoader = self.imageLoader
 
@@ -47,6 +45,11 @@ class ImagesFlow {
             .image(GalleryMedia.Image(
                 index: item.offset,
                 previewImage: item.offset == index ? image : nil,
+                previewImageLoader: { size, completion in
+                    imageLoader.load(url: item.element, size: size, mode: .fill) { result in
+                        completion(result.map(success: { .success($0.image) }, failure: { .failure($0) }))
+                    }
+                },
                 fullImage: nil,
                 fullImageLoader: { completion in
                     imageLoader.load(url: item.element, size: .zero, mode: .original) { result in
@@ -56,8 +59,29 @@ class ImagesFlow {
             ))
         }
 
+        let previewView = GalleryPreviewCollectionView()
+        previewView.layout.itemSize = CGSize(width: 48, height: 64)
+        previewView.layout.minimumInteritemSpacing = 4
+        previewView.layout.minimumLineSpacing = 4
+        previewView.layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        previewView.backgroundColor = .white
+        previewView.cellSetup = { cell in
+            cell.clipsToBounds = false
+            cell.contentView.clipsToBounds = false
+
+            if cell.selectedBackgroundView == nil {
+                let view = UIView()
+                view.clipsToBounds = false
+                view.backgroundColor = .white
+                view.layer.shadowRadius = 8
+                view.layer.shadowOffset = CGSize(width: 0, height: 4)
+                view.layer.shadowColor = UIColor.black.cgColor
+                view.layer.shadowOpacity = 0.5
+                cell.selectedBackgroundView = view
+            }
+        }
+
         let controller = GalleryViewController(spacing: 20)
-        controller.closeTitle = "Close"
         controller.items = media
         controller.initialIndex = index
         controller.transitionController = ZoomTransitionController()
@@ -68,20 +92,43 @@ class ImagesFlow {
                 case .gallery(let controller):
                     controller.view.backgroundColor = .white
                     controller.initialControlsVisibility = true
+
+                    previewView.translatesAutoresizingMaskIntoConstraints = false
+                    controller.view.addSubview(previewView)
+                    NSLayoutConstraint.activate([
+                        previewView.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor),
+                        previewView.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor),
+                        previewView.bottomAnchor.constraint(equalTo: controller.bottomLayoutGuide.topAnchor),
+                        previewView.heightAnchor.constraint(equalToConstant: 80),
+                    ])
+                    previewView.items = controller.items
                 case .image(let controller):
                     controller.view.backgroundColor = .white
                     controller.loadingIndicatorView.color = .orange
                     controller.titleView.backgroundColor = .white
+                    controller.closeButton.setTitle("Close", for: .normal)
                     controller.closeButton.setTitleColor(.orange, for: .normal)
+                    controller.shareButton.setTitle("Share", for: .normal)
+                    controller.shareButton.setTitleColor(.orange, for: .normal)
                 case .video(let controller):
                     controller.view.backgroundColor = .white
             }
         }
+        previewView.selectAction = { [weak controller, weak previewView] index in
+            controller?.move(to: index, animated: true)
+            previewView?.selectItem(at: index, animated: true)
+        }
         controller.pageChanged = { currentIndex in
             self.imagesViewController.currentIndex = currentIndex
+            previewView.selectItem(at: currentIndex, animated: true)
+        }
+        controller.viewAppeared = { controller in
+            previewView.selectItem(at: controller.currentIndex, animated: true)
+        }
+        controller.controlsVisibilityChanged = { controlsVisibility in
+            previewView.alpha = controlsVisibility ? 1 : 0
         }
 
-        galleryViewController = controller
         navigationController.topViewController?.present(controller, animated: true, completion: nil)
     }
 }

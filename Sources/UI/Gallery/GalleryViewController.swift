@@ -1,6 +1,6 @@
 //
 // GalleryViewController
-// EE Gallery
+// Legacy
 //
 // Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
@@ -10,12 +10,12 @@ import UIKit
 
 open class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
         ZoomTransitionDelegate {
-    open var closeTitle: String = "Close"
-    open var shareIcon: UIImage?
     open var setupAppearance: ((GalleryAppearance) -> Void)?
-    open var statusBarStyle: UIStatusBarStyle = .lightContent
-    open var initialControlsVisibility: Bool = false
+    open var viewAppeared: ((GalleryViewController) -> Void)?
     open var pageChanged: ((_ currentIndex: Int) -> Void)?
+    open var initialControlsVisibility: Bool = false
+    open var controlsVisibilityChanged: ((Bool) -> Void)?
+    open var statusBarStyle: UIStatusBarStyle = .lightContent
 
     open var transitionController: ZoomTransitionController? {
         didSet {
@@ -49,6 +49,12 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         move(to: initialIndex, animated: false)
     }
 
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        viewAppeared?(self)
+    }
+
     override open var prefersStatusBarHidden: Bool {
         return currentViewController.prefersStatusBarHidden
     }
@@ -79,52 +85,42 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         currentIndex = index
 
         let controller = viewController(for: items[currentIndex], autoplay: true, controls: lastControlsVisibility)
-        setViewControllers([ controller ], direction: direction, animated: animated, completion: nil)
+        setViewControllers([ controller ], direction: direction, animated: animated) { completed in
+            if completed {
+                self.pageChanged?(self.currentIndex)
+            }
+        }
     }
 
     private func index(from viewController: UIViewController) -> Int {
-        switch viewController {
-            case let controller as GalleryImageViewController:
-                return controller.image.index
-            case let controller as GalleryVideoViewController:
-                return controller.video.index
-            default:
-                fatalError("Controller should be ImageViewController or VideoViewController")
-        }
+        guard let controller = viewController as? GalleryItemViewController else { fatalError("Should be GalleryItemViewController") }
+
+        return controller.item.index
     }
 
     private func viewController(for item: GalleryMedia, autoplay: Bool, controls: Bool) -> UIViewController {
+        let controller: UIViewController & GalleryItemViewController
+
         switch item {
-            case .image(let image):
-                let controller = GalleryImageViewController()
-                controller.initialControlsVisibility = controls
-                controller.closeTitle = closeTitle
-                controller.shareIcon = shareIcon
-                controller.setupAppearance = setupAppearance
-                controller.closeAction = { [weak self] in
-                    self?.dismiss(animated: true, completion: nil)
-                }
-                controller.presenterInterfaceOrientations = { [weak self] in
-                    self?.presentingViewController?.supportedInterfaceOrientations
-                }
-                controller.image = image
-                return controller
-            case .video(let video):
-                let controller = GalleryVideoViewController()
-                controller.initialControlsVisibility = controls
-                controller.closeTitle = closeTitle
-                controller.shareIcon = shareIcon
-                controller.setupAppearance = setupAppearance
-                controller.closeAction = { [weak self] in
-                    self?.dismiss(animated: true, completion: nil)
-                }
-                controller.presenterInterfaceOrientations = { [weak self] in
-                    self?.presentingViewController?.supportedInterfaceOrientations
-                }
-                controller.autoplay = autoplay
-                controller.video = video
-                return controller
+            case .image:
+                controller = GalleryImageViewController()
+            case .video:
+                let videoController = GalleryVideoViewController()
+                videoController.autoplay = autoplay
+                controller = videoController
         }
+
+        controller.setupAppearance = setupAppearance
+        controller.initialControlsVisibility = controls
+        controller.controlsVisibilityChanged = controlsVisibilityChanged
+        controller.closeAction = { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }
+        controller.presenterInterfaceOrientations = { [weak self] in
+            self?.presentingViewController?.supportedInterfaceOrientations
+        }
+        controller.item = item
+        return controller
     }
 
     private var currentViewController: UIViewController {
