@@ -119,6 +119,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         controller.presenterInterfaceOrientations = { [weak self] in
             self?.presentingViewController?.supportedInterfaceOrientations
         }
+        controller.isTransitionEnabled = transitionController != nil
         controller.item = item
         return controller
     }

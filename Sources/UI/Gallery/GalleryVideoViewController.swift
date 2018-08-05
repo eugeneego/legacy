@@ -33,6 +33,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
     open var setupAppearance: ((GalleryAppearance) -> Void)?
     open var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
+    open var isTransitionEnabled: Bool = true
 
     open var initialControlsVisibility: Bool = false
     open private(set) var controlsVisibility: Bool = true
@@ -168,6 +169,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
             self.isTransitioning = false
         }
         view.addGestureRecognizer(transition.panGestureRecognizer)
+        transition.panGestureRecognizer.isEnabled = isTransitionEnabled
 
         // Other
 

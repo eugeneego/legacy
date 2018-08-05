@@ -37,7 +37,7 @@ open class ZoomTransition: NSObject,
     private let zoomDuration: TimeInterval = 0.3
     private let minimumZoomDuration: TimeInterval = 0.15
 
-    let panGestureRecognizer: UIPanGestureRecognizer = UIPanGestureRecognizer()
+    public let panGestureRecognizer: UIPanGestureRecognizer = UIPanGestureRecognizer()
 
     public init(interactive: Bool) {
         self.interactive = interactive

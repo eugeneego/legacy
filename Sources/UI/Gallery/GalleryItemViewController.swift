@@ -15,6 +15,7 @@ public protocol GalleryItemViewController: class {
     var setupAppearance: ((GalleryAppearance) -> Void)? { get set }
     var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)? { get set }
     var statusBarStyle: UIStatusBarStyle { get set }
+    var isTransitionEnabled: Bool { get set }
 
     var initialControlsVisibility: Bool { get set }
     var controlsVisibility: Bool { get }

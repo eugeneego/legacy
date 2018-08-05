@@ -31,6 +31,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
     open var setupAppearance: ((GalleryAppearance) -> Void)?
     open var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
+    open var isTransitionEnabled: Bool = true
 
     open var initialControlsVisibility: Bool = false
     open private(set) var controlsVisibility: Bool = false
@@ -170,6 +171,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
             self.isTransitioning = false
         }
         view.addGestureRecognizer(transition.panGestureRecognizer)
+        transition.panGestureRecognizer.isEnabled = isTransitionEnabled
 
         // Image Loading
 
@@ -394,7 +396,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
 
         if !isTransitioning {
             let enabled = abs(scrollView.zoomScale - scrollView.minimumZoomScale) < 0.001
-            transition.panGestureRecognizer.isEnabled = enabled
+            transition.panGestureRecognizer.isEnabled = enabled && isTransitionEnabled
         }
     }
 
