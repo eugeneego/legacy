@@ -12,7 +12,7 @@ import Legacy
 class AppFlow {
     private let container: DependencyInjectionContainer
     private let window: UIWindow
-    private let tabBarController: UITabBarController
+    private let tabBarController: TabBarController
 
     private let feedFlow: FeedFlow
     private let imagesFlow: ImagesFlow
@@ -28,7 +28,7 @@ class AppFlow {
 
         window.tintColor = .orange
 
-        tabBarController = UITabBarController()
+        tabBarController = TabBarController()
         tabBarController.viewControllers = [
             feedFlow.viewController,
             imagesFlow.viewController,

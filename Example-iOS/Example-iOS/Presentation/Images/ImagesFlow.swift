@@ -64,7 +64,8 @@ class ImagesFlow {
         previewView.layout.minimumInteritemSpacing = 4
         previewView.layout.minimumLineSpacing = 4
         previewView.layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        previewView.backgroundColor = .white
+        previewView.backgroundColor = .clear
+        previewView.clipsToBounds = false
         previewView.cellSetup = { cell in
             cell.clipsToBounds = false
             cell.contentView.clipsToBounds = false

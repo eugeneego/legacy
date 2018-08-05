@@ -30,6 +30,7 @@
 		B2FA8CDF7480A6128CEF118C /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D936A72FBC5FEE4DB69 /* FeedViewController.swift */; };
 		B2FA8D15E467316F16075ED9 /* Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85DEA88CBB9441946CCF /* Dependencies.swift */; };
 		B2FA8D1836EF440A211FBEBD /* FeedKindTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8773D5C40988B58775BF /* FeedKindTransformer.swift */; };
+		B2FA8D2E7C590AF4FE2708DF /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85E90588764B248F13AD /* TabBarController.swift */; };
 		B2FA8D55E8395C328A810532 /* RestConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EB41C0D1F48107F1963 /* RestConfigurator.swift */; };
 		B2FA8E326BE3BF7A871C49D5 /* FeedSubscriptionTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA870E75265BD81CC7B083 /* FeedSubscriptionTransformer.swift */; };
 		B2FA8E52A6E33FE3E3731884 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C90CBF469E86FD1F436 /* ProfileViewController.swift */; };
@@ -64,6 +65,7 @@
 		B2FA835700C9E58AE78EA11A /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA85DEA88CBB9441946CCF /* Dependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dependencies.swift; sourceTree = "<group>"; };
+		B2FA85E90588764B248F13AD /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		B2FA866053568C63FCF6F9B4 /* ImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		B2FA8667E20EC8D9A960CD35 /* ImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesViewController.swift; sourceTree = "<group>"; };
 		B2FA870E75265BD81CC7B083 /* FeedSubscriptionTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSubscriptionTransformer.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				B2FA8B839611A924D51020C6 /* Images */,
 				B2FA8DB4FC6A43239F98C583 /* Feed */,
 				B2FA80BD44E0BB1D47E0372C /* Profile */,
+				B2FA85E90588764B248F13AD /* TabBarController.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -369,6 +372,7 @@
 				B2FA8EEE1E35B2764A7EDE14 /* ImagesService.swift in Sources */,
 				B2FA8A62ACA991A9E240ECA9 /* MockImagesService.swift in Sources */,
 				B2FA8492154233EDF9ACDE20 /* RestImagesService.swift in Sources */,
+				B2FA8D2E7C590AF4FE2708DF /* TabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
