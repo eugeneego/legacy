@@ -44,6 +44,8 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
     open var hideControlsOnZoom: Bool = false
 
     open var image: GalleryMedia.Image = .init()
+    open var maximumZoomScale: CGFloat = 2
+    open var exitScaleEnabled: Bool = false
 
     private var scrollSize: CGSize = .zero
     private var imageSize: CGSize = .zero
@@ -349,7 +351,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
             let xScale = size.width / contentSize.width
             let yScale = size.height / contentSize.height
             minimumScale = min(xScale, yScale)
-            maximumScale = max(2.0, minimumScale)
+            maximumScale = max(maximumZoomScale, minimumScale)
         }
 
         scrollView.contentSize = contentSize
@@ -381,7 +383,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
         if scrollView.isZooming {
             lastScale = scrollView.zoomScale
             lastFrame = imageView.convert(imageView.bounds, to: view)
-        } else if !isTransitioning && lastScale < exitScale {
+        } else if !isTransitioning && exitScaleEnabled && lastScale < exitScale {
             isTransitioning = true
 
             DispatchQueue.main.async {

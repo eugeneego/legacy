@@ -96,6 +96,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     // MARK: - Controls
 
     open func showControls(_ show: Bool, animated: Bool) {
+        lastControlsVisibility = show
         controlsVisibility = show
         statusBarHidden = !show
 
