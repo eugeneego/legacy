@@ -35,6 +35,10 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
     open var statusBarStyle: UIStatusBarStyle = .lightContent
     open var isTransitionEnabled: Bool = true
 
+    open var sharedControls: Bool = false
+    open var availableControls: GalleryControls = [ .close, .share ]
+    open private(set) var controls: GalleryControls = [ .close, .share ]
+    open var controlsChanged: (() -> Void)?
     open var initialControlsVisibility: Bool = false
     open private(set) var controlsVisibility: Bool = true
     open var controlsVisibilityChanged: ((Bool) -> Void)?
@@ -73,28 +77,9 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
 
         // Title View
 
-        titleView.translatesAutoresizingMaskIntoConstraints = false
-        titleView.backgroundColor = UIColor(white: 0, alpha: 0.7)
-        titleView.isHidden = !controlsVisibility
-        titleView.isUserInteractionEnabled = true
-        view.addSubview(titleView)
-
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        GalleryRoutines.configureControllerTitle(view: view, titleView: titleView, closeButton: closeButton, shareButton: shareButton)
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
-        closeButton.setTitle("Close", for: .normal)
-        closeButton.setTitleColor(.white, for: .normal)
-        closeButton.backgroundColor = .clear
-        closeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        titleView.addSubview(closeButton)
-
-        shareButton.translatesAutoresizingMaskIntoConstraints = false
         shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
-        shareButton.setTitle("Share", for: .normal)
-        shareButton.setTitleColor(.white, for: .normal)
-        shareButton.backgroundColor = .clear
-        shareButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        titleView.addSubview(shareButton)
-
         tapGesture.addTarget(self, action: #selector(toggleTap))
         titleView.addGestureRecognizer(tapGesture)
 
@@ -107,15 +92,9 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
 
         // Constraints
 
-        var topInset: CGFloat = 0
-        if #available(iOS 11.0, *) {
-            topInset = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0
-        }
-        topInset = max(topInset, 20)
-
         NSLayoutConstraint.activate([
             // Adding an inset to the top constraint to avoid AVPlayerViewController's bugs of fullscreen determination.
-            playerController.view.topAnchor.constraint(equalTo: view.topAnchor, constant: topInset),
+            playerController.view.topAnchor.constraint(equalTo: view.topAnchor, constant: GalleryRoutines.topInset),
             playerController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             playerController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             playerController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -123,16 +102,6 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
             previewImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             previewImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             previewImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            titleView.topAnchor.constraint(equalTo: view.topAnchor),
-            titleView.heightAnchor.constraint(equalToConstant: topInset + 44),
-            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            closeButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
-            closeButton.leadingAnchor.constraint(equalTo: titleView.leadingAnchor),
-            closeButton.heightAnchor.constraint(equalToConstant: 44),
-            shareButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
-            shareButton.trailingAnchor.constraint(equalTo: titleView.trailingAnchor),
-            shareButton.heightAnchor.constraint(equalToConstant: 44),
             loadingIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
@@ -175,9 +144,11 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
 
         playerController.didMove(toParentViewController: self)
 
+        titleView.isHidden = sharedControls || !controlsVisibility
         showControls(initialControlsVisibility, animated: false)
+
         updatePreviewImage()
-        updateShare()
+        updateControls()
         setupAppearance?(.video(self))
     }
 
@@ -239,7 +210,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
         playerController.player = player
         playerController.showsPlaybackControls = true
 
-        updateShare()
+        updateControls()
 
         previewImageView.isHidden = true
 
@@ -305,8 +276,12 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
         controlsVisibility = show
         statusBarHidden = !show
 
+        guard !sharedControls else {
+            controlsVisibilityChanged?(controlsVisibility)
+            return
+        }
+
         if show {
-            titleView.alpha = 0
             titleView.isHidden = false
         }
 
@@ -328,7 +303,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
         showControls(!controlsVisibility, animated: true)
     }
 
-    @objc private func closeTap() {
+    @objc open func closeTap() {
         pause()
         generatePreview()
 
@@ -345,16 +320,32 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
         }
     }
 
-    @objc private func shareTap() {
+    @objc open func shareTap() {
         guard let url = video.url else { return }
 
         let controller = UIActivityViewController(activityItems: [ url ], applicationActivities: nil)
         present(controller, animated: true, completion: nil)
     }
 
-    private func updateShare() {
+    private func updateControls() {
+        let closeAvailable = availableControls.contains(.close)
+        if closeAvailable {
+            controls.insert(.close)
+        } else {
+            controls.remove(.close)
+        }
+        closeButton.isHidden = !closeAvailable
+
         // Share only local videos
-        shareButton.isEnabled = video.url?.isFileURL ?? false
+        let shareAvailable = (video.url?.isFileURL ?? false) && availableControls.contains(.share)
+        if shareAvailable {
+            controls.insert(.share)
+        } else {
+            controls.remove(.share)
+        }
+        shareButton.isEnabled = shareAvailable
+
+        controlsChanged?()
     }
 
     // MARK: - Transition
@@ -389,7 +380,7 @@ open class GalleryVideoViewController: UIViewController, GalleryItemViewControll
             previewImageView.isHidden = hide
         }
         playerController.view.isHidden = hide
-        titleView.isHidden = hide
+        titleView.isHidden = hide || !controlsVisibility || sharedControls
     }
 
     open func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {

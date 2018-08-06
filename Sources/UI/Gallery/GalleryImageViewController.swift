@@ -33,9 +33,15 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
     open var statusBarStyle: UIStatusBarStyle = .lightContent
     open var isTransitionEnabled: Bool = true
 
+    open var sharedControls: Bool = false
+    open var availableControls: GalleryControls = [ .close, .share ]
+    open private(set) var controls: GalleryControls = [ .close, .share ]
+    open var controlsChanged: (() -> Void)?
     open var initialControlsVisibility: Bool = false
     open private(set) var controlsVisibility: Bool = false
     open var controlsVisibilityChanged: ((Bool) -> Void)?
+    open var hideControlsOnDrag: Bool = false
+    open var hideControlsOnZoom: Bool = false
 
     open var image: GalleryMedia.Image = .init()
 
@@ -82,27 +88,9 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
 
         // Title View
 
-        titleView.translatesAutoresizingMaskIntoConstraints = false
-        titleView.backgroundColor = UIColor(white: 0, alpha: 0.7)
-        titleView.isHidden = !controlsVisibility
-        view.addSubview(titleView)
-
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        GalleryRoutines.configureControllerTitle(view: view, titleView: titleView, closeButton: closeButton, shareButton: shareButton)
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
-        closeButton.setTitle("Close", for: .normal)
-        closeButton.setTitleColor(.white, for: .normal)
-        closeButton.backgroundColor = .clear
-        closeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        titleView.addSubview(closeButton)
-
-        shareButton.translatesAutoresizingMaskIntoConstraints = false
         shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
-        shareButton.setTitle("Share", for: .normal)
-        shareButton.setTitleColor(.white, for: .normal)
-        shareButton.backgroundColor = .clear
-        shareButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        titleView.addSubview(shareButton)
-
         tapGesture.addTarget(self, action: #selector(toggleTap))
         view.addGestureRecognizer(tapGesture)
 
@@ -115,27 +103,11 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
 
         // Constraints
 
-        var topInset: CGFloat = 0
-        if #available(iOS 11.0, *) {
-            topInset = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0
-        }
-        topInset = max(topInset, 20)
-
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            titleView.topAnchor.constraint(equalTo: view.topAnchor),
-            titleView.heightAnchor.constraint(equalToConstant: topInset + 44),
-            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            closeButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
-            closeButton.leadingAnchor.constraint(equalTo: titleView.leadingAnchor),
-            closeButton.heightAnchor.constraint(equalToConstant: 44),
-            shareButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
-            shareButton.trailingAnchor.constraint(equalTo: titleView.trailingAnchor),
-            shareButton.heightAnchor.constraint(equalToConstant: 44),
             loadingIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
@@ -186,8 +158,10 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
 
         // Other
 
+        titleView.isHidden = sharedControls || !controlsVisibility
         showControls(initialControlsVisibility, animated: false)
-        updateShare()
+
+        updateControls()
         setupAppearance?(.image(self))
     }
 
@@ -253,8 +227,12 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
         controlsVisibility = show
         statusBarHidden = !show
 
+        guard !sharedControls else {
+            controlsVisibilityChanged?(controlsVisibility)
+            return
+        }
+
         if show {
-            titleView.alpha = 0
             titleView.isHidden = false
         }
 
@@ -276,21 +254,37 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
         showControls(!controlsVisibility, animated: true)
     }
 
-    @objc private func closeTap() {
+    @objc open func closeTap() {
         isTransitioning = true
 
         close()
     }
 
-    @objc private func shareTap() {
+    @objc open func shareTap() {
         guard let image = image.fullImage else { return }
 
         let controller = UIActivityViewController(activityItems: [ image ], applicationActivities: nil)
         present(controller, animated: true, completion: nil)
     }
 
-    private func updateShare() {
-        shareButton.isHidden = image.fullImage == nil
+    private func updateControls() {
+        let closeAvailable = availableControls.contains(.close)
+        if closeAvailable {
+            controls.insert(.close)
+        } else {
+            controls.remove(.close)
+        }
+        closeButton.isHidden = !closeAvailable
+
+        let shareAvailable = image.fullImage != nil && availableControls.contains(.share)
+        if shareAvailable {
+            controls.insert(.share)
+        } else {
+            controls.remove(.share)
+        }
+        shareButton.isHidden = !shareAvailable
+
+        controlsChanged?()
     }
 
     private func close() {
@@ -314,6 +308,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
             self.loadingIndicatorView.stopAnimating()
 
             if let image = result.value {
+                self.imageView.addFadeTransition()
                 self.image.fullImage = image
                 self.imageView.image = image
 
@@ -326,7 +321,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
                 }
             }
 
-            self.updateShare()
+            self.updateControls()
         }
     }
 
@@ -401,11 +396,15 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
     }
 
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        // showControls(false, animated: true)
+        if hideControlsOnDrag {
+            showControls(false, animated: true)
+        }
     }
 
     open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        // showControls(false, animated: true)
+        if hideControlsOnZoom {
+            showControls(false, animated: true)
+        }
     }
 
     // MARK: - Transition
@@ -418,7 +417,7 @@ open class GalleryImageViewController: UIViewController, GalleryItemViewControll
 
     open func zoomTransitionHideViews(hide: Bool) {
         imageView.isHidden = hide
-        titleView.isHidden = hide || !controlsVisibility
+        titleView.isHidden = hide || !controlsVisibility || sharedControls
     }
 
     open func zoomTransitionDestinationFrame(for view: UIView, frame: CGRect) -> CGRect {

@@ -8,6 +8,17 @@
 
 import UIKit
 
+public struct GalleryControls: OptionSet {
+    public let rawValue: Int
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    public static let close = GalleryControls(rawValue: 1)
+    public static let share = GalleryControls(rawValue: 2)
+}
+
 public protocol GalleryItemViewController: class {
     var item: GalleryMedia { get set }
 
@@ -17,8 +28,14 @@ public protocol GalleryItemViewController: class {
     var statusBarStyle: UIStatusBarStyle { get set }
     var isTransitionEnabled: Bool { get set }
 
+    var sharedControls: Bool { get set }
+    var availableControls: GalleryControls { get set }
+    var controls: GalleryControls { get }
+    var controlsChanged: (() -> Void)? { get set }
     var initialControlsVisibility: Bool { get set }
     var controlsVisibility: Bool { get }
     var controlsVisibilityChanged: ((Bool) -> Void)? { get set }
     func showControls(_ show: Bool, animated: Bool)
+    func closeTap()
+    func shareTap()
 }

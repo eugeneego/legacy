@@ -59,6 +59,63 @@ class ImagesFlow {
             ))
         }
 
+        let previewView = createGalleryPreview()
+
+        let controller = GalleryViewController(spacing: 20)
+        controller.items = media
+        controller.initialIndex = index
+        controller.transitionController = ZoomTransitionController()
+        controller.sharedControls = true
+        controller.availableControls = [ .close, .share ]
+        controller.initialControlsVisibility = true
+        controller.statusBarStyle = .default
+        controller.setupAppearance = { appearance in
+            switch appearance {
+                case .gallery(let controller):
+                    controller.initialControlsVisibility = true
+                    controller.view.backgroundColor = .white
+                    controller.titleView.backgroundColor = .white
+                    controller.closeButton.setTitleColor(.orange, for: .normal)
+                    controller.shareButton.setTitleColor(.orange, for: .normal)
+
+                    previewView.translatesAutoresizingMaskIntoConstraints = false
+                    controller.view.addSubview(previewView)
+                    NSLayoutConstraint.activate([
+                        previewView.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor),
+                        previewView.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor),
+                        previewView.bottomAnchor.constraint(equalTo: controller.bottomLayoutGuide.topAnchor),
+                        previewView.heightAnchor.constraint(equalToConstant: 80),
+                    ])
+                    previewView.items = controller.items
+                case .image(let controller):
+                    controller.view.backgroundColor = .white
+                    controller.loadingIndicatorView.color = .orange
+                    controller.titleView.backgroundColor = .white
+                    controller.closeButton.setTitleColor(.orange, for: .normal)
+                    controller.shareButton.setTitleColor(.orange, for: .normal)
+                case .video(let controller):
+                    controller.view.backgroundColor = .white
+            }
+        }
+        previewView.selectAction = { [weak controller, weak previewView] index in
+            controller?.move(to: index, animated: true)
+            previewView?.selectItem(at: index, animated: true)
+        }
+        controller.pageChanged = { currentIndex in
+            self.imagesViewController.currentIndex = currentIndex
+            previewView.selectItem(at: currentIndex, animated: true)
+        }
+        controller.viewAppeared = { controller in
+            previewView.selectItem(at: controller.currentIndex, animated: true)
+        }
+        controller.controlsVisibilityChanged = { controlsVisibility in
+            previewView.alpha = controlsVisibility ? 1 : 0
+        }
+
+        navigationController.topViewController?.present(controller, animated: true, completion: nil)
+    }
+
+    private func createGalleryPreview() -> GalleryPreviewCollectionView {
         let previewView = GalleryPreviewCollectionView()
         previewView.layout.itemSize = CGSize(width: 48, height: 64)
         previewView.layout.minimumInteritemSpacing = 4
@@ -81,55 +138,6 @@ class ImagesFlow {
                 cell.selectedBackgroundView = view
             }
         }
-
-        let controller = GalleryViewController(spacing: 20)
-        controller.items = media
-        controller.initialIndex = index
-        controller.transitionController = ZoomTransitionController()
-        controller.initialControlsVisibility = true
-        controller.statusBarStyle = .default
-        controller.setupAppearance = { appearance in
-            switch appearance {
-                case .gallery(let controller):
-                    controller.view.backgroundColor = .white
-                    controller.initialControlsVisibility = true
-
-                    previewView.translatesAutoresizingMaskIntoConstraints = false
-                    controller.view.addSubview(previewView)
-                    NSLayoutConstraint.activate([
-                        previewView.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor),
-                        previewView.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor),
-                        previewView.bottomAnchor.constraint(equalTo: controller.bottomLayoutGuide.topAnchor),
-                        previewView.heightAnchor.constraint(equalToConstant: 80),
-                    ])
-                    previewView.items = controller.items
-                case .image(let controller):
-                    controller.view.backgroundColor = .white
-                    controller.loadingIndicatorView.color = .orange
-                    controller.titleView.backgroundColor = .white
-                    controller.closeButton.setTitle("Close", for: .normal)
-                    controller.closeButton.setTitleColor(.orange, for: .normal)
-                    controller.shareButton.setTitle("Share", for: .normal)
-                    controller.shareButton.setTitleColor(.orange, for: .normal)
-                case .video(let controller):
-                    controller.view.backgroundColor = .white
-            }
-        }
-        previewView.selectAction = { [weak controller, weak previewView] index in
-            controller?.move(to: index, animated: true)
-            previewView?.selectItem(at: index, animated: true)
-        }
-        controller.pageChanged = { currentIndex in
-            self.imagesViewController.currentIndex = currentIndex
-            previewView.selectItem(at: currentIndex, animated: true)
-        }
-        controller.viewAppeared = { controller in
-            previewView.selectItem(at: controller.currentIndex, animated: true)
-        }
-        controller.controlsVisibilityChanged = { controlsVisibility in
-            previewView.alpha = controlsVisibility ? 1 : 0
-        }
-
-        navigationController.topViewController?.present(controller, animated: true, completion: nil)
+        return previewView
     }
 }

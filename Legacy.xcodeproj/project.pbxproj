@@ -105,6 +105,7 @@
 		B2FA8E0261AD69CC01378F1C /* NetworkImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8320303EF0DB8654A3D2 /* NetworkImageView.swift */; };
 		B2FA8E08DE39C42B829766C6 /* VoidHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA82C5A9F2428939EB9981 /* VoidHttpSerializer.swift */; };
 		B2FA8E0ACB9B69D535F57BD0 /* LightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA844184D1B3827C980DB3 /* LightTransformer.swift */; };
+		B2FA8E2744BFFAE41FC2B2A7 /* GalleryRoutines.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87FA796941FA3B9B3CC3 /* GalleryRoutines.swift */; };
 		B2FA8E2D218194F836DB8CFD /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */; };
 		B2FA8E3478A25C6BAFA3C5FC /* DictionaryLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */; };
 		B2FA8E616DD222761559959E /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8343F8CC638295A9178B /* Json.swift */; };
@@ -193,6 +194,7 @@
 		B2FA87C1FF4033D603F217FC /* UserLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA87EEB1A6721B00E69021 /* NetworkCodableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCodableTests.swift; sourceTree = "<group>"; };
 		B2FA87F9B5E313F53D90ABCA /* Easing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Easing.swift; sourceTree = "<group>"; };
+		B2FA87FA796941FA3B9B3CC3 /* GalleryRoutines.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryRoutines.swift; sourceTree = "<group>"; };
 		B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Screenshot.swift"; sourceTree = "<group>"; };
 		B2FA8827F09C732B46B404DE /* ElasticLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElasticLogger.swift; sourceTree = "<group>"; };
@@ -506,6 +508,7 @@
 				B2FA82053D78B81A16709252 /* ZoomTransitionController.swift */,
 				B2FA876A1A19B89801D9D040 /* GalleryPreviewCollectionView.swift */,
 				B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */,
+				B2FA87FA796941FA3B9B3CC3 /* GalleryRoutines.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -799,6 +802,7 @@
 				B2FA887F0A2B1C668680614A /* ZoomTransitionController.swift in Sources */,
 				B2FA8ABCF1DBA77D33C69DD3 /* GalleryPreviewCollectionView.swift in Sources */,
 				B2FA8579CE768C3821D524C9 /* GalleryPreviewCollectionCell.swift in Sources */,
+				B2FA8E2744BFFAE41FC2B2A7 /* GalleryRoutines.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

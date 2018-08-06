@@ -13,9 +13,13 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     open var setupAppearance: ((GalleryAppearance) -> Void)?
     open var viewAppeared: ((GalleryViewController) -> Void)?
     open var pageChanged: ((_ currentIndex: Int) -> Void)?
-    open var initialControlsVisibility: Bool = false
-    open var controlsVisibilityChanged: ((Bool) -> Void)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
+
+    open var sharedControls: Bool = false
+    open var availableControls: GalleryControls = [ .close, .share ]
+    open var initialControlsVisibility: Bool = false
+    open private(set) var controlsVisibility: Bool = false
+    open var controlsVisibilityChanged: ((Bool) -> Void)?
 
     open var transitionController: ZoomTransitionController? {
         didSet {
@@ -23,7 +27,13 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         }
     }
 
+    public let titleView: UIView = UIView()
+    public let closeButton: UIButton = UIButton(type: .custom)
+    public let shareButton: UIButton = UIButton(type: .custom)
+    private let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
+
     private var lastControlsVisibility: Bool = false
+    private var statusBarHidden: Bool = false
 
     public init(spacing: CGFloat = 0) {
         let options: [String: Any] = [ UIPageViewControllerOptionInterPageSpacingKey: spacing ]
@@ -34,7 +44,10 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     }
 
     required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+
+        dataSource = self
+        delegate = self
     }
 
     override open func viewDidLoad() {
@@ -43,6 +56,15 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         view.backgroundColor = .black
 
         lastControlsVisibility = initialControlsVisibility
+
+        GalleryRoutines.configureControllerTitle(view: view, titleView: titleView, closeButton: closeButton, shareButton: shareButton)
+        closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
+        shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
+        tapGesture.addTarget(self, action: #selector(toggleTap))
+        titleView.addGestureRecognizer(tapGesture)
+        
+        titleView.isHidden = !sharedControls || !controlsVisibility
+        showControls(initialControlsVisibility, animated: false)
 
         setupAppearance?(.gallery(self))
 
@@ -56,7 +78,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     }
 
     override open var prefersStatusBarHidden: Bool {
-        return currentViewController.prefersStatusBarHidden
+        return sharedControls ? statusBarHidden : currentViewController.prefersStatusBarHidden
     }
 
     override open var preferredStatusBarStyle: UIStatusBarStyle {
@@ -69,6 +91,50 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
+    }
+
+    // MARK: - Controls
+
+    open func showControls(_ show: Bool, animated: Bool) {
+        controlsVisibility = show
+        statusBarHidden = !show
+
+        guard sharedControls else { return }
+
+        if show {
+            titleView.isHidden = false
+        }
+
+        UIView.animate(withDuration: animated ? 0.15 : 0, delay: 0, options: [],
+            animations: {
+                self.setNeedsStatusBarAppearanceUpdate()
+                self.titleView.alpha = show ? 1 : 0
+                self.controlsVisibilityChanged?(self.controlsVisibility)
+            },
+            completion: { finished in
+                if finished {
+                    self.titleView.isHidden = !show
+                }
+            }
+        )
+    }
+
+    open func updateControls() {
+        let controls: GalleryControls = (currentViewController as? GalleryItemViewController)?.controls ?? []
+        closeButton.isHidden = !controls.contains(.close)
+        shareButton.isHidden = !controls.contains(.share)
+    }
+
+    @objc private func toggleTap() {
+        (currentViewController as? GalleryItemViewController)?.showControls(!controlsVisibility, animated: true)
+    }
+
+    @objc private func closeTap() {
+        (currentViewController as? GalleryItemViewController)?.closeTap()
+    }
+
+    @objc private func shareTap() {
+        (currentViewController as? GalleryItemViewController)?.shareTap()
     }
 
     // MARK: - Models
@@ -100,7 +166,6 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     private func viewController(for item: GalleryMedia, autoplay: Bool, controls: Bool) -> UIViewController {
         let controller: UIViewController & GalleryItemViewController
-
         switch item {
             case .image:
                 controller = GalleryImageViewController()
@@ -109,10 +174,19 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
                 videoController.autoplay = autoplay
                 controller = videoController
         }
-
         controller.setupAppearance = setupAppearance
+        controller.sharedControls = sharedControls
+        controller.availableControls = availableControls
+        controller.controlsChanged = { [weak self] in
+            self?.updateControls()
+        }
         controller.initialControlsVisibility = controls
-        controller.controlsVisibilityChanged = controlsVisibilityChanged
+        controller.controlsVisibilityChanged = { [weak self] controlsVisibility in
+            guard let `self` = self else { return }
+
+            self.showControls(controlsVisibility, animated: true)
+            self.controlsVisibilityChanged?(controlsVisibility)
+        }
         controller.closeAction = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
