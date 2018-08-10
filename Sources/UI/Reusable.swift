@@ -14,9 +14,21 @@ public enum Reusable<CellType> {
 
     public var id: String {
         switch self {
-            case .class(let id): return id
-            case .nib(let id, _, _): return id
+            case .class(let id), .nib(let id, _, _):
+                return id
         }
+    }
+
+    public static func fromClass<CellType>(id: String = String(describing: CellType.self)) -> Reusable<CellType> {
+        return .class(id: id)
+    }
+
+    public static func fromNib(
+        id: String = String(describing: CellType.self),
+        name: String = String(describing: CellType.self),
+        bundle: Bundle? = nil
+    ) -> Reusable<CellType> {
+        return .nib(id: id, name: name, bundle: bundle)
     }
 }
 

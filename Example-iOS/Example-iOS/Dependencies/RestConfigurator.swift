@@ -54,12 +54,11 @@ class RestConfigurator: Configurator {
         return http
     }
 
-    private func feedService(baseUrl: URL, http: Http) -> FeedService {
+    private func rest(baseUrl: URL, http: Http) -> LightRestClient {
         let url = baseUrl.appendingPathComponent("feed", isDirectory: true)
         let queue = DispatchQueue.global(qos: .default)
-        let restClient = BaseRestClient(http: http, baseURL: url, workQueue: queue, completionQueue: DispatchQueue.main)
-        let service = RestFeedService(rest: restClient)
-        return service
+        let rest = BaseRestClient(http: http, baseURL: url, workQueue: queue, completionQueue: DispatchQueue.main)
+        return rest
     }
 
     func create() -> DependencyInjectionContainer {
@@ -68,20 +67,30 @@ class RestConfigurator: Configurator {
         let logger: Logger = PrintLogger()
         let apiHttp = self.apiHttp(logger: logger)
         let imagesHttp = self.imagesHttp(logger: logger)
-
         let imageLoader = HttpImageLoader(http: imagesHttp)
-        let feedService = self.feedService(baseUrl: baseUrl, http: apiHttp)
+
+        let feedUrl = baseUrl.appendingPathComponent("feed", isDirectory: true)
+        let feedService = RestFeedService(rest: rest(baseUrl: feedUrl, http: apiHttp))
+
+        let imagesUrl = baseUrl.appendingPathComponent("images", isDirectory: true)
+        let imagesService = RestImagesService(rest: rest(baseUrl: imagesUrl, http: apiHttp))
 
         // Registering protocols resolvers.
         container.register { (object: inout LoggerDependency) in object.logger = logger }
+        container.register { (object: inout TaggedLoggerDependency) in
+            let tag = String(describing: type(of: object))
+            object.logger = SimpleTaggedLogger(logger: logger, tag: tag)
+        }
         container.register { (object: inout ImageLoaderDependency) in object.imageLoader = imageLoader }
         container.register { (object: inout FeedServiceDependency) in object.feedService = feedService }
+        container.register { (object: inout ImagesServiceDependency) in object.imagesService = imagesService }
         container.register { [unowned container] (object: inout DependencyContainerDependency) in object.container = container }
 
         // Registering type resolvers.
         container.register { () -> Logger in logger }
         container.register { () -> ImageLoader in imageLoader }
         container.register { () -> FeedService in feedService }
+        container.register { () -> ImagesService in imagesService }
 
         return container
     }

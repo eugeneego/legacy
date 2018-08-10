@@ -10,11 +10,10 @@ import UIKit
 import Legacy
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, TaggedLoggerDependency {
     var window: UIWindow?
 
-    private var logger: Logger?
-    private lazy var logTag: String = String(describing: type(of: self))
+    var logger: TaggedLogger!
 
     func application(
         _ application: UIApplication,
@@ -24,9 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.backgroundColor = .white
         self.window = window
 
-        #if MOCK
-        let configurator = MockConfigurator()
-        #elseif DEV
+        #if DEV
         let baseUrl = "https://dev.base.url"
         guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
         let configurator = RestConfigurator(baseUrl: url)
@@ -34,40 +31,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let baseUrl = "https://staging.base.url"
         guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
         let configurator = RestConfigurator(baseUrl: url)
-        #else
+        #elseif PROD
         let baseUrl = "https://base.url"
         guard let url = URL(string: baseUrl) else { fatalError("Invalid base url: \(baseUrl)") }
         let configurator = RestConfigurator(baseUrl: url)
+        #else
+        let configurator = MockConfigurator()
         #endif
 
         let container = configurator.create()
 
+        container.resolve(self)
+
         // Resolving using a type.
         let resolvedLogger: Logger? = container.resolve()
-        resolvedLogger?.debug("Resolved", tag: logTag)
+        resolvedLogger?.debug("Resolved", tag: "ResolvedLogger")
 
-        // Force resolving using a type.
+        // Forced resolving using a type.
         let forceResolvedLogger: Logger = container.resolveOrDie()
-        forceResolvedLogger.debug("Force resolved", tag: logTag)
-
-        // Force resolving using a type with an optional result.
-        logger = container.resolveOrDie() as Logger
+        forceResolvedLogger.debug("Force resolved", tag: "ForceResolvedLogger")
 
         // Resolving using dependency protocols associated with the self.
         container.resolve(self)
 
         let deviceInfo = DeviceInfo.main
-        logger?.debug("\(deviceInfo)", tag: logTag)
+        logger.debug("\(deviceInfo)")
 
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let tabBarController: UITabBarController = mainStoryboard.instantiateInitial()
-        tabBarController.viewControllers?.forEach { controller in
-            container.resolve(controller)
-            (controller as? UINavigationController)?.viewControllers.forEach(container.resolve)
-        }
-
-        window.rootViewController = tabBarController
-        window.makeKeyAndVisible()
+        let appFlow = AppFlow(window: window, container: container)
+        appFlow.start()
 
         return true
     }

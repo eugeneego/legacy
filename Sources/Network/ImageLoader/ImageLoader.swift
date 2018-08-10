@@ -28,7 +28,7 @@ public enum ResizeMode {
     case fill
 }
 
-public typealias ImageLoaderCompletion = (ImageLoaderTask, Result<(Data, UIImage), ImageLoaderError>) -> Void
+public typealias ImageLoaderCompletion = (Result<(data: Data, image: UIImage), ImageLoaderError>) -> Void
 
 public protocol ImageLoader {
     @discardableResult

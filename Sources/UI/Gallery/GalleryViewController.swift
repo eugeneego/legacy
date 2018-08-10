@@ -1,51 +1,88 @@
 //
 // GalleryViewController
-// EE Gallery
+// Legacy
 //
 // Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
+//
 
 import UIKit
 
 open class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
-    ZoomTransitionDelegate {
-    open var closeTitle: String = "Close"
-    open var shareIcon: UIImage?
-    open var setupAppearance: ((UIViewController) -> Void)?
+        ZoomTransitionDelegate {
+    open var setupAppearance: ((GalleryAppearance) -> Void)?
+    open var viewAppeared: ((GalleryViewController) -> Void)?
+    open var pageChanged: ((_ currentIndex: Int) -> Void)?
+    open var statusBarStyle: UIStatusBarStyle = .lightContent
 
-    private var isShown: Bool = false
+    open var sharedControls: Bool = false
+    open var availableControls: GalleryControls = [ .close, .share ]
+    open var initialControlsVisibility: Bool = false
+    open private(set) var controlsVisibility: Bool = false
+    open var controlsVisibilityChanged: ((Bool) -> Void)?
 
-    public init() {
-        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+    open var transitionController: ZoomTransitionController? {
+        didSet {
+            transitioningDelegate = transitionController
+        }
+    }
+
+    public let titleView: UIView = UIView()
+    public let closeButton: UIButton = UIButton(type: .custom)
+    public let shareButton: UIButton = UIButton(type: .custom)
+    private let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
+
+    private var lastControlsVisibility: Bool = false
+    private var statusBarHidden: Bool = false
+
+    public init(spacing: CGFloat = 0) {
+        let options: [String: Any] = [ UIPageViewControllerOptionInterPageSpacingKey: spacing ]
+        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: options)
 
         dataSource = self
         delegate = self
     }
 
     required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+
+        dataSource = self
+        delegate = self
     }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
 
-        view.accessibilityIdentifier = "galleryViewController"
         view.backgroundColor = .black
 
-        currentIndex = initialIndex
+        lastControlsVisibility = initialControlsVisibility
 
-        let initialViewController = viewController(for: items[currentIndex], autoplay: true)
-        setViewControllers([ initialViewController ], direction: .forward, animated: false, completion: nil)
+        GalleryRoutines.configureControllerTitle(view: view, titleView: titleView, closeButton: closeButton, shareButton: shareButton)
+        closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
+        shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
+        tapGesture.addTarget(self, action: #selector(toggleTap))
+        titleView.addGestureRecognizer(tapGesture)
+        
+        titleView.isHidden = !sharedControls || !controlsVisibility
+        showControls(initialControlsVisibility, animated: false)
 
-        setupAppearance?(self)
+        setupAppearance?(.gallery(self))
+
+        move(to: initialIndex, animated: false)
+    }
+
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        viewAppeared?(self)
     }
 
     override open var prefersStatusBarHidden: Bool {
-        return currentViewController.prefersStatusBarHidden
+        return sharedControls ? statusBarHidden : currentViewController.prefersStatusBarHidden
     }
 
     override open var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return statusBarStyle
     }
 
     override open var shouldAutorotate: Bool {
@@ -56,53 +93,110 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         return .all
     }
 
+    // MARK: - Controls
+
+    open func showControls(_ show: Bool, animated: Bool) {
+        lastControlsVisibility = show
+        controlsVisibility = show
+        statusBarHidden = !show
+
+        guard sharedControls else { return }
+
+        if show {
+            titleView.isHidden = false
+        }
+
+        UIView.animate(withDuration: animated ? 0.15 : 0, delay: 0, options: [],
+            animations: {
+                self.setNeedsStatusBarAppearanceUpdate()
+                self.titleView.alpha = show ? 1 : 0
+                self.controlsVisibilityChanged?(self.controlsVisibility)
+            },
+            completion: { finished in
+                if finished {
+                    self.titleView.isHidden = !show
+                }
+            }
+        )
+    }
+
+    open func updateControls() {
+        let controls: GalleryControls = (currentViewController as? GalleryItemViewController)?.controls ?? []
+        closeButton.isHidden = !controls.contains(.close)
+        shareButton.isHidden = !controls.contains(.share)
+    }
+
+    @objc private func toggleTap() {
+        (currentViewController as? GalleryItemViewController)?.showControls(!controlsVisibility, animated: true)
+    }
+
+    @objc private func closeTap() {
+        (currentViewController as? GalleryItemViewController)?.closeTap()
+    }
+
+    @objc private func shareTap() {
+        (currentViewController as? GalleryItemViewController)?.shareTap()
+    }
+
     // MARK: - Models
 
     open var items: [GalleryMedia] = []
     open var initialIndex: Int = 0
-    open private(set) var currentIndex: Int = 0
+    open private(set) var currentIndex: Int = -1
 
-    private func index(from viewController: UIViewController) -> Int {
-        switch viewController {
-            case let controller as ImageViewController:
-                return controller.image.index
-            case let controller as VideoViewController:
-                return controller.video.index
-            default:
-                fatalError("Controller should be ImageViewController or VideoViewController")
+    open func move(to index: Int, animated: Bool) {
+        guard index != currentIndex, items.indices.contains(index) else { return }
+
+        let direction: UIPageViewControllerNavigationDirection = index >= currentIndex ? .forward : .reverse
+
+        currentIndex = index
+
+        let controller = viewController(for: items[currentIndex], autoplay: true, controls: lastControlsVisibility)
+        setViewControllers([ controller ], direction: direction, animated: animated) { completed in
+            if completed {
+                self.pageChanged?(self.currentIndex)
+            }
         }
     }
 
-    private func viewController(for item: GalleryMedia, autoplay: Bool) -> UIViewController {
+    private func index(from viewController: UIViewController) -> Int {
+        guard let controller = viewController as? GalleryItemViewController else { fatalError("Should be GalleryItemViewController") }
+
+        return controller.item.index
+    }
+
+    private func viewController(for item: GalleryMedia, autoplay: Bool, controls: Bool) -> UIViewController {
+        let controller: UIViewController & GalleryItemViewController
         switch item {
-            case .image(let image):
-                let controller = ImageViewController()
-                controller.closeTitle = closeTitle
-                controller.shareIcon = shareIcon
-                controller.setupAppearance = setupAppearance
-                controller.closeAction = { [weak self] in
-                    self?.dismiss(animated: true, completion: nil)
-                }
-                controller.presenterInterfaceOrientations = { [weak self] in
-                    self?.presentingViewController?.supportedInterfaceOrientations
-                }
-                controller.image = image
-                return controller
-            case .video(let video):
-                let controller = VideoViewController()
-                controller.closeTitle = closeTitle
-                controller.shareIcon = shareIcon
-                controller.setupAppearance = setupAppearance
-                controller.closeAction = { [weak self] in
-                    self?.dismiss(animated: true, completion: nil)
-                }
-                controller.presenterInterfaceOrientations = { [weak self] in
-                    self?.presentingViewController?.supportedInterfaceOrientations
-                }
-                controller.autoplay = autoplay
-                controller.video = video
-                return controller
+            case .image:
+                controller = GalleryImageViewController()
+            case .video:
+                let videoController = GalleryVideoViewController()
+                videoController.autoplay = autoplay
+                controller = videoController
         }
+        controller.setupAppearance = setupAppearance
+        controller.sharedControls = sharedControls
+        controller.availableControls = availableControls
+        controller.controlsChanged = { [weak self] in
+            self?.updateControls()
+        }
+        controller.initialControlsVisibility = controls
+        controller.controlsVisibilityChanged = { [weak self] controlsVisibility in
+            guard let `self` = self else { return }
+
+            self.showControls(controlsVisibility, animated: true)
+            self.controlsVisibilityChanged?(controlsVisibility)
+        }
+        controller.closeAction = { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }
+        controller.presenterInterfaceOrientations = { [weak self] in
+            self?.presentingViewController?.supportedInterfaceOrientations
+        }
+        controller.isTransitionEnabled = transitionController != nil
+        controller.item = item
+        return controller
     }
 
     private var currentViewController: UIViewController {
@@ -116,25 +210,41 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         _ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController
     ) -> UIViewController? {
-        let index = self.index(from: currentViewController) - 1
+        let current = currentViewController
+        let index = self.index(from: current) - 1
         guard index >= 0 else { return nil }
 
-        let controller = self.viewController(for: items[index], autoplay: true)
-        return controller
+        return controller(for: index, previousViewController: current)
     }
 
     open func pageViewController(
         _ pageViewController: UIPageViewController,
         viewControllerAfter viewController: UIViewController
     ) -> UIViewController? {
-        let index = self.index(from: currentViewController) + 1
+        let current = currentViewController
+        let index = self.index(from: current) + 1
         guard index < items.count else { return nil }
 
-        let controller = self.viewController(for: items[index], autoplay: true)
+        return controller(for: index, previousViewController: current)
+    }
+
+    private func controller(for index: Int, previousViewController: UIViewController) -> UIViewController {
+        lastControlsVisibility = (previousViewController as? GalleryItemViewController)?.controlsVisibility ?? lastControlsVisibility
+        let controller = viewController(for: items[index], autoplay: true, controls: lastControlsVisibility)
         return controller
     }
 
     // MARK: - Delegate
+
+    open func pageViewController(
+        _ pageViewController: UIPageViewController,
+        willTransitionTo pendingViewControllers: [UIViewController]
+    ) {
+        let controls = (currentViewController as? GalleryItemViewController)?.controlsVisibility ?? initialControlsVisibility
+        pendingViewControllers
+            .compactMap { $0 as? GalleryItemViewController }
+            .forEach { $0.showControls(controls, animated: false) }
+    }
 
     open func pageViewController(
         _ pageViewController: UIPageViewController,
@@ -144,6 +254,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     ) {
         if completed {
             currentIndex = index(from: currentViewController)
+            pageChanged?(currentIndex)
         }
     }
 
