@@ -24,8 +24,7 @@ class ProfileFlow {
         profileViewController = UIStoryboard(name: "Main", bundle: nil).instantiate()
         container.resolve(profileViewController)
 
-        navigationController = UINavigationController()
+        navigationController = UINavigationController(rootViewController: profileViewController)
         navigationController.tabBarItem = UITabBarItem(title: "Profile", image: nil, selectedImage: nil)
-        navigationController.setViewControllers([ profileViewController ], animated: false)
     }
 }

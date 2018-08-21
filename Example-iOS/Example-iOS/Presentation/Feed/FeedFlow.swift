@@ -24,8 +24,7 @@ class FeedFlow {
         feedViewController = UIStoryboard(name: "Main", bundle: nil).instantiate()
         container.resolve(feedViewController)
 
-        navigationController = UINavigationController()
+        navigationController = UINavigationController(rootViewController: feedViewController)
         navigationController.tabBarItem = UITabBarItem(title: "Feed", image: nil, selectedImage: nil)
-        navigationController.setViewControllers([ feedViewController ], animated: false)
     }
 }

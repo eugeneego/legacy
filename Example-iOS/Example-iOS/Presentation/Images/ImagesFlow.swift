@@ -26,15 +26,14 @@ class ImagesFlow {
         self.imagesService = imagesService
         self.imageLoader = imageLoader
 
-        navigationController = UINavigationController()
+        imagesViewController = UIStoryboard(name: "Main", bundle: nil).instantiate()
+
+        navigationController = UINavigationController(rootViewController: imagesViewController)
         navigationController.tabBarItem = UITabBarItem(title: "Images", image: nil, selectedImage: nil)
 
-        imagesViewController = UIStoryboard(name: "Main", bundle: nil).instantiate()
         container.resolve(imagesViewController)
         imagesViewController.input = ImagesViewController.Input(images: imagesService.images)
         imagesViewController.output = ImagesViewController.Output(selectImage: gallery)
-
-        navigationController.setViewControllers([ imagesViewController ], animated: false)
     }
 
     private func gallery(images: [URL], index: Int, image: UIImage?) {
@@ -101,8 +100,8 @@ class ImagesFlow {
             controller?.move(to: index, animated: true)
             previewView?.selectItem(at: index, animated: true)
         }
-        controller.pageChanged = { currentIndex in
-            self.imagesViewController.currentIndex = currentIndex
+        controller.pageChanged = { [weak self] currentIndex in
+            self?.imagesViewController.currentIndex = currentIndex
             previewView.selectItem(at: currentIndex, animated: true)
         }
         controller.viewAppeared = { controller in

@@ -62,7 +62,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
         tapGesture.addTarget(self, action: #selector(toggleTap))
         titleView.addGestureRecognizer(tapGesture)
-        
+
         titleView.isHidden = !sharedControls || !controlsVisibility
         showControls(initialControlsVisibility, animated: false)
 
