@@ -2,7 +2,6 @@ disabled_rules:
   - nesting
   - redundant_string_enum_value
   - superfluous_disable_command
-  - switch_case_alignment
   - todo
   - trailing_comma
   - type_body_length
@@ -54,6 +53,9 @@ trailing_semicolon: error
 vertical_whitespace:
   max_empty_lines: 1
   severity: warning
+
+switch_case_alignment:
+  indented_cases: true
 
 comma: error
 colon:

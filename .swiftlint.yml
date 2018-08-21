@@ -54,6 +54,9 @@ vertical_whitespace:
   max_empty_lines: 1
   severity: warning
 
+switch_case_alignment:
+  indented_cases: true
+
 comma: error
 colon:
   severity: error
@@ -64,9 +67,6 @@ statement_position:
   statement_mode: default
   severity: error
 legacy_constant: error
-
-switch_case_alignment:
-  indented_cases: true
 
 type_name:
   min_length: 3
