@@ -165,14 +165,14 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     // Codable
 
     @discardableResult
-    open func request<RequestObject: Codable, ResponseObject: Codable>(
+    open func request<RequestObject: Encodable, ResponseObject: Decodable>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestObject?, headers: [String: String],
         decoder: JSONDecoder, encoder: JSONEncoder,
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
-        let requestSerializer = JsonModelCodableHttpSerializer<RequestObject>(decoder: decoder, encoder: encoder)
-        let responseSerializer = JsonModelCodableHttpSerializer<ResponseObject>(decoder: decoder, encoder: encoder)
+        let requestSerializer = JsonModelEncodableHttpSerializer<RequestObject>(encoder: encoder)
+        let responseSerializer = JsonModelDecodableHttpSerializer<ResponseObject>(decoder: decoder)
         return request(
             method: method, path: path, parameters: parameters, object: object, headers: headers,
             requestSerializer: requestSerializer, responseSerializer: responseSerializer,
@@ -181,7 +181,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     }
 
     @discardableResult
-    open func request<RequestObject: Codable, ResponseObject: Codable>(
+    open func request<RequestObject: Encodable, ResponseObject: Decodable>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestObject?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
