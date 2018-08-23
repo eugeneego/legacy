@@ -63,14 +63,14 @@ public protocol CodableNetworkClient: NetworkClient {
     var encoder: JSONEncoder { get }
 
     @discardableResult
-    func request<RequestObject: Codable, ResponseObject: Codable>(
+    func request<RequestObject: Encodable, ResponseObject: Decodable>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestObject?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func request<RequestObject: Codable, ResponseObject: Codable>(
+    func request<RequestObject: Encodable, ResponseObject: Decodable>(
         method: HttpMethod, path: String,
         parameters: [String: String], object: RequestObject?, headers: [String: String],
         decoder: JSONDecoder, encoder: JSONEncoder,

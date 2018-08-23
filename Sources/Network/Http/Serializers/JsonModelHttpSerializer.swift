@@ -158,5 +158,93 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
     }
 }
 
+public struct JsonModelDecodableHttpSerializer<T: Decodable>: HttpSerializer {
+    public typealias Value = T
+
+    public enum Error: Swift.Error {
+        case decoding(Swift.Error)
+        case notSupported
+    }
+
+    public let contentType = "application/json"
+
+    private let decoder: JSONDecoder
+
+    public init(decoder: JSONDecoder) {
+        self.decoder = decoder
+    }
+
+    public init(
+        dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate,
+        dataDecodingStrategy: JSONDecoder.DataDecodingStrategy = .base64,
+        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
+    ) {
+        decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = dateDecodingStrategy
+        decoder.dataDecodingStrategy = dataDecodingStrategy
+        decoder.keyDecodingStrategy = keyDecodingStrategy
+    }
+
+    public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
+        return .failure(HttpSerializationError.error(Error.notSupported))
+    }
+
+    public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
+        if let nilValue = Nil() as? Value {
+            return .success(nilValue)
+        }
+
+        guard let data = data else { return .failure(.noData) }
+
+        return Result(
+            try: { try decoder.decode(T.self, from: data) },
+            unknown: { HttpSerializationError.error(Error.decoding($0)) }
+        )
+    }
+}
+
+public struct JsonModelEncodableHttpSerializer<T: Encodable>: HttpSerializer {
+    public typealias Value = T
+
+    public enum Error: Swift.Error {
+        case encoding(Swift.Error)
+        case notSupported
+    }
+
+    public let contentType = "application/json"
+
+    private let encoder: JSONEncoder
+
+    public init(encoder: JSONEncoder) {
+        self.encoder = encoder
+    }
+
+    public init(
+        dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .deferredToDate,
+        dataEncodingStrategy: JSONEncoder.DataEncodingStrategy = .base64,
+        keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+        outputFormatting: JSONEncoder.OutputFormatting = []
+    ) {
+        encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = dateEncodingStrategy
+        encoder.dataEncodingStrategy = dataEncodingStrategy
+        encoder.keyEncodingStrategy = keyEncodingStrategy
+        encoder.outputFormatting = outputFormatting
+    }
+
+    public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
+        guard let value = value else { return .success(Data()) }
+
+        return Result(
+            try: { try encoder.encode(value) },
+            unknown: { HttpSerializationError.error(Error.encoding($0)) }
+        )
+    }
+
+    public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
+        return .failure(HttpSerializationError.error(Error.notSupported))
+    }
+}
+
 public struct Nil: Codable {
 }

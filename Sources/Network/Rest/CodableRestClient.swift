@@ -10,37 +10,37 @@ import Foundation
 
 public protocol CodableRestClient: RestClient, CodableNetworkClient {
     @discardableResult
-    func create<RequestObject: Codable, ResponseObject: Codable>(
+    func create<RequestObject: Encodable, ResponseObject: Decodable>(
         path: String, id: String?, object: RequestObject?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func create<ResponseObject: Codable>(
+    func create<ResponseObject: Decodable>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func read<ResponseObject: Codable>(
+    func read<ResponseObject: Decodable>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func update<RequestObject: Codable, ResponseObject: Codable>(
+    func update<RequestObject: Encodable, ResponseObject: Decodable>(
         path: String, id: String?, object: RequestObject?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func update<ResponseObject: Codable>(
+    func update<ResponseObject: Decodable>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func delete<ResponseObject: Codable>(
+    func delete<ResponseObject: Decodable>(
         path: String, id: String?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
@@ -48,7 +48,7 @@ public protocol CodableRestClient: RestClient, CodableNetworkClient {
 
 public extension CodableRestClient {
     @discardableResult
-    func create<RequestObject: Codable, ResponseObject: Codable>(
+    func create<RequestObject: Encodable, ResponseObject: Decodable>(
         path: String, id: String?, object: RequestObject?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -63,7 +63,7 @@ public extension CodableRestClient {
     }
 
     @discardableResult
-    func create<ResponseObject: Codable>(
+    func create<ResponseObject: Decodable>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -74,13 +74,13 @@ public extension CodableRestClient {
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: JsonModelCodableHttpSerializer<ResponseObject>(decoder: decoder, encoder: encoder),
+            responseSerializer: JsonModelDecodableHttpSerializer<ResponseObject>(decoder: decoder),
             completion: completion
         )
     }
 
     @discardableResult
-    func read<ResponseObject: Codable>(
+    func read<ResponseObject: Decodable>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -95,7 +95,7 @@ public extension CodableRestClient {
     }
 
     @discardableResult
-    func update<RequestObject: Codable, ResponseObject: Codable>(
+    func update<RequestObject: Encodable, ResponseObject: Decodable>(
         path: String, id: String?, object: RequestObject?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -110,7 +110,7 @@ public extension CodableRestClient {
     }
 
     @discardableResult
-    func update<ResponseObject: Codable>(
+    func update<ResponseObject: Decodable>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -121,13 +121,13 @@ public extension CodableRestClient {
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: JsonModelCodableHttpSerializer<ResponseObject>(decoder: decoder, encoder: encoder),
+            responseSerializer: JsonModelDecodableHttpSerializer<ResponseObject>(decoder: decoder),
             completion: completion
         )
     }
 
     @discardableResult
-    func delete<ResponseObject: Codable>(
+    func delete<ResponseObject: Decodable>(
         path: String, id: String?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
