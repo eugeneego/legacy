@@ -67,7 +67,7 @@ class RestConfigurator: Configurator {
         let logger: Logger = PrintLogger()
         let apiHttp = self.apiHttp(logger: logger)
         let imagesHttp = self.imagesHttp(logger: logger)
-        let imageLoader = HttpImageLoader(http: imagesHttp)
+        let imageLoader = AppImageLoader(imageLoader: HttpImageLoader(http: imagesHttp))
 
         let feedUrl = baseUrl.appendingPathComponent("feed", isDirectory: true)
         let feedService = RestFeedService(rest: rest(baseUrl: feedUrl, http: apiHttp))

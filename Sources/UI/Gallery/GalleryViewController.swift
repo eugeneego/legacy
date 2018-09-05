@@ -151,7 +151,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
         currentIndex = index
 
-        let controller = viewController(for: items[currentIndex], autoplay: true, controls: lastControlsVisibility)
+        let controller = viewController(item: items[currentIndex], index: currentIndex, autoplay: true, controls: lastControlsVisibility)
         setViewControllers([ controller ], direction: direction, animated: animated) { completed in
             if completed {
                 self.pageChanged?(self.currentIndex)
@@ -162,11 +162,11 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     private func index(from viewController: UIViewController) -> Int {
         guard let controller = viewController as? GalleryItemViewController else { fatalError("Should be GalleryItemViewController") }
 
-        return controller.item.index
+        return controller.index
     }
 
-    private func viewController(for item: GalleryMedia, autoplay: Bool, controls: Bool) -> UIViewController {
-        let controller: UIViewController & GalleryItemViewController
+    private func viewController(item: GalleryMedia, index: Int, autoplay: Bool, controls: Bool) -> UIViewController {
+        let controller: GalleryItemViewController
         switch item {
             case .image:
                 controller = GalleryImageViewController()
@@ -175,6 +175,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
                 videoController.autoplay = autoplay
                 controller = videoController
         }
+        controller.index = index
         controller.setupAppearance = setupAppearance
         controller.sharedControls = sharedControls
         controller.availableControls = availableControls
@@ -230,7 +231,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     private func controller(for index: Int, previousViewController: UIViewController) -> UIViewController {
         lastControlsVisibility = (previousViewController as? GalleryItemViewController)?.controlsVisibility ?? lastControlsVisibility
-        let controller = viewController(for: items[index], autoplay: true, controls: lastControlsVisibility)
+        let controller = viewController(item: items[index], index: index, autoplay: true, controls: lastControlsVisibility)
         return controller
     }
 

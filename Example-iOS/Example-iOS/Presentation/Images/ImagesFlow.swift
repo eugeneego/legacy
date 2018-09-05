@@ -40,9 +40,7 @@ class ImagesFlow {
         let imageLoader: ImageLoader = self.imageLoader
 
         let media = images.enumerated().map { item -> GalleryMedia in
-            // swiftlint:disable:next trailing_closure
             .image(GalleryMedia.Image(
-                index: item.offset,
                 previewImage: item.offset == index ? image : nil,
                 previewImageLoader: { size, completion in
                     imageLoader.load(url: item.element, size: size, mode: .fill) { result in
@@ -86,14 +84,12 @@ class ImagesFlow {
                         previewView.heightAnchor.constraint(equalToConstant: 80),
                     ])
                     previewView.items = controller.items
-                case .image(let controller):
+                case .item(let controller):
                     controller.view.backgroundColor = .white
                     controller.loadingIndicatorView.color = .orange
                     controller.titleView.backgroundColor = .white
                     controller.closeButton.setTitleColor(.orange, for: .normal)
                     controller.shareButton.setTitleColor(.orange, for: .normal)
-                case .video(let controller):
-                    controller.view.backgroundColor = .white
             }
         }
         previewView.selectAction = { [weak controller, weak previewView] index in

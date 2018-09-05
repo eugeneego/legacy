@@ -35,7 +35,7 @@ final class MockConfigurator: Configurator {
         let logger: Logger = PrintLogger()
         let imagesHttp = self.imagesHttp(logger: logger)
 
-        let imageLoader = HttpImageLoader(http: imagesHttp)
+        let imageLoader = AppImageLoader(imageLoader: HttpImageLoader(http: imagesHttp))
         let feedService = MockFeedService()
         let imagesService = MockImagesService()
 

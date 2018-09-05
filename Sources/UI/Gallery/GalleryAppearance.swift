@@ -8,6 +8,5 @@
 
 public enum GalleryAppearance {
     case gallery(GalleryViewController)
-    case image(GalleryImageViewController)
-    case video(GalleryVideoViewController)
+    case item(GalleryItemViewController)
 }

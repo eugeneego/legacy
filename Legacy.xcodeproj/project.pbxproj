@@ -67,6 +67,7 @@
 		B2FA8782A928BC5ED06A1BF4 /* DependencyInjectionContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA858A3D77F6B7C5DBB895 /* DependencyInjectionContainer.swift */; };
 		B2FA87BEAD3A4EA89B1A3419 /* GalleryAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */; };
 		B2FA87C9B577EA8A1C2932C2 /* UIView+Nib.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81EADC34644BE80F3DC4 /* UIView+Nib.swift */; };
+		B2FA87D5D15BA964ED6C3375 /* GalleryItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CFC418C8272AD882046 /* GalleryItemViewController.swift */; };
 		B2FA87F3F19972FA40192A07 /* UrlTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */; };
 		B2FA881C68BD2185A05106F2 /* Easing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87F9B5E313F53D90ABCA /* Easing.swift */; };
 		B2FA885BC0E75AC463949E70 /* HttpImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8E3E7D9481DB8601D32A /* HttpImageLoader.swift */; };
@@ -98,7 +99,6 @@
 		B2FA8C2CB8B25FE75F462278 /* DateTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8114F6C4DC5F55A323F1 /* DateTransformer.swift */; };
 		B2FA8C38C49A3FED9B81F68C /* UrlEncodedHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88ABD9166F294CB557C0 /* UrlEncodedHttpSerializer.swift */; };
 		B2FA8C7B9BF4A8A1E633859A /* DataHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89C55BC68D8637A6B6B2 /* DataHttpSerializer.swift */; };
-		B2FA8C8936BE74145C7A040B /* GalleryItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8225C0BBBB32CB030751 /* GalleryItemViewController.swift */; };
 		B2FA8CCA33CDFD85FDA4C4CF /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D7FD120351052DC3441 /* NetworkClient.swift */; };
 		B2FA8CF3B40709A884BB20E9 /* NetworkLightTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84EF1A00858D8ECBDB41 /* NetworkLightTransformerTests.swift */; };
 		B2FA8D1F701749F7115F1CC7 /* HttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8FCE558D3984B7C03D18 /* HttpSerializer.swift */; };
@@ -159,7 +159,6 @@
 		B2FA82053D78B81A16709252 /* ZoomTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
 		B2FA8218EDF10CFD1F46C1EE /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		B2FA821B587ACD8434FFAA0F /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
-		B2FA8225C0BBBB32CB030751 /* GalleryItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryItemViewController.swift; sourceTree = "<group>"; };
 		B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA82C5A9F2428939EB9981 /* VoidHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidHttpSerializer.swift; sourceTree = "<group>"; };
 		B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryAppearance.swift; sourceTree = "<group>"; };
@@ -228,6 +227,7 @@
 		B2FA8C8F891B8EEC67935F9A /* ColorLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8CBA874F87DB059F82B6 /* UIStoryboard+Intstantiate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Intstantiate.swift"; sourceTree = "<group>"; };
 		B2FA8CD442F69CC58B692F6E /* UrlLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA8CFC418C8272AD882046 /* GalleryItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryItemViewController.swift; sourceTree = "<group>"; };
 		B2FA8D0E1B4C307E2B3DEAC9 /* UIImage+Prerender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Prerender.swift"; sourceTree = "<group>"; };
 		B2FA8D1FD5C9DDBEFA447845 /* VoidTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidTransformer.swift; sourceTree = "<group>"; };
 		B2FA8D39F9D55F0D66FEE3F5 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
@@ -504,11 +504,11 @@
 				B2FA8B92E4FF28AD37A47198 /* GalleryVideoViewController.swift */,
 				B2FA8EC38AC1BAA7D7066674 /* GalleryViewController.swift */,
 				B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */,
-				B2FA8225C0BBBB32CB030751 /* GalleryItemViewController.swift */,
 				B2FA82053D78B81A16709252 /* ZoomTransitionController.swift */,
 				B2FA876A1A19B89801D9D040 /* GalleryPreviewCollectionView.swift */,
 				B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */,
 				B2FA87FA796941FA3B9B3CC3 /* GalleryRoutines.swift */,
+				B2FA8CFC418C8272AD882046 /* GalleryItemViewController.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -798,11 +798,11 @@
 				B2FA8A8C6D80661DD2D1BBAC /* Hpkp.swift in Sources */,
 				B2FA8E0261AD69CC01378F1C /* NetworkImageView.swift in Sources */,
 				B2FA87BEAD3A4EA89B1A3419 /* GalleryAppearance.swift in Sources */,
-				B2FA8C8936BE74145C7A040B /* GalleryItemViewController.swift in Sources */,
 				B2FA887F0A2B1C668680614A /* ZoomTransitionController.swift in Sources */,
 				B2FA8ABCF1DBA77D33C69DD3 /* GalleryPreviewCollectionView.swift in Sources */,
 				B2FA8579CE768C3821D524C9 /* GalleryPreviewCollectionCell.swift in Sources */,
 				B2FA8E2744BFFAE41FC2B2A7 /* GalleryRoutines.swift in Sources */,
+				B2FA87D5D15BA964ED6C3375 /* GalleryItemViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
