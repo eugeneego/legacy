@@ -21,7 +21,6 @@ public struct GalleryControls: OptionSet {
 
 open class GalleryItemViewController: UIViewController, ZoomTransitionDelegate {
     open var index: Int = 0
-    open var item: GalleryMedia?
 
     open var closeAction: (() -> Void)?
     open var setupAppearance: ((GalleryAppearance) -> Void)?

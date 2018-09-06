@@ -9,34 +9,35 @@
 import UIKit
 
 open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDelegate {
-    public let scrollView: UIScrollView = UIScrollView()
-    public let imageView: UIImageView = UIImageView()
+    public let image: GalleryMedia.Image
+    private var fullImage: UIImage?
 
-    open override var item: GalleryMedia? {
-        didSet {
-            if case .image(let image)? = item {
-                self.image = image
-            } else {
-                image = .init()
-            }
-        }
-    }
-
-    open var hideControlsOnDrag: Bool = false
-    open var hideControlsOnZoom: Bool = false
-
-    open var image: GalleryMedia.Image = .init()
     open var maximumZoomScale: CGFloat = 2
     open var exitScaleEnabled: Bool = false
-
-    private var scrollSize: CGSize = .zero
+    open var hideControlsOnDrag: Bool = false
+    open var hideControlsOnZoom: Bool = false
 
     private var isShown: Bool = false
     private var isLaidOut: Bool = false
 
+    private var scrollSize: CGSize = .zero
     private var lastScale: CGFloat = 1.0
     private var exitScale: CGFloat = 0.0
     private var lastFrame: CGRect?
+
+    public let scrollView: UIScrollView = UIScrollView()
+    public let imageView: UIImageView = UIImageView()
+
+    public init(image: GalleryMedia.Image) {
+        self.image = image
+        fullImage = image.fullImage
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required public init?(coder: NSCoder) {
+        fatalError("Not implemented")
+    }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,14 +69,8 @@ open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDe
 
         // Image Loading
 
-        if let fullImage = image.fullImage {
-            imageView.image = fullImage
-        } else if let previewImage = image.previewImage {
-            imageView.image = previewImage
-        }
-        if let image = imageView.image {
-            mediaSize = image.size
-        }
+        imageView.image = fullImage ?? image.previewImage
+        mediaSize = imageView.image?.size ?? .zero
 
         // Controls
 
@@ -126,11 +121,11 @@ open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDe
     // MARK: - Controls
 
     open override var isShareAvailable: Bool {
-        return image.fullImage != nil
+        return fullImage != nil
     }
 
     open override func shareTap() {
-        guard let image = image.fullImage else { return }
+        guard let image = fullImage else { return }
 
         let controller = UIActivityViewController(activityItems: [ image ], applicationActivities: nil)
         present(controller, animated: true, completion: nil)
@@ -139,7 +134,7 @@ open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDe
     // MARK: - Image
 
     private func load() {
-        guard let fullImageLoader = image.fullImageLoader, image.fullImage == nil else { return }
+        guard let fullImageLoader = image.fullImageLoader, fullImage == nil else { return }
 
         loadingIndicatorView.startAnimating()
 
@@ -149,8 +144,8 @@ open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDe
             self.loadingIndicatorView.stopAnimating()
 
             if let image = result.value {
+                self.fullImage = image
                 self.imageView.addFadeTransition()
-                self.image.fullImage = image
                 self.imageView.image = image
 
                 let size = image.size

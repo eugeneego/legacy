@@ -96,10 +96,10 @@ class MediaFlow {
         controller.statusBarStyle = .default
         controller.viewerForItem = { item in
             switch item {
-                case .image:
-                    return GalleryImageViewController()
-                case .video:
-                    return GalleryLightVideoViewController()
+                case .image(let image):
+                    return GalleryImageViewController(image: image)
+                case .video(let video):
+                    return GalleryLightVideoViewController(video: video)
             }
         }
         controller.setupAppearance = { appearance in

@@ -12,10 +12,10 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         ZoomTransitionDelegate {
     open var viewerForItem: (GalleryMedia) -> GalleryItemViewController = { item in
         switch item {
-            case .image:
-                return GalleryImageViewController()
-            case .video:
-                return GalleryVideoViewController()
+            case .image(let image):
+                return GalleryImageViewController(image: image)
+            case .video(let video):
+                return GalleryVideoViewController(video: video)
         }
     }
 
@@ -238,7 +238,6 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
             self?.presentingViewController?.supportedInterfaceOrientations
         }
         controller.isTransitionEnabled = transitionController != nil
-        controller.item = item
         return controller
     }
 

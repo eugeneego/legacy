@@ -10,24 +10,29 @@ import UIKit
 import AVFoundation
 
 open class GalleryLightVideoViewController: GalleryItemViewController {
-    public let videoView: GalleryVideoView = GalleryVideoView()
-    public let previewImageView: UIImageView = UIImageView()
+    public let video: GalleryMedia.Video
+    private var url: URL?
+    private var previewImage: UIImage?
 
-    open override var item: GalleryMedia? {
-        didSet {
-            if case .video(let video)? = item {
-                self.video = video
-            } else {
-                video = .init()
-            }
-        }
-    }
-
-    open var video: GalleryMedia.Video = .init()
     open var loop: Bool = true
 
     private var isShown: Bool = false
     private var isStarted: Bool = false
+
+    public let videoView: GalleryVideoView = GalleryVideoView()
+    public let previewImageView: UIImageView = UIImageView()
+
+    public init(video: GalleryMedia.Video) {
+        self.video = video
+        url = video.url
+        previewImage = video.previewImage
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required public init?(coder: NSCoder) {
+        fatalError("Not implemented")
+    }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -95,7 +100,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
     // MARK: - Logic
 
     private func load() {
-        if let url = video.url {
+        if let url = url {
             load(url: url)
         } else if let videoLoader = video.videoLoader {
             loadingIndicatorView.startAnimating()
@@ -113,7 +118,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
     }
 
     private func load(url: URL) {
-        video.url = url
+        self.url = url
 
         let player = AVPlayer(url: url)
         player.actionAtItemEnd = .none
@@ -150,7 +155,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
     }
 
     private func updatePreviewImage() {
-        if let previewImage = video.previewImage {
+        if let previewImage = previewImage {
             previewImageView.image = previewImage
             mediaSize = previewImage.size
         } else if let previewImageLoader = video.previewImageLoader {
@@ -158,6 +163,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
                 guard let `self` = self else { return }
 
                 if let image = result.value {
+                    self.previewImage = image
                     self.previewImageView.image = image
                     self.mediaSize = image.size
                 }
@@ -171,7 +177,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
         let asset = item.asset
         let time = item.currentTime()
         if let image = generateVideoPreview(asset: asset, time: time, exact: true) {
-            video.previewImage = image
+            previewImage = image
             updatePreviewImage()
         }
     }
@@ -191,7 +197,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
     // MARK: - Controls
 
     open override var isShareAvailable: Bool {
-        return video.url?.isFileURL ?? false
+        return url?.isFileURL ?? false
     }
 
     open override func closeTap() {
@@ -202,7 +208,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
     }
 
     open override func shareTap() {
-        guard let url = video.url else { return }
+        guard let url = url else { return }
 
         let controller = UIActivityViewController(activityItems: [ url ], applicationActivities: nil)
         present(controller, animated: true, completion: nil)
@@ -213,7 +219,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
     open override func zoomTransitionPrepareAnimatingView(_ animatingImageView: UIImageView) {
         super.zoomTransitionPrepareAnimatingView(animatingImageView)
 
-        animatingImageView.image = video.previewImage
+        animatingImageView.image = previewImage
 
         var frame: CGRect = .zero
 
