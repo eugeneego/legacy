@@ -1,17 +1,16 @@
 //
-// GalleryVideoViewController
+// GalleryLightVideoViewController
 // Legacy
 //
-// Copyright (c) 2016 Eugene Egorov.
+// Copyright (c) 2018 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 import UIKit
-import AVKit
 import AVFoundation
 
-open class GalleryVideoViewController: GalleryItemViewController {
-    public let playerController: AVPlayerViewController = AVPlayerViewController()
+class GalleryLightVideoViewController: GalleryItemViewController {
+    public let videoView: GalleryVideoView = GalleryVideoView()
     public let previewImageView: UIImageView = UIImageView()
 
     open override var item: GalleryMedia? {
@@ -32,13 +31,9 @@ open class GalleryVideoViewController: GalleryItemViewController {
     override open func viewDidLoad() {
         super.viewDidLoad()
 
-        // Video Player
-
-        addChildViewController(playerController)
-
-        playerController.view.translatesAutoresizingMaskIntoConstraints = false
-        playerController.showsPlaybackControls = false
-        view.addSubview(playerController.view)
+        videoView.clipsToBounds = true
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(videoView)
 
         previewImageView.contentMode = .scaleAspectFit
         previewImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -47,11 +42,10 @@ open class GalleryVideoViewController: GalleryItemViewController {
         // Constraints
 
         NSLayoutConstraint.activate([
-            // Adding an inset to the top constraint to avoid AVPlayerViewController's bugs of fullscreen determination.
-            playerController.view.topAnchor.constraint(equalTo: view.topAnchor, constant: topInset),
-            playerController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            playerController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            playerController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            videoView.topAnchor.constraint(equalTo: view.topAnchor),
+            videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            videoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             previewImageView.topAnchor.constraint(equalTo: view.topAnchor),
             previewImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             previewImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -59,8 +53,6 @@ open class GalleryVideoViewController: GalleryItemViewController {
         ])
 
         // Other
-
-        playerController.didMove(toParentViewController: self)
 
         setupTransition()
         setupCommonControls()
@@ -81,6 +73,18 @@ open class GalleryVideoViewController: GalleryItemViewController {
         super.viewWillDisappear(animated)
 
         pause()
+    }
+
+    // MARK: - Controls
+
+    open override func toggleTap() {
+        super.toggleTap()
+
+        if controlsVisibility {
+            pause()
+        } else {
+            play()
+        }
     }
 
     // MARK: - Logic
@@ -107,8 +111,7 @@ open class GalleryVideoViewController: GalleryItemViewController {
         video.url = url
 
         let player = AVPlayer(url: url)
-        playerController.player = player
-        playerController.showsPlaybackControls = true
+        videoView.player = player
 
         updateControls()
 
@@ -121,14 +124,13 @@ open class GalleryVideoViewController: GalleryItemViewController {
 
     private func play() {
         previewImageView.isHidden = true
-        playerController.showsPlaybackControls = true
-        playerController.view.isHidden = false
+        videoView.isHidden = false
         isStarted = true
-        playerController.player?.play()
+        videoView.player?.play()
     }
 
     private func pause() {
-        playerController.player?.pause()
+        videoView.player?.pause()
     }
 
     private func updatePreviewImage() {
@@ -148,7 +150,7 @@ open class GalleryVideoViewController: GalleryItemViewController {
     }
 
     private func generatePreview() {
-        guard let item = playerController.player?.currentItem else { return }
+        guard let item = videoView.player?.currentItem else { return }
 
         let asset = item.asset
         let time = item.currentTime()
@@ -229,6 +231,6 @@ open class GalleryVideoViewController: GalleryItemViewController {
         if !isStarted {
             previewImageView.isHidden = hide
         }
-        playerController.view.isHidden = hide
+        videoView.isHidden = hide
     }
 }

@@ -66,6 +66,14 @@ class ImagesFlow {
         controller.availableControls = [ .close, .share ]
         controller.initialControlsVisibility = true
         controller.statusBarStyle = .default
+        controller.viewerForItem = { item in
+            switch item {
+                case .image:
+                    return GalleryImageViewController()
+                case .video:
+                    return GalleryVideoViewController()
+            }
+        }
         controller.setupAppearance = { appearance in
             switch appearance {
                 case .gallery(let controller):

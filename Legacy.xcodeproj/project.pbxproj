@@ -53,6 +53,7 @@
 		B2FA8579CE768C3821D524C9 /* GalleryPreviewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */; };
 		B2FA8591D163BDDD0FA6C746 /* CastLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */; };
 		B2FA85EA2B6961E0E6DE1D79 /* NetworkTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C7BA23DC92203EDB8E0 /* NetworkTransformerTests.swift */; };
+		B2FA8643BA7ADB62354FCD72 /* GalleryVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA80A97914B5B85695241D /* GalleryVideoView.swift */; };
 		B2FA8644795BD25290D54AF0 /* UserAddressGeoPointTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8FA85B91E15035E85A65 /* UserAddressGeoPointTransformer.swift */; };
 		B2FA864B26CB1947F019E23F /* BaseNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89369D1C3F4AEC950146 /* BaseNetworkClient.swift */; };
 		B2FA86502454995579D98F4B /* LightRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F1DBE228BC4CE0DCECA /* LightRestClient.swift */; };
@@ -76,6 +77,7 @@
 		B2FA888D573D6DE264B6A1B9 /* GalleryMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89A6C7B0C66FA91C0A3C /* GalleryMedia.swift */; };
 		B2FA88AF5BBF3EB361C70D03 /* BaseRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8E388D31A7F4BAE25FE8 /* BaseRestClient.swift */; };
 		B2FA88BAEAE03162B87FADE4 /* JsonHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89997C8960D3CDBFF0BA /* JsonHttpSerializer.swift */; };
+		B2FA88C76428FDAC1DD7D2B1 /* GalleryLightVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA82507578C9F784D56C78 /* GalleryLightVideoViewController.swift */; };
 		B2FA88CA1655CBD56B1B408D /* GalleryImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81309C1D00C1C54500A5 /* GalleryImageViewController.swift */; };
 		B2FA88E4BB5159D3DA1308BB /* NetworkCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87EEB1A6721B00E69021 /* NetworkCodableTests.swift */; };
 		B2FA88EDDAD7499F2169BFA3 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA841D3A1CF42F932BA8A7 /* Random.swift */; };
@@ -105,7 +107,6 @@
 		B2FA8E0261AD69CC01378F1C /* NetworkImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8320303EF0DB8654A3D2 /* NetworkImageView.swift */; };
 		B2FA8E08DE39C42B829766C6 /* VoidHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA82C5A9F2428939EB9981 /* VoidHttpSerializer.swift */; };
 		B2FA8E0ACB9B69D535F57BD0 /* LightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA844184D1B3827C980DB3 /* LightTransformer.swift */; };
-		B2FA8E2744BFFAE41FC2B2A7 /* GalleryRoutines.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87FA796941FA3B9B3CC3 /* GalleryRoutines.swift */; };
 		B2FA8E2D218194F836DB8CFD /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */; };
 		B2FA8E3478A25C6BAFA3C5FC /* DictionaryLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */; };
 		B2FA8E616DD222761559959E /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8343F8CC638295A9178B /* Json.swift */; };
@@ -148,6 +149,7 @@
 		B2FA801B3A3421E7A5215206 /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		B2FA803636A6075723D28CB5 /* UIImage+Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Color.swift"; sourceTree = "<group>"; };
 		B2FA8070910A5471F1C64F29 /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
+		B2FA80A97914B5B85695241D /* GalleryVideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryVideoView.swift; sourceTree = "<group>"; };
 		B2FA80ED88407CC95DD21164 /* DecimalLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8114F6C4DC5F55A323F1 /* DateTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTransformer.swift; sourceTree = "<group>"; };
 		B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastLightTransformer.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 		B2FA8218EDF10CFD1F46C1EE /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		B2FA821B587ACD8434FFAA0F /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA82507578C9F784D56C78 /* GalleryLightVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryLightVideoViewController.swift; sourceTree = "<group>"; };
 		B2FA82C5A9F2428939EB9981 /* VoidHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidHttpSerializer.swift; sourceTree = "<group>"; };
 		B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryAppearance.swift; sourceTree = "<group>"; };
 		B2FA8320303EF0DB8654A3D2 /* NetworkImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkImageView.swift; sourceTree = "<group>"; };
@@ -193,7 +196,6 @@
 		B2FA87C1FF4033D603F217FC /* UserLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA87EEB1A6721B00E69021 /* NetworkCodableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCodableTests.swift; sourceTree = "<group>"; };
 		B2FA87F9B5E313F53D90ABCA /* Easing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Easing.swift; sourceTree = "<group>"; };
-		B2FA87FA796941FA3B9B3CC3 /* GalleryRoutines.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryRoutines.swift; sourceTree = "<group>"; };
 		B2FA8823BB0FC9F4A6D4D21A /* DictionaryLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Screenshot.swift"; sourceTree = "<group>"; };
 		B2FA8827F09C732B46B404DE /* ElasticLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElasticLogger.swift; sourceTree = "<group>"; };
@@ -507,8 +509,9 @@
 				B2FA82053D78B81A16709252 /* ZoomTransitionController.swift */,
 				B2FA876A1A19B89801D9D040 /* GalleryPreviewCollectionView.swift */,
 				B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */,
-				B2FA87FA796941FA3B9B3CC3 /* GalleryRoutines.swift */,
 				B2FA8CFC418C8272AD882046 /* GalleryItemViewController.swift */,
+				B2FA82507578C9F784D56C78 /* GalleryLightVideoViewController.swift */,
+				B2FA80A97914B5B85695241D /* GalleryVideoView.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -801,8 +804,9 @@
 				B2FA887F0A2B1C668680614A /* ZoomTransitionController.swift in Sources */,
 				B2FA8ABCF1DBA77D33C69DD3 /* GalleryPreviewCollectionView.swift in Sources */,
 				B2FA8579CE768C3821D524C9 /* GalleryPreviewCollectionCell.swift in Sources */,
-				B2FA8E2744BFFAE41FC2B2A7 /* GalleryRoutines.swift in Sources */,
 				B2FA87D5D15BA964ED6C3375 /* GalleryItemViewController.swift in Sources */,
+				B2FA88C76428FDAC1DD7D2B1 /* GalleryLightVideoViewController.swift in Sources */,
+				B2FA8643BA7ADB62354FCD72 /* GalleryVideoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

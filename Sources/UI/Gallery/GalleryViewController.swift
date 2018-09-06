@@ -10,6 +10,15 @@ import UIKit
 
 open class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
         ZoomTransitionDelegate {
+    open var viewerForItem: (GalleryMedia) -> GalleryItemViewController = { item in
+        switch item {
+            case .image:
+                return GalleryImageViewController()
+            case .video:
+                return GalleryVideoViewController()
+        }
+    }
+
     open var setupAppearance: ((GalleryAppearance) -> Void)?
     open var viewAppeared: ((GalleryViewController) -> Void)?
     open var pageChanged: ((_ currentIndex: Int) -> Void)?
@@ -57,7 +66,38 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
         lastControlsVisibility = initialControlsVisibility
 
-        GalleryRoutines.configureControllerTitle(view: view, titleView: titleView, closeButton: closeButton, shareButton: shareButton)
+        titleView.translatesAutoresizingMaskIntoConstraints = false
+        titleView.backgroundColor = UIColor(white: 0, alpha: 0.7)
+        titleView.isUserInteractionEnabled = true
+        view.addSubview(titleView)
+
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("Close", for: .normal)
+        closeButton.setTitleColor(.white, for: .normal)
+        closeButton.backgroundColor = .clear
+        closeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        titleView.addSubview(closeButton)
+
+        shareButton.translatesAutoresizingMaskIntoConstraints = false
+        shareButton.setTitle("Share", for: .normal)
+        shareButton.setTitleColor(.white, for: .normal)
+        shareButton.backgroundColor = .clear
+        shareButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        titleView.addSubview(shareButton)
+
+        NSLayoutConstraint.activate([
+            titleView.topAnchor.constraint(equalTo: view.topAnchor),
+            titleView.heightAnchor.constraint(equalToConstant: topInset + 44),
+            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            closeButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
+            closeButton.leadingAnchor.constraint(equalTo: titleView.leadingAnchor),
+            closeButton.heightAnchor.constraint(equalToConstant: 44),
+            shareButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
+            shareButton.trailingAnchor.constraint(equalTo: titleView.trailingAnchor),
+            shareButton.heightAnchor.constraint(equalToConstant: 44),
+        ])
+
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
         shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
         tapGesture.addTarget(self, action: #selector(toggleTap))
@@ -91,6 +131,15 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
+    }
+
+    open var topInset: CGFloat {
+        var topInset: CGFloat = 0
+        if #available(iOS 11.0, *) {
+            topInset = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0
+        }
+        topInset = max(topInset, 20)
+        return topInset
     }
 
     // MARK: - Controls
@@ -166,16 +215,9 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     }
 
     private func viewController(item: GalleryMedia, index: Int, autoplay: Bool, controls: Bool) -> UIViewController {
-        let controller: GalleryItemViewController
-        switch item {
-            case .image:
-                controller = GalleryImageViewController()
-            case .video:
-                let videoController = GalleryVideoViewController()
-                videoController.autoplay = autoplay
-                controller = videoController
-        }
+        let controller = viewerForItem(item)
         controller.index = index
+        controller.autoplay = autoplay
         controller.setupAppearance = setupAppearance
         controller.sharedControls = sharedControls
         controller.availableControls = availableControls

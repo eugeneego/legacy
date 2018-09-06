@@ -29,6 +29,7 @@ open class GalleryItemViewController: UIViewController, ZoomTransitionDelegate {
     open var statusBarStyle: UIStatusBarStyle = .lightContent
     open var isTransitionEnabled: Bool = true
 
+    open var autoplay: Bool = true
     open var sharedControls: Bool = true
     open var availableControls: GalleryControls = [ .close, .share ]
     open internal(set) var controls: GalleryControls = [ .close, .share ]

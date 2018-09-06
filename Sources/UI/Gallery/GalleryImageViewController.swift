@@ -17,7 +17,7 @@ open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDe
             if case .image(let image)? = item {
                 self.image = image
             } else {
-                self.image = .init()
+                image = .init()
             }
         }
     }
