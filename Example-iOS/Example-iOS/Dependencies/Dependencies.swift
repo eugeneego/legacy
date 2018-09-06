@@ -28,6 +28,6 @@ protocol FeedServiceDependency {
     var feedService: FeedService! { get set }
 }
 
-protocol ImagesServiceDependency {
-    var imagesService: ImagesService! { get set }
+protocol MediaServiceDependency {
+    var mediaService: MediaService! { get set }
 }

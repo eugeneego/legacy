@@ -37,7 +37,7 @@ final class MockConfigurator: Configurator {
 
         let imageLoader = AppImageLoader(imageLoader: HttpImageLoader(http: imagesHttp))
         let feedService = MockFeedService()
-        let imagesService = MockImagesService()
+        let mediaService = MockMediaService()
 
         // Registering protocols resolvers.
         container.register { (object: inout LoggerDependency) in object.logger = logger }
@@ -47,14 +47,14 @@ final class MockConfigurator: Configurator {
         }
         container.register { (object: inout ImageLoaderDependency) in object.imageLoader = imageLoader }
         container.register { (object: inout FeedServiceDependency) in object.feedService = feedService }
-        container.register { (object: inout ImagesServiceDependency) in object.imagesService = imagesService }
+        container.register { (object: inout MediaServiceDependency) in object.mediaService = mediaService }
         container.register { [unowned container] (object: inout DependencyContainerDependency) in object.container = container }
 
         // Registering type resolvers.
         container.register { () -> Logger in logger }
         container.register { () -> ImageLoader in imageLoader }
         container.register { () -> FeedService in feedService }
-        container.register { () -> ImagesService in imagesService }
+        container.register { () -> MediaService in mediaService }
 
         return container
     }

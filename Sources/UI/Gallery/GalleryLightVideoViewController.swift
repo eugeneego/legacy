@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class GalleryLightVideoViewController: GalleryItemViewController {
+open class GalleryLightVideoViewController: GalleryItemViewController {
     public let videoView: GalleryVideoView = GalleryVideoView()
     public let previewImageView: UIImageView = UIImageView()
 
@@ -24,9 +24,14 @@ class GalleryLightVideoViewController: GalleryItemViewController {
     }
 
     open var video: GalleryMedia.Video = .init()
+    open var loop: Bool = true
 
     private var isShown: Bool = false
     private var isStarted: Bool = false
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -111,7 +116,11 @@ class GalleryLightVideoViewController: GalleryItemViewController {
         video.url = url
 
         let player = AVPlayer(url: url)
+        player.actionAtItemEnd = .none
         videoView.player = player
+
+        NotificationCenter.default.addObserver(self, selector: #selector(playbackEnded), name: .AVPlayerItemDidPlayToEndTime,
+            object: player.currentItem)
 
         updateControls()
 
@@ -131,6 +140,13 @@ class GalleryLightVideoViewController: GalleryItemViewController {
 
     private func pause() {
         videoView.player?.pause()
+    }
+
+    @objc private func playbackEnded(_ notification: Notification) {
+        (notification.object as? AVPlayerItem)?.seek(to: kCMTimeZero)
+        if !loop {
+            pause()
+        }
     }
 
     private func updatePreviewImage() {

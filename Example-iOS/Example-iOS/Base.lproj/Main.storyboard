@@ -29,10 +29,10 @@
             </objects>
             <point key="canvasLocation" x="1292" y="387"/>
         </scene>
-        <!--Images-->
+        <!--Media-->
         <scene sceneID="Awz-YQ-Cpx">
             <objects>
-                <viewController storyboardIdentifier="ImagesViewController" title="Images" id="XhN-ag-1c9" customClass="ImagesViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MediaViewController" title="Media" id="XhN-ag-1c9" customClass="MediaViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="J6j-SC-xmj"/>
                         <viewControllerLayoutGuide type="bottom" id="Q4A-1f-MC5"/>
