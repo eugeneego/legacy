@@ -66,7 +66,6 @@
 		B2FA875B3DC4B7E32A882A4C /* SimpleSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */; };
 		B2FA877EA780BF6E43FF4498 /* UserLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87C1FF4033D603F217FC /* UserLightTransformer.swift */; };
 		B2FA8782A928BC5ED06A1BF4 /* DependencyInjectionContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA858A3D77F6B7C5DBB895 /* DependencyInjectionContainer.swift */; };
-		B2FA87BEAD3A4EA89B1A3419 /* GalleryAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */; };
 		B2FA87C9B577EA8A1C2932C2 /* UIView+Nib.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81EADC34644BE80F3DC4 /* UIView+Nib.swift */; };
 		B2FA87D5D15BA964ED6C3375 /* GalleryItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8CFC418C8272AD882046 /* GalleryItemViewController.swift */; };
 		B2FA87F3F19972FA40192A07 /* UrlTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA899C6D092E41EB22D2C8 /* UrlTransformer.swift */; };
@@ -164,7 +163,6 @@
 		B2FA8241C5214BD0E693AFBF /* EnumLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA82507578C9F784D56C78 /* GalleryLightVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryLightVideoViewController.swift; sourceTree = "<group>"; };
 		B2FA82C5A9F2428939EB9981 /* VoidHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidHttpSerializer.swift; sourceTree = "<group>"; };
-		B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryAppearance.swift; sourceTree = "<group>"; };
 		B2FA8320303EF0DB8654A3D2 /* NetworkImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkImageView.swift; sourceTree = "<group>"; };
 		B2FA832A7D8E587420E22722 /* ColorTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorTransformer.swift; sourceTree = "<group>"; };
 		B2FA8343F8CC638295A9178B /* Json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
@@ -505,7 +503,6 @@
 				B2FA81309C1D00C1C54500A5 /* GalleryImageViewController.swift */,
 				B2FA8B92E4FF28AD37A47198 /* GalleryVideoViewController.swift */,
 				B2FA8EC38AC1BAA7D7066674 /* GalleryViewController.swift */,
-				B2FA82FC1DBA8946E53A001B /* GalleryAppearance.swift */,
 				B2FA82053D78B81A16709252 /* ZoomTransitionController.swift */,
 				B2FA876A1A19B89801D9D040 /* GalleryPreviewCollectionView.swift */,
 				B2FA8580A06E74412566C395 /* GalleryPreviewCollectionCell.swift */,
@@ -800,7 +797,6 @@
 				2DBA1CBB96282DA5FCEB7C8B /* SimpleTaggedLogger.swift in Sources */,
 				B2FA8A8C6D80661DD2D1BBAC /* Hpkp.swift in Sources */,
 				B2FA8E0261AD69CC01378F1C /* NetworkImageView.swift in Sources */,
-				B2FA87BEAD3A4EA89B1A3419 /* GalleryAppearance.swift in Sources */,
 				B2FA887F0A2B1C668680614A /* ZoomTransitionController.swift in Sources */,
 				B2FA8ABCF1DBA77D33C69DD3 /* GalleryPreviewCollectionView.swift in Sources */,
 				B2FA8579CE768C3821D524C9 /* GalleryPreviewCollectionCell.swift in Sources */,

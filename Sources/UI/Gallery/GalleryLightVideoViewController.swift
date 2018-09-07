@@ -16,11 +16,14 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
 
     open var loop: Bool = true
 
+    open var setupAppearance: ((GalleryLightVideoViewController) -> Void)?
+
     private var isShown: Bool = false
     private var isStarted: Bool = false
 
     public let videoView: GalleryVideoView = GalleryVideoView()
     public let previewImageView: UIImageView = UIImageView()
+    public let progressView: UIProgressView = UIProgressView(progressViewStyle: .default)
 
     public init(video: GalleryMedia.Video) {
         self.video = video
@@ -49,6 +52,9 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
         previewImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(previewImageView)
 
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(progressView)
+
         // Constraints
 
         NSLayoutConstraint.activate([
@@ -60,12 +66,17 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
             previewImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             previewImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             previewImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            progressView.heightAnchor.constraint(equalToConstant: 2),
+            progressView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
 
         // Other
 
         setupTransition()
         setupCommonControls()
+        setupAppearance?(self)
 
         updatePreviewImage()
     }
@@ -124,6 +135,11 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
         player.actionAtItemEnd = .none
         videoView.player = player
 
+        let interval = CMTime(seconds: 0.016, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] _ in
+            self?.updatePlaybackProgress()
+        }
+
         NotificationCenter.default.addObserver(self, selector: #selector(playbackEnded), name: .AVPlayerItemDidPlayToEndTime,
             object: player.currentItem)
 
@@ -145,6 +161,17 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
 
     private func pause() {
         videoView.player?.pause()
+    }
+
+    private func updatePlaybackProgress() {
+        let item = videoView.player?.currentItem
+        let time = item?.currentTime()
+        let duration = item?.duration
+        if let time = time, time.isValid, !time.isIndefinite, let duration = duration, duration.isValid, !duration.isIndefinite {
+            progressView.progress = Float(time.seconds / duration.seconds)
+        } else {
+            progressView.progress = 0
+        }
     }
 
     @objc private func playbackEnded(_ notification: Notification) {

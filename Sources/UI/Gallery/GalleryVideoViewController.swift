@@ -15,6 +15,8 @@ open class GalleryVideoViewController: GalleryItemViewController {
     private var url: URL?
     private var previewImage: UIImage?
 
+    open var setupAppearance: ((GalleryVideoViewController) -> Void)?
+
     private var isShown: Bool = false
     private var isStarted: Bool = false
 
@@ -68,6 +70,7 @@ open class GalleryVideoViewController: GalleryItemViewController {
 
         setupTransition()
         setupCommonControls()
+        setupAppearance?(self)
 
         updatePreviewImage()
     }

@@ -23,7 +23,6 @@ open class GalleryItemViewController: UIViewController, ZoomTransitionDelegate {
     open var index: Int = 0
 
     open var closeAction: (() -> Void)?
-    open var setupAppearance: ((GalleryAppearance) -> Void)?
     open var presenterInterfaceOrientations: (() -> UIInterfaceOrientationMask?)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
     open var isTransitionEnabled: Bool = true
@@ -151,7 +150,6 @@ open class GalleryItemViewController: UIViewController, ZoomTransitionDelegate {
         showControls(initialControlsVisibility, animated: false)
 
         updateControls()
-        setupAppearance?(.item(self))
     }
 
     open func showControls(_ show: Bool, animated: Bool) {

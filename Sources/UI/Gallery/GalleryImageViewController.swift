@@ -17,6 +17,8 @@ open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDe
     open var hideControlsOnDrag: Bool = false
     open var hideControlsOnZoom: Bool = false
 
+    open var setupAppearance: ((GalleryImageViewController) -> Void)?
+
     private var isShown: Bool = false
     private var isLaidOut: Bool = false
 
@@ -76,6 +78,7 @@ open class GalleryImageViewController: GalleryItemViewController, UIScrollViewDe
 
         setupTransition()
         setupCommonControls()
+        setupAppearance?(self)
     }
 
     open override func viewWillAppear(_ animated: Bool) {

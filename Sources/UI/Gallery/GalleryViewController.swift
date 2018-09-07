@@ -19,7 +19,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         }
     }
 
-    open var setupAppearance: ((GalleryAppearance) -> Void)?
+    open var setupAppearance: ((GalleryViewController) -> Void)?
     open var viewAppeared: ((GalleryViewController) -> Void)?
     open var pageChanged: ((_ currentIndex: Int) -> Void)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
@@ -106,7 +106,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         titleView.isHidden = !sharedControls || !controlsVisibility
         showControls(initialControlsVisibility, animated: false)
 
-        setupAppearance?(.gallery(self))
+        setupAppearance?(self)
 
         move(to: initialIndex, animated: false)
     }
@@ -218,7 +218,6 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         let controller = viewerForItem(item)
         controller.index = index
         controller.autoplay = autoplay
-        controller.setupAppearance = setupAppearance
         controller.sharedControls = sharedControls
         controller.availableControls = availableControls
         controller.controlsChanged = { [weak self] in

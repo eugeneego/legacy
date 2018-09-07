@@ -61,6 +61,7 @@ class MediaFlow {
                         url: nil,
                         previewImage: item.offset == index ? image : nil,
                         previewImageLoader: thumbnail.map { thumbnail in
+                            // swiftlint:disable:next implicit_return
                             return { size, completion in
                                 imageLoader.load(url: thumbnail, size: size, mode: .fill) { result in
                                     completion(result.map(success: { .success($0.image) }, failure: { .failure($0) }))
@@ -86,6 +87,14 @@ class MediaFlow {
 
         let previewView = createGalleryPreview()
 
+        let setupItemAppearance = { (controller: GalleryItemViewController) in
+            controller.view.backgroundColor = .white
+            controller.loadingIndicatorView.color = .orange
+            controller.titleView.backgroundColor = .white
+            controller.closeButton.setTitleColor(.orange, for: .normal)
+            controller.shareButton.setTitleColor(.orange, for: .normal)
+        }
+
         let controller = GalleryViewController(spacing: 20)
         controller.items = media
         controller.initialIndex = index
@@ -97,36 +106,36 @@ class MediaFlow {
         controller.viewerForItem = { item in
             switch item {
                 case .image(let image):
-                    return GalleryImageViewController(image: image)
+                    let controller = GalleryImageViewController(image: image)
+                    controller.setupAppearance = { controller in
+                        setupItemAppearance(controller)
+                    }
+                    return controller
                 case .video(let video):
-                    return GalleryLightVideoViewController(video: video)
+                    let controller = GalleryLightVideoViewController(video: video)
+                    controller.setupAppearance = { controller in
+                        setupItemAppearance(controller)
+                        controller.progressView.trackTintColor = .clear
+                    }
+                    return controller
             }
         }
-        controller.setupAppearance = { appearance in
-            switch appearance {
-                case .gallery(let controller):
-                    controller.initialControlsVisibility = true
-                    controller.view.backgroundColor = .white
-                    controller.titleView.backgroundColor = .white
-                    controller.closeButton.setTitleColor(.orange, for: .normal)
-                    controller.shareButton.setTitleColor(.orange, for: .normal)
+        controller.setupAppearance = { controller in
+            controller.initialControlsVisibility = true
+            controller.view.backgroundColor = .white
+            controller.titleView.backgroundColor = .white
+            controller.closeButton.setTitleColor(.orange, for: .normal)
+            controller.shareButton.setTitleColor(.orange, for: .normal)
 
-                    previewView.translatesAutoresizingMaskIntoConstraints = false
-                    controller.view.addSubview(previewView)
-                    NSLayoutConstraint.activate([
-                        previewView.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor),
-                        previewView.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor),
-                        previewView.bottomAnchor.constraint(equalTo: controller.bottomLayoutGuide.topAnchor),
-                        previewView.heightAnchor.constraint(equalToConstant: 80),
-                    ])
-                    previewView.items = controller.items
-                case .item(let controller):
-                    controller.view.backgroundColor = .white
-                    controller.loadingIndicatorView.color = .orange
-                    controller.titleView.backgroundColor = .white
-                    controller.closeButton.setTitleColor(.orange, for: .normal)
-                    controller.shareButton.setTitleColor(.orange, for: .normal)
-            }
+            previewView.translatesAutoresizingMaskIntoConstraints = false
+            controller.view.addSubview(previewView)
+            NSLayoutConstraint.activate([
+                previewView.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor),
+                previewView.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor),
+                previewView.bottomAnchor.constraint(equalTo: controller.bottomLayoutGuide.topAnchor),
+                previewView.heightAnchor.constraint(equalToConstant: 80),
+            ])
+            previewView.items = controller.items
         }
         previewView.selectAction = { [weak controller, weak previewView] index in
             controller?.move(to: index, animated: true)
