@@ -38,10 +38,18 @@ open class GalleryItemViewController: UIViewController, ZoomTransitionDelegate {
 
     internal var mediaSize: CGSize = .zero
 
+    open var logger: TaggedLogger?
+
     // MARK: - View Controller
+
+    deinit {
+        logger?.debug("")
+    }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
+
+        logger?.debug("")
 
         extendedLayoutIncludesOpaqueBars = true
         automaticallyAdjustsScrollViewInsets = false

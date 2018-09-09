@@ -9,8 +9,8 @@
 import UIKit
 import Legacy
 
-class MediaViewController: UIViewController, ImageLoaderDependency, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
-        ZoomTransitionDelegate {
+class MediaViewController: ViewController, ImageLoaderDependency,
+        UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ZoomTransitionDelegate {
     var imageLoader: ImageLoader!
     var input: Input!
     var output: Output!
@@ -76,13 +76,9 @@ class MediaViewController: UIViewController, ImageLoaderDependency, UICollection
     func collectionView(
         _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let inset: CGFloat
-        if let layout = collectionViewLayout as? UICollectionViewFlowLayout {
-            inset = layout.sectionInset.left + layout.sectionInset.right + layout.minimumInteritemSpacing
-        } else {
-            inset = 0
-        }
-
+        let inset = (collectionViewLayout as? UICollectionViewFlowLayout).map { layout in
+            layout.sectionInset.left + layout.sectionInset.right + layout.minimumInteritemSpacing
+        } ?? 0
         let width = (collectionView.bounds.width - inset) / 2
         return CGSize(width: width, height: width)
     }

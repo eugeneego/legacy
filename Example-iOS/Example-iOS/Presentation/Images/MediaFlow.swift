@@ -95,7 +95,10 @@ class MediaFlow {
             controller.shareButton.setTitleColor(.orange, for: .normal)
         }
 
+        let container = self.container
+
         let controller = GalleryViewController(spacing: 20)
+        container.resolve(controller)
         controller.items = media
         controller.initialIndex = index
         controller.transitionController = ZoomTransitionController()
@@ -107,16 +110,13 @@ class MediaFlow {
             switch item {
                 case .image(let image):
                     let controller = GalleryImageViewController(image: image)
-                    controller.setupAppearance = { controller in
-                        setupItemAppearance(controller)
-                    }
+                    container.resolve(controller)
+                    controller.setupAppearance = setupItemAppearance
                     return controller
                 case .video(let video):
                     let controller = GalleryLightVideoViewController(video: video)
-                    controller.setupAppearance = { controller in
-                        setupItemAppearance(controller)
-                        controller.progressView.trackTintColor = .clear
-                    }
+                    container.resolve(controller)
+                    controller.setupAppearance = setupItemAppearance
                     return controller
             }
         }
@@ -181,3 +181,6 @@ class MediaFlow {
         return previewView
     }
 }
+
+extension GalleryViewController: TaggedLoggerDependency {}
+extension GalleryItemViewController: TaggedLoggerDependency {}

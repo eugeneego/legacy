@@ -10,12 +10,16 @@ import UIKit
 
 open class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
         ZoomTransitionDelegate {
-    open var viewerForItem: (GalleryMedia) -> GalleryItemViewController = { item in
+    open lazy var viewerForItem: (GalleryMedia) -> GalleryItemViewController = { [weak self] item in
         switch item {
             case .image(let image):
-                return GalleryImageViewController(image: image)
+                let controller = GalleryImageViewController(image: image)
+                controller.logger = self?.logger.map { SimpleTaggedLogger(logger: $0, for: controller) }
+                return controller
             case .video(let video):
-                return GalleryVideoViewController(video: video)
+                let controller = GalleryVideoViewController(video: video)
+                controller.logger = self?.logger.map { SimpleTaggedLogger(logger: $0, for: controller) }
+                return controller
         }
     }
 
@@ -35,6 +39,8 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
             transitioningDelegate = transitionController
         }
     }
+
+    open var logger: TaggedLogger?
 
     public let titleView: UIView = UIView()
     public let closeButton: UIButton = UIButton(type: .custom)
@@ -59,8 +65,14 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         delegate = self
     }
 
+    deinit {
+        logger?.debug("")
+    }
+
     override open func viewDidLoad() {
         super.viewDidLoad()
+
+        logger?.debug("")
 
         view.backgroundColor = .black
 

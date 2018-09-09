@@ -53,6 +53,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
         view.addSubview(previewImageView)
 
         progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.trackTintColor = .clear
         view.addSubview(progressView)
 
         // Constraints
