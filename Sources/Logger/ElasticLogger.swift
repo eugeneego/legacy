@@ -60,8 +60,10 @@ public class ElasticLogger: Logger {
 
     private func subscribeToAppEvents() {
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(didEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(willEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(willEnterForeground),
+            name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 
     private static let timestampFormatter: DateFormatter = {

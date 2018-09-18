@@ -13,7 +13,7 @@ public extension UIView {
         name: String,
         bundle: Bundle,
         owner: Any?,
-        options: [AnyHashable: Any]?
+        options: [UINib.OptionsKey: Any]?
     ) -> T {
         guard let nibContent = bundle.loadNibNamed(name, owner: owner, options: options) else {
             fatalError("Cannot load nib with name \(name).")
@@ -34,7 +34,7 @@ public extension UIView {
         name: String? = nil,
         bundle: Bundle? = nil,
         owner: Any? = nil,
-        options: [AnyHashable: Any]? = nil
+        options: [UINib.OptionsKey: Any]? = nil
     ) -> Self {
         return loadNib(name: name ?? String(describing: self), bundle: bundle ?? Bundle(for: self), owner: owner, options: options)
     }

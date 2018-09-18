@@ -129,7 +129,8 @@ public class Hpkp {
 
         guard let trust = createdTrust else { return nil }
 
-        SecTrustEvaluate(trust, nil)
+        var result: SecTrustResultType = .invalid
+        SecTrustEvaluate(trust, &result)
         guard let publicKey = SecTrustCopyPublicKey(trust) else { return nil }
 
         let publicKeyData = SecKeyCopyExternalRepresentation(publicKey, nil) as Data?

@@ -9,13 +9,13 @@
 import Foundation
 
 open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetworkClient {
-    open let http: Http
-    open let baseURL: URL
-    open let workQueue: DispatchQueue
-    open let completionQueue: DispatchQueue
-    open let requestAuthorizer: RequestAuthorizer?
-    open let decoder: JSONDecoder
-    open let encoder: JSONEncoder
+    public let http: Http
+    public let baseURL: URL
+    public let workQueue: DispatchQueue
+    public let completionQueue: DispatchQueue
+    public let requestAuthorizer: RequestAuthorizer?
+    public let decoder: JSONDecoder
+    public let encoder: JSONEncoder
 
     public init(
         http: Http,

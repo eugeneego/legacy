@@ -176,7 +176,7 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
     }
 
     @objc private func playbackEnded(_ notification: Notification) {
-        (notification.object as? AVPlayerItem)?.seek(to: kCMTimeZero)
+        (notification.object as? AVPlayerItem)?.seek(to: .zero)
         if !loop {
             pause()
         }
@@ -210,12 +210,12 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
         }
     }
 
-    private func generateVideoPreview(asset: AVAsset, time: CMTime = kCMTimeZero, exact: Bool = false) -> UIImage? {
+    private func generateVideoPreview(asset: AVAsset, time: CMTime = .zero, exact: Bool = false) -> UIImage? {
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true
         if exact {
-            imageGenerator.requestedTimeToleranceBefore = kCMTimeZero
-            imageGenerator.requestedTimeToleranceAfter = kCMTimeZero
+            imageGenerator.requestedTimeToleranceBefore = .zero
+            imageGenerator.requestedTimeToleranceAfter = .zero
         }
         let cgImage = try? imageGenerator.copyCGImage(at: time, actualTime: nil)
         let image = cgImage.map(UIImage.init)

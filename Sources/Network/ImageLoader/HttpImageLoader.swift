@@ -9,7 +9,7 @@
 import UIKit
 
 open class HttpImageLoader: ImageLoader {
-    open let http: Http
+    public let http: Http
 
     public init(http: Http) {
         self.http = http
