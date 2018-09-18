@@ -259,7 +259,7 @@ open class GalleryItemViewController: UIViewController, ZoomTransitionDelegate {
             return isFullInteractive
         }
         transition.sourceRootView = { [weak self] in
-            return self?.view
+            self?.view
         }
         transition.completion = { [weak self] _ in
             guard let `self` = self else { return }
