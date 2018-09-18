@@ -51,7 +51,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     private var statusBarHidden: Bool = false
 
     public init(spacing: CGFloat = 0) {
-        let options: [String: Any] = [ UIPageViewControllerOptionInterPageSpacingKey: spacing ]
+        let options: [UIPageViewController.OptionsKey: Any] = [ .interPageSpacing: spacing ]
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: options)
 
         dataSource = self
@@ -208,7 +208,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     open func move(to index: Int, animated: Bool) {
         guard index != currentIndex, items.indices.contains(index) else { return }
 
-        let direction: UIPageViewControllerNavigationDirection = index >= currentIndex ? .forward : .reverse
+        let direction: UIPageViewController.NavigationDirection = index >= currentIndex ? .forward : .reverse
 
         currentIndex = index
 

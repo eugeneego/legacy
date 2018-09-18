@@ -9,11 +9,11 @@
 import Foundation
 
 open class UrlSessionHttp: Http {
-    open let session: URLSession
-    open let responseQueue: DispatchQueue
+    public let session: URLSession
+    public let responseQueue: DispatchQueue
 
-    open let logger: Logger?
-    open let loggerTag: String
+    public let logger: Logger?
+    public let loggerTag: String
 
     open var maxLoggingBodySize: Int = 8192
 

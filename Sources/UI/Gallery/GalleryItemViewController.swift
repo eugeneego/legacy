@@ -78,7 +78,7 @@ open class GalleryItemViewController: UIViewController, ZoomTransitionDelegate {
     public let titleView: UIView = UIView()
     public let closeButton: UIButton = UIButton(type: .custom)
     public let shareButton: UIButton = UIButton(type: .custom)
-    public let loadingIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    public let loadingIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
     public let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
 
     internal var statusBarHidden: Bool = false
