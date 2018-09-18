@@ -67,13 +67,13 @@ class RestConfigurator: Configurator {
         let logger: Logger = PrintLogger()
         let apiHttp = self.apiHttp(logger: logger)
         let imagesHttp = self.imagesHttp(logger: logger)
-        let imageLoader = HttpImageLoader(http: imagesHttp)
+        let imageLoader = AppImageLoader(imageLoader: HttpImageLoader(http: imagesHttp))
 
         let feedUrl = baseUrl.appendingPathComponent("feed", isDirectory: true)
         let feedService = RestFeedService(rest: rest(baseUrl: feedUrl, http: apiHttp))
 
-        let imagesUrl = baseUrl.appendingPathComponent("images", isDirectory: true)
-        let imagesService = RestImagesService(rest: rest(baseUrl: imagesUrl, http: apiHttp))
+        let mediaUrl = baseUrl.appendingPathComponent("media", isDirectory: true)
+        let mediaService = RestMediaService(rest: rest(baseUrl: mediaUrl, http: apiHttp))
 
         // Registering protocols resolvers.
         container.register { (object: inout LoggerDependency) in object.logger = logger }
@@ -83,14 +83,14 @@ class RestConfigurator: Configurator {
         }
         container.register { (object: inout ImageLoaderDependency) in object.imageLoader = imageLoader }
         container.register { (object: inout FeedServiceDependency) in object.feedService = feedService }
-        container.register { (object: inout ImagesServiceDependency) in object.imagesService = imagesService }
+        container.register { (object: inout MediaServiceDependency) in object.mediaService = mediaService }
         container.register { [unowned container] (object: inout DependencyContainerDependency) in object.container = container }
 
         // Registering type resolvers.
         container.register { () -> Logger in logger }
         container.register { () -> ImageLoader in imageLoader }
         container.register { () -> FeedService in feedService }
-        container.register { () -> ImagesService in imagesService }
+        container.register { () -> MediaService in mediaService }
 
         return container
     }

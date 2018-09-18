@@ -13,11 +13,11 @@ protocol DependencyContainerDependency {
 }
 
 protocol LoggerDependency {
-    var logger: Logger! { get set }
+    var logger: Logger? { get set }
 }
 
 protocol TaggedLoggerDependency {
-    var logger: TaggedLogger! { get set }
+    var logger: TaggedLogger? { get set }
 }
 
 protocol ImageLoaderDependency {
@@ -28,6 +28,6 @@ protocol FeedServiceDependency {
     var feedService: FeedService! { get set }
 }
 
-protocol ImagesServiceDependency {
-    var imagesService: ImagesService! { get set }
+protocol MediaServiceDependency {
+    var mediaService: MediaService! { get set }
 }

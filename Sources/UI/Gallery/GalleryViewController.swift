@@ -10,7 +10,20 @@ import UIKit
 
 open class GalleryViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate,
         ZoomTransitionDelegate {
-    open var setupAppearance: ((GalleryAppearance) -> Void)?
+    open lazy var viewerForItem: (GalleryMedia) -> GalleryItemViewController = { [weak self] item in
+        switch item {
+            case .image(let image):
+                let controller = GalleryImageViewController(image: image)
+                controller.logger = self?.logger.map { SimpleTaggedLogger(logger: $0, for: controller) }
+                return controller
+            case .video(let video):
+                let controller = GalleryVideoViewController(video: video)
+                controller.logger = self?.logger.map { SimpleTaggedLogger(logger: $0, for: controller) }
+                return controller
+        }
+    }
+
+    open var setupAppearance: ((GalleryViewController) -> Void)?
     open var viewAppeared: ((GalleryViewController) -> Void)?
     open var pageChanged: ((_ currentIndex: Int) -> Void)?
     open var statusBarStyle: UIStatusBarStyle = .lightContent
@@ -26,6 +39,8 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
             transitioningDelegate = transitionController
         }
     }
+
+    open var logger: TaggedLogger?
 
     public let titleView: UIView = UIView()
     public let closeButton: UIButton = UIButton(type: .custom)
@@ -50,14 +65,51 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         delegate = self
     }
 
+    deinit {
+        logger?.debug("")
+    }
+
     override open func viewDidLoad() {
         super.viewDidLoad()
+
+        logger?.debug("")
 
         view.backgroundColor = .black
 
         lastControlsVisibility = initialControlsVisibility
 
-        GalleryRoutines.configureControllerTitle(view: view, titleView: titleView, closeButton: closeButton, shareButton: shareButton)
+        titleView.translatesAutoresizingMaskIntoConstraints = false
+        titleView.backgroundColor = UIColor(white: 0, alpha: 0.7)
+        titleView.isUserInteractionEnabled = true
+        view.addSubview(titleView)
+
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("Close", for: .normal)
+        closeButton.setTitleColor(.white, for: .normal)
+        closeButton.backgroundColor = .clear
+        closeButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        titleView.addSubview(closeButton)
+
+        shareButton.translatesAutoresizingMaskIntoConstraints = false
+        shareButton.setTitle("Share", for: .normal)
+        shareButton.setTitleColor(.white, for: .normal)
+        shareButton.backgroundColor = .clear
+        shareButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        titleView.addSubview(shareButton)
+
+        NSLayoutConstraint.activate([
+            titleView.topAnchor.constraint(equalTo: view.topAnchor),
+            titleView.heightAnchor.constraint(equalToConstant: topInset + 44),
+            titleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            titleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            closeButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
+            closeButton.leadingAnchor.constraint(equalTo: titleView.leadingAnchor),
+            closeButton.heightAnchor.constraint(equalToConstant: 44),
+            shareButton.bottomAnchor.constraint(equalTo: titleView.bottomAnchor),
+            shareButton.trailingAnchor.constraint(equalTo: titleView.trailingAnchor),
+            shareButton.heightAnchor.constraint(equalToConstant: 44),
+        ])
+
         closeButton.addTarget(self, action: #selector(closeTap), for: .touchUpInside)
         shareButton.addTarget(self, action: #selector(shareTap), for: .touchUpInside)
         tapGesture.addTarget(self, action: #selector(toggleTap))
@@ -66,7 +118,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
         titleView.isHidden = !sharedControls || !controlsVisibility
         showControls(initialControlsVisibility, animated: false)
 
-        setupAppearance?(.gallery(self))
+        setupAppearance?(self)
 
         move(to: initialIndex, animated: false)
     }
@@ -91,6 +143,15 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
+    }
+
+    open var topInset: CGFloat {
+        var topInset: CGFloat = 0
+        if #available(iOS 11.0, *) {
+            topInset = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0
+        }
+        topInset = max(topInset, 20)
+        return topInset
     }
 
     // MARK: - Controls
@@ -151,7 +212,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
         currentIndex = index
 
-        let controller = viewController(for: items[currentIndex], autoplay: true, controls: lastControlsVisibility)
+        let controller = viewController(item: items[currentIndex], index: currentIndex, autoplay: true, controls: lastControlsVisibility)
         setViewControllers([ controller ], direction: direction, animated: animated) { completed in
             if completed {
                 self.pageChanged?(self.currentIndex)
@@ -162,20 +223,13 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
     private func index(from viewController: UIViewController) -> Int {
         guard let controller = viewController as? GalleryItemViewController else { fatalError("Should be GalleryItemViewController") }
 
-        return controller.item.index
+        return controller.index
     }
 
-    private func viewController(for item: GalleryMedia, autoplay: Bool, controls: Bool) -> UIViewController {
-        let controller: UIViewController & GalleryItemViewController
-        switch item {
-            case .image:
-                controller = GalleryImageViewController()
-            case .video:
-                let videoController = GalleryVideoViewController()
-                videoController.autoplay = autoplay
-                controller = videoController
-        }
-        controller.setupAppearance = setupAppearance
+    private func viewController(item: GalleryMedia, index: Int, autoplay: Bool, controls: Bool) -> UIViewController {
+        let controller = viewerForItem(item)
+        controller.index = index
+        controller.autoplay = autoplay
         controller.sharedControls = sharedControls
         controller.availableControls = availableControls
         controller.controlsChanged = { [weak self] in
@@ -195,7 +249,6 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
             self?.presentingViewController?.supportedInterfaceOrientations
         }
         controller.isTransitionEnabled = transitionController != nil
-        controller.item = item
         return controller
     }
 
@@ -230,7 +283,7 @@ open class GalleryViewController: UIPageViewController, UIPageViewControllerData
 
     private func controller(for index: Int, previousViewController: UIViewController) -> UIViewController {
         lastControlsVisibility = (previousViewController as? GalleryItemViewController)?.controlsVisibility ?? lastControlsVisibility
-        let controller = viewController(for: items[index], autoplay: true, controls: lastControlsVisibility)
+        let controller = viewController(item: items[index], index: index, autoplay: true, controls: lastControlsVisibility)
         return controller
     }
 

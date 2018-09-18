@@ -9,7 +9,7 @@
 import UIKit
 
 open class GalleryPreviewCollectionView: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    open let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+    public let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 
     open var items: [GalleryMedia] = [] {
         didSet {
@@ -19,15 +19,21 @@ open class GalleryPreviewCollectionView: UICollectionView, UICollectionViewDataS
 
     open private(set) var currentIndex: Int = -1
     open var selectAction: ((Int) -> Void)?
-    open var cellSetup: ((GalleryPreviewCollectionCell) -> Void)?
 
-    public init() {
+    public let cellClass: GalleryBasePreviewCollectionCell.Type
+    open var cellSetup: ((GalleryBasePreviewCollectionCell) -> Void)?
+
+    public init(cellClass: GalleryBasePreviewCollectionCell.Type = GalleryPreviewCollectionCell.self) {
+        self.cellClass = cellClass
+
         super.init(frame: .zero, collectionViewLayout: layout)
 
         setup()
     }
 
     public required init?(coder aDecoder: NSCoder) {
+        self.cellClass = GalleryPreviewCollectionCell.self
+
         super.init(coder: aDecoder)
 
         collectionViewLayout = layout
@@ -35,7 +41,7 @@ open class GalleryPreviewCollectionView: UICollectionView, UICollectionViewDataS
     }
 
     open func setup() {
-        registerReusableCell(GalleryPreviewCollectionCell.id)
+        register(cellClass, forCellWithReuseIdentifier: GalleryBasePreviewCollectionCell.id.id)
 
         allowsSelection = true
         allowsMultipleSelection = false
@@ -62,20 +68,9 @@ open class GalleryPreviewCollectionView: UICollectionView, UICollectionViewDataS
     }
 
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let item = items[indexPath.item]
-        let previewImage: UIImage?
-        let previewLoader: GalleryMedia.PreviewImageLoader?
-        switch item {
-            case .image(let image):
-                previewImage = image.previewImage
-                previewLoader = image.previewImageLoader
-            case .video(let video):
-                previewImage = video.previewImage
-                previewLoader = video.previewImageLoader
-        }
-
         let cell = collectionView.dequeueReusableCell(GalleryPreviewCollectionCell.id, indexPath: indexPath)
-        cell.set(image: previewImage, loader: previewLoader, setup: cellSetup)
+        let item = items[indexPath.item]
+        cell.set(item: item, setup: cellSetup)
         return cell
     }
 

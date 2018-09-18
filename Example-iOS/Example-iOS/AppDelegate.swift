@@ -13,7 +13,7 @@ import Legacy
 class AppDelegate: UIResponder, UIApplicationDelegate, TaggedLoggerDependency {
     var window: UIWindow?
 
-    var logger: TaggedLogger!
+    var logger: TaggedLogger?
 
     func application(
         _ application: UIApplication,
@@ -55,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, TaggedLoggerDependency {
         container.resolve(self)
 
         let deviceInfo = DeviceInfo.main
-        logger.debug("\(deviceInfo)")
+        logger?.debug("\(deviceInfo)")
 
         let appFlow = AppFlow(window: window, container: container)
         appFlow.start()
