@@ -13,7 +13,7 @@ class MediaCell: UICollectionViewCell {
     static let id: Reusable<MediaCell> = .fromClass()
 
     let imageView: NetworkImageView = NetworkImageView()
-    private let videoView: UIImageView = UIImageView()
+    private let videoView: UIView = UIView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)

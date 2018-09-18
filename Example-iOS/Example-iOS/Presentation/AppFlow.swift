@@ -14,24 +14,24 @@ class AppFlow {
     private let window: UIWindow
     private let tabBarController: TabBarController
 
-    private let feedFlow: FeedFlow
     private let mediaFlow: MediaFlow
+    private let feedFlow: FeedFlow
     private let profileFlow: ProfileFlow
 
     init(window: UIWindow, container: DependencyInjectionContainer) {
         self.window = window
         self.container = container
 
-        feedFlow = FeedFlow(container: container)
         mediaFlow = MediaFlow(container: container, mediaService: container.resolveOrDie(), imageLoader: container.resolveOrDie())
+        feedFlow = FeedFlow(container: container)
         profileFlow = ProfileFlow(container: container)
 
         window.tintColor = .orange
 
         tabBarController = TabBarController()
         tabBarController.viewControllers = [
-            feedFlow.viewController,
             mediaFlow.viewController,
+            feedFlow.viewController,
             profileFlow.viewController,
         ]
     }

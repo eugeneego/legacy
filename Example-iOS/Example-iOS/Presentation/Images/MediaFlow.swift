@@ -177,6 +177,12 @@ class MediaFlow {
                 view.layer.shadowOpacity = 0.5
                 cell.selectedBackgroundView = view
             }
+
+            if let cell = cell as? GalleryPreviewCollectionCell, cell.videoIconView.image == nil {
+                cell.videoIconView.contentMode = .scaleAspectFit
+                cell.videoIconView.image = UIImage(named: "icon-play")
+                cell.videoIconView.tintColor = .white
+            }
         }
         return previewView
     }
