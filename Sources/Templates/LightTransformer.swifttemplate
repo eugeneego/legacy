@@ -145,7 +145,7 @@ struct <%= name %>: LightTransformer {
             let valueTransformer = transformer(for: cleanTypeName(dictionaryType.valueTypeName.name)) + "()"
             variableTransformer = "DictionaryLightTransformer(keyTransformer: \(keyTransformer), valueTransformer: \(valueTransformer))"
         } else if variable.isOptional {
-            variableTransformer = transformer(for: cleanTypeName(variable.unwrappedTypeName)) + "()"
+            variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.unwrappedTypeName)) + "()"
         } else {
             variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.typeName.name)) + "()"
         } -%>

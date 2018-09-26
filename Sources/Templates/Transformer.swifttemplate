@@ -145,7 +145,7 @@ struct <%= name %>: Transformer {
             let valueTransformer = transformer(for: cleanTypeName(dictionaryType.valueTypeName.name)) + "()"
             variableTransformer = "DictionaryTransformer(from: Any.self, keyTransformer: \(keyTransformer), valueTransformer: \(valueTransformer), skipFailures: true)"
         } else if variable.isOptional {
-            variableTransformer = transformer(for: cleanTypeName(variable.unwrappedTypeName)) + "()"
+            variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.unwrappedTypeName)) + "()"
         } else {
             variableTransformer = transformer(for: cleanTypeName(variable.type?.name ?? variable.typeName.name)) + "()"
         }

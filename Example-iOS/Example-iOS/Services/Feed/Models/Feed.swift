@@ -38,6 +38,7 @@ struct Feed {
 
     var id: String
     var kind: Kind
+    var subKind: Kind?
     var title: String
     var description: String
     // sourcery: transformer = "TimestampTransformer<Any>(scale: 1)"
