@@ -11,6 +11,7 @@ struct FeedLightTransformer: LightTransformer {
 
     let idName = "id"
     let kindName = "kind"
+    let subKindName = "subKind"
     let titleName = "title"
     let descriptionName = "description"
     let createdName = "created"
@@ -22,6 +23,7 @@ struct FeedLightTransformer: LightTransformer {
 
     let idTransformer = CastLightTransformer<String>()
     let kindTransformer = FeedKindLightTransformer()
+    let subKindTransformer = FeedKindLightTransformer()
     let titleTransformer = CastLightTransformer<String>()
     let descriptionTransformer = CastLightTransformer<String>()
     let createdTransformer = TimestampLightTransformer(scale: 1)
@@ -36,6 +38,7 @@ struct FeedLightTransformer: LightTransformer {
 
         guard let id = idTransformer.from(any: dictionary[idName]) else { return nil }
         guard let kind = kindTransformer.from(any: dictionary[kindName]) else { return nil }
+        let subKind = subKindTransformer.from(any: dictionary[subKindName])
         guard let title = titleTransformer.from(any: dictionary[titleName]) else { return nil }
         guard let description = descriptionTransformer.from(any: dictionary[descriptionName]) else { return nil }
         guard let created = createdTransformer.from(any: dictionary[createdName]) else { return nil }
@@ -48,6 +51,7 @@ struct FeedLightTransformer: LightTransformer {
         return T(
             id: id,
             kind: kind,
+            subKind: subKind,
             title: title,
             description: description,
             created: created,
@@ -65,6 +69,7 @@ struct FeedLightTransformer: LightTransformer {
         var dictionary: [String: Any] = [:]
         dictionary[idName] = idTransformer.to(any: value.id)
         dictionary[kindName] = kindTransformer.to(any: value.kind)
+        dictionary[subKindName] = subKindTransformer.to(any: value.subKind)
         dictionary[titleName] = titleTransformer.to(any: value.title)
         dictionary[descriptionName] = descriptionTransformer.to(any: value.description)
         dictionary[createdName] = createdTransformer.to(any: value.created)

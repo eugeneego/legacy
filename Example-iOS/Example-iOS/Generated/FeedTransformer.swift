@@ -12,6 +12,7 @@ struct FeedTransformer: Transformer {
 
     let idName = "id"
     let kindName = "kind"
+    let subKindName = "subKind"
     let titleName = "title"
     let descriptionName = "description"
     let createdName = "created"
@@ -23,6 +24,7 @@ struct FeedTransformer: Transformer {
 
     let idTransformer = CastTransformer<Any, String>()
     let kindTransformer = FeedKindTransformer()
+    let subKindTransformer = OptionalTransformer(transformer: FeedKindTransformer())
     let titleTransformer = CastTransformer<Any, String>()
     let descriptionTransformer = CastTransformer<Any, String>()
     let createdTransformer = TimestampTransformer<Any>(scale: 1)
@@ -37,6 +39,7 @@ struct FeedTransformer: Transformer {
 
         let idResult = dictionary[idName].map(idTransformer.transform(source:)) ?? .failure(.requirement)
         let kindResult = dictionary[kindName].map(kindTransformer.transform(source:)) ?? .failure(.requirement)
+        let subKindResult = subKindTransformer.transform(source: dictionary[subKindName])
         let titleResult = dictionary[titleName].map(titleTransformer.transform(source:)) ?? .failure(.requirement)
         let descriptionResult = dictionary[descriptionName].map(descriptionTransformer.transform(source:)) ?? .failure(.requirement)
         let createdResult = dictionary[createdName].map(createdTransformer.transform(source:)) ?? .failure(.requirement)
@@ -49,6 +52,7 @@ struct FeedTransformer: Transformer {
         var errors: [(String, TransformerError)] = []
         idResult.error.map { errors.append((idName, $0)) }
         kindResult.error.map { errors.append((kindName, $0)) }
+        subKindResult.error.map { errors.append((subKindName, $0)) }
         titleResult.error.map { errors.append((titleName, $0)) }
         descriptionResult.error.map { errors.append((descriptionName, $0)) }
         createdResult.error.map { errors.append((createdName, $0)) }
@@ -61,6 +65,7 @@ struct FeedTransformer: Transformer {
         guard
             let id = idResult.value,
             let kind = kindResult.value,
+            let subKind = subKindResult.value,
             let title = titleResult.value,
             let description = descriptionResult.value,
             let created = createdResult.value,
@@ -78,6 +83,7 @@ struct FeedTransformer: Transformer {
             Destination(
                 id: id,
                 kind: kind,
+                subKind: subKind,
                 title: title,
                 description: description,
                 created: created,
@@ -93,6 +99,7 @@ struct FeedTransformer: Transformer {
     func transform(destination value: Destination) -> TransformerResult<Source> {
         let idResult = idTransformer.transform(destination: value.id)
         let kindResult = kindTransformer.transform(destination: value.kind)
+        let subKindResult = subKindTransformer.transform(destination: value.subKind)
         let titleResult = titleTransformer.transform(destination: value.title)
         let descriptionResult = descriptionTransformer.transform(destination: value.description)
         let createdResult = createdTransformer.transform(destination: value.created)
@@ -105,6 +112,7 @@ struct FeedTransformer: Transformer {
         var errors: [(String, TransformerError)] = []
         idResult.error.map { errors.append((idName, $0)) }
         kindResult.error.map { errors.append((kindName, $0)) }
+        subKindResult.error.map { errors.append((subKindName, $0)) }
         titleResult.error.map { errors.append((titleName, $0)) }
         descriptionResult.error.map { errors.append((descriptionName, $0)) }
         createdResult.error.map { errors.append((createdName, $0)) }
@@ -117,6 +125,7 @@ struct FeedTransformer: Transformer {
         guard
             let id = idResult.value,
             let kind = kindResult.value,
+            let subKind = subKindResult.value,
             let title = titleResult.value,
             let description = descriptionResult.value,
             let created = createdResult.value,
@@ -133,6 +142,7 @@ struct FeedTransformer: Transformer {
         var dictionary: [String: Any] = [:]
         dictionary[idName] = id
         dictionary[kindName] = kind
+        dictionary[subKindName] = subKind
         dictionary[titleName] = title
         dictionary[descriptionName] = description
         dictionary[createdName] = created
