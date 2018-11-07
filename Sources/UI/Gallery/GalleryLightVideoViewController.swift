@@ -88,6 +88,8 @@ open class GalleryLightVideoViewController: GalleryItemViewController {
         if !isShown {
             isShown = true
             load()
+        } else {
+            play()
         }
     }
 
