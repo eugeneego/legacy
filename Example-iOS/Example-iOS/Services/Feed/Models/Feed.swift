@@ -36,6 +36,14 @@ struct Feed {
         case comments
     }
 
+    // sourcery: enumTransformer
+    // sourcery: enumLightTransformer
+    enum Raw: Int {
+        case one = 1
+        case three = 3
+        case five = 5
+    }
+
     var id: String
     var kind: Kind
     var subKind: Kind?
@@ -48,5 +56,6 @@ struct Feed {
     var tags: [String]
     var likes: Int
     var subscription: Subscription
+    var raw: Raw
     var meta: [String: String]
 }

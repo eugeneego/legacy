@@ -20,6 +20,7 @@ struct FeedTransformer: Transformer {
     let tagsName = "tags"
     let likesName = "likes"
     let subscriptionName = "subscription"
+    let rawName = "raw"
     let metaName = "meta"
 
     let idTransformer = CastTransformer<Any, String>()
@@ -32,6 +33,7 @@ struct FeedTransformer: Transformer {
     let tagsTransformer = ArrayTransformer(from: Any.self, transformer: CastTransformer<Any, String>(), skipFailures: true)
     let likesTransformer = CastTransformer<Any, Int>()
     let subscriptionTransformer = FeedSubscriptionTransformer()
+    let rawTransformer = FeedRawTransformer()
     let metaTransformer = DictionaryTransformer(from: Any.self, keyTransformer: CastTransformer<AnyHashable, String>(), valueTransformer: CastTransformer<Any, String>(), skipFailures: true)
 
     func transform(source value: Source) -> TransformerResult<Destination> {
@@ -47,6 +49,7 @@ struct FeedTransformer: Transformer {
         let tagsResult = dictionary[tagsName].map(tagsTransformer.transform(source:)) ?? .failure(.requirement)
         let likesResult = dictionary[likesName].map(likesTransformer.transform(source:)) ?? .failure(.requirement)
         let subscriptionResult = dictionary[subscriptionName].map(subscriptionTransformer.transform(source:)) ?? .failure(.requirement)
+        let rawResult = dictionary[rawName].map(rawTransformer.transform(source:)) ?? .failure(.requirement)
         let metaResult = dictionary[metaName].map(metaTransformer.transform(source:)) ?? .failure(.requirement)
 
         var errors: [(String, TransformerError)] = []
@@ -60,6 +63,7 @@ struct FeedTransformer: Transformer {
         tagsResult.error.map { errors.append((tagsName, $0)) }
         likesResult.error.map { errors.append((likesName, $0)) }
         subscriptionResult.error.map { errors.append((subscriptionName, $0)) }
+        rawResult.error.map { errors.append((rawName, $0)) }
         metaResult.error.map { errors.append((metaName, $0)) }
 
         guard
@@ -73,6 +77,7 @@ struct FeedTransformer: Transformer {
             let tags = tagsResult.value,
             let likes = likesResult.value,
             let subscription = subscriptionResult.value,
+            let raw = rawResult.value,
             let meta = metaResult.value,
             errors.isEmpty
         else {
@@ -91,6 +96,7 @@ struct FeedTransformer: Transformer {
                 tags: tags,
                 likes: likes,
                 subscription: subscription,
+                raw: raw,
                 meta: meta
             )
         )
@@ -107,6 +113,7 @@ struct FeedTransformer: Transformer {
         let tagsResult = tagsTransformer.transform(destination: value.tags)
         let likesResult = likesTransformer.transform(destination: value.likes)
         let subscriptionResult = subscriptionTransformer.transform(destination: value.subscription)
+        let rawResult = rawTransformer.transform(destination: value.raw)
         let metaResult = metaTransformer.transform(destination: value.meta)
 
         var errors: [(String, TransformerError)] = []
@@ -120,6 +127,7 @@ struct FeedTransformer: Transformer {
         tagsResult.error.map { errors.append((tagsName, $0)) }
         likesResult.error.map { errors.append((likesName, $0)) }
         subscriptionResult.error.map { errors.append((subscriptionName, $0)) }
+        rawResult.error.map { errors.append((rawName, $0)) }
         metaResult.error.map { errors.append((metaName, $0)) }
 
         guard
@@ -133,6 +141,7 @@ struct FeedTransformer: Transformer {
             let tags = tagsResult.value,
             let likes = likesResult.value,
             let subscription = subscriptionResult.value,
+            let raw = rawResult.value,
             let meta = metaResult.value,
             errors.isEmpty
         else {
@@ -150,6 +159,7 @@ struct FeedTransformer: Transformer {
         dictionary[tagsName] = tags
         dictionary[likesName] = likes
         dictionary[subscriptionName] = subscription
+        dictionary[rawName] = raw
         dictionary[metaName] = meta
         return .success(dictionary)
     }
