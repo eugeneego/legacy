@@ -24,6 +24,7 @@
 		B2FA8492154233EDF9ACDE20 /* RestMediaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA881FB0E0D43C4BCADBA1 /* RestMediaService.swift */; };
 		B2FA84BD2EB003A65CD20D2C /* 02-shane-rounce-384233-unsplash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FA8376D6F0EDC3E11A22C1 /* 02-shane-rounce-384233-unsplash.jpg */; };
 		B2FA84EC6946C8082D8BC448 /* 19-patrick-perkins-342329-unsplash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FA878FD52B049D92C7224E /* 19-patrick-perkins-342329-unsplash.jpg */; };
+		B2FA8516E28F13930B42CA4E /* FeedRawLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8579777115CD58DEC87F /* FeedRawLightTransformer.swift */; };
 		B2FA856E00306357E65F1984 /* 11-fancycrave-417113-unsplash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FA883899A9EC0D9C1C7595 /* 11-fancycrave-417113-unsplash.jpg */; };
 		B2FA8583D7D2281BD7730EDA /* MediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA866053568C63FCF6F9B4 /* MediaCell.swift */; };
 		B2FA85B40CF12C1DEFB89DA3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88A24505D57AF16696FA /* ViewController.swift */; };
@@ -46,6 +47,7 @@
 		B2FA8A62ACA991A9E240ECA9 /* MockMediaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89FDB3C9DE85814C8A9B /* MockMediaService.swift */; };
 		B2FA8A68E714E1A19F5A9D44 /* MediaFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8EB4C200C85D88C88BEC /* MediaFlow.swift */; };
 		B2FA8AA4294565EFDEB8D44D /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA85558E2A05F84EBA0580 /* Storage.swift */; };
+		B2FA8AE99C13B985E976521B /* FeedRawTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84506F8AEA6CF3DFBBF4 /* FeedRawTransformer.swift */; };
 		B2FA8B01D8725C9F2C7BD360 /* 07-marius-ott-623692-unsplash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FA8FE051D74FD85545981A /* 07-marius-ott-623692-unsplash.jpg */; };
 		B2FA8B54EB7EC8C598C5959D /* RestFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C16BB817C036A147020 /* RestFeedService.swift */; };
 		B2FA8BD547CF2E8757247279 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8094B44FF3159EA9482F /* TabBarController.swift */; };
@@ -97,9 +99,11 @@
 		B2FA835700C9E58AE78EA11A /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		B2FA8376D6F0EDC3E11A22C1 /* 02-shane-rounce-384233-unsplash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "02-shane-rounce-384233-unsplash.jpg"; sourceTree = "<group>"; };
 		B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA84506F8AEA6CF3DFBBF4 /* FeedRawTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRawTransformer.swift; sourceTree = "<group>"; };
 		B2FA845F7340F8657EE05EA5 /* 13-dan-gold-497434-unsplash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "13-dan-gold-497434-unsplash.jpg"; sourceTree = "<group>"; };
 		B2FA847CE291296CC3F1AE27 /* 08-artem-bali-565223-unsplash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "08-artem-bali-565223-unsplash.jpg"; sourceTree = "<group>"; };
 		B2FA85558E2A05F84EBA0580 /* Storage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		B2FA8579777115CD58DEC87F /* FeedRawLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedRawLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA85B2E8348D3BF363B375 /* 03-tim-bennett-607824-unsplash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "03-tim-bennett-607824-unsplash.jpg"; sourceTree = "<group>"; };
 		B2FA85DEA88CBB9441946CCF /* Dependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dependencies.swift; sourceTree = "<group>"; };
 		B2FA8605680154127A5B9FF9 /* 05-dash-gualberto-34284-unsplash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "05-dash-gualberto-34284-unsplash.jpg"; sourceTree = "<group>"; };
@@ -324,6 +328,8 @@
 				B2FA81F4FEE62994C8C94769 /* FeedKindLightTransformer.swift */,
 				B2FA89FD8DF20967266E488E /* FeedSubscriptionLightTransformer.swift */,
 				B2FA84119D85526179D5E6CD /* FeedLightTransformer.swift */,
+				B2FA8579777115CD58DEC87F /* FeedRawLightTransformer.swift */,
+				B2FA84506F8AEA6CF3DFBBF4 /* FeedRawTransformer.swift */,
 			);
 			path = Generated;
 			sourceTree = "<group>";
@@ -505,6 +511,8 @@
 				B2FA8AA4294565EFDEB8D44D /* Storage.swift in Sources */,
 				B2FA85B40CF12C1DEFB89DA3 /* ViewController.swift in Sources */,
 				B2FA8BD547CF2E8757247279 /* TabBarController.swift in Sources */,
+				B2FA8516E28F13930B42CA4E /* FeedRawLightTransformer.swift in Sources */,
+				B2FA8AE99C13B985E976521B /* FeedRawTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

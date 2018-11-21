@@ -31,6 +31,8 @@ func enumValueTransformer(for type: Enum, prefix: String) -> String? {
         return transformer(for: cleanTypeName(rawType)) + "()"
     } else if let rawType = type.rawType {
         return transformer(for: cleanTypeName(rawType.name)) + "()"
+    } else if let rawType = type.rawTypeName {
+        return transformer(for: cleanTypeName(rawType.name)) + "()"
     }
     return nil
 }
