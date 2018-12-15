@@ -22,6 +22,14 @@ struct Feed {
         case tweet
     }
 
+    // sourcery: enumTransformer
+    // sourcery: enumLightTransformer
+    enum RawKind: String {
+        case news = "NEWS"
+        case article = "ARTICLE"
+        case tweet = "TWEET"
+    }
+
     // sourcery: enumTransformer, enumTransformer.type = "Int"
     // sourcery: enumLightTransformer, enumLightTransformer.type = "Int"
     enum Subscription {
@@ -38,7 +46,7 @@ struct Feed {
 
     // sourcery: enumTransformer
     // sourcery: enumLightTransformer
-    enum Raw: Int {
+    enum RawInt: Int {
         case one = 1
         case three = 3
         case five = 5
@@ -46,6 +54,7 @@ struct Feed {
 
     var id: String
     var kind: Kind
+    var rawKind: RawKind
     var subKind: Kind?
     var title: String
     var description: String
@@ -56,6 +65,6 @@ struct Feed {
     var tags: [String]
     var likes: Int
     var subscription: Subscription
-    var raw: Raw
+    var rawInt: RawInt
     var meta: [String: String]
 }

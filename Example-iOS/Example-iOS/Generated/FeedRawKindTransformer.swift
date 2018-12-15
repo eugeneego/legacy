@@ -5,22 +5,22 @@ import Foundation
 import Legacy
 
 // swiftlint:disable line_length type_name function_body_length identifier_name
-struct FeedRawTransformer: Transformer {
+struct FeedRawKindTransformer: Transformer {
     typealias Source = Any
-    typealias Destination = Feed.Raw
+    typealias Destination = Feed.RawKind
 
-    private let transformer = CastTransformer<Source, Int>()
+    private let transformer = CastTransformer<Source, String>()
 
     func transform(source value: Source) -> TransformerResult<Destination> {
         guard let rawValue = transformer.transform(source: value).value else { return .failure(.transform) }
 
         switch rawValue {
-            case 1:
-                return .success(.one)
-            case 3:
-                return .success(.three)
-            case 5:
-                return .success(.five)
+            case "NEWS":
+                return .success(.news)
+            case "ARTICLE":
+                return .success(.article)
+            case "TWEET":
+                return .success(.tweet)
             default:
                 return .failure(.transform)
         }
@@ -28,12 +28,12 @@ struct FeedRawTransformer: Transformer {
 
     func transform(destination value: Destination) -> TransformerResult<Source> {
         switch value {
-            case .one:
-                return transformer.transform(destination: 1)
-            case .three:
-                return transformer.transform(destination: 3)
-            case .five:
-                return transformer.transform(destination: 5)
+            case .news:
+                return transformer.transform(destination: "NEWS")
+            case .article:
+                return transformer.transform(destination: "ARTICLE")
+            case .tweet:
+                return transformer.transform(destination: "TWEET")
         }
     }
 }
