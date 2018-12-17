@@ -12,6 +12,7 @@ struct FeedTransformer: Transformer {
 
     let idName = "id"
     let kindName = "kind"
+    let rawKindName = "rawKind"
     let subKindName = "subKind"
     let titleName = "title"
     let descriptionName = "description"
@@ -20,11 +21,12 @@ struct FeedTransformer: Transformer {
     let tagsName = "tags"
     let likesName = "likes"
     let subscriptionName = "subscription"
-    let rawName = "raw"
+    let rawIntName = "rawInt"
     let metaName = "meta"
 
     let idTransformer = CastTransformer<Any, String>()
     let kindTransformer = FeedKindTransformer()
+    let rawKindTransformer = FeedRawKindTransformer()
     let subKindTransformer = OptionalTransformer(transformer: FeedKindTransformer())
     let titleTransformer = CastTransformer<Any, String>()
     let descriptionTransformer = CastTransformer<Any, String>()
@@ -33,7 +35,7 @@ struct FeedTransformer: Transformer {
     let tagsTransformer = ArrayTransformer(from: Any.self, transformer: CastTransformer<Any, String>(), skipFailures: true)
     let likesTransformer = CastTransformer<Any, Int>()
     let subscriptionTransformer = FeedSubscriptionTransformer()
-    let rawTransformer = FeedRawTransformer()
+    let rawIntTransformer = FeedRawIntTransformer()
     let metaTransformer = DictionaryTransformer(from: Any.self, keyTransformer: CastTransformer<AnyHashable, String>(), valueTransformer: CastTransformer<Any, String>(), skipFailures: true)
 
     func transform(source value: Source) -> TransformerResult<Destination> {
@@ -41,6 +43,7 @@ struct FeedTransformer: Transformer {
 
         let idResult = dictionary[idName].map(idTransformer.transform(source:)) ?? .failure(.requirement)
         let kindResult = dictionary[kindName].map(kindTransformer.transform(source:)) ?? .failure(.requirement)
+        let rawKindResult = dictionary[rawKindName].map(rawKindTransformer.transform(source:)) ?? .failure(.requirement)
         let subKindResult = subKindTransformer.transform(source: dictionary[subKindName])
         let titleResult = dictionary[titleName].map(titleTransformer.transform(source:)) ?? .failure(.requirement)
         let descriptionResult = dictionary[descriptionName].map(descriptionTransformer.transform(source:)) ?? .failure(.requirement)
@@ -49,12 +52,13 @@ struct FeedTransformer: Transformer {
         let tagsResult = dictionary[tagsName].map(tagsTransformer.transform(source:)) ?? .failure(.requirement)
         let likesResult = dictionary[likesName].map(likesTransformer.transform(source:)) ?? .failure(.requirement)
         let subscriptionResult = dictionary[subscriptionName].map(subscriptionTransformer.transform(source:)) ?? .failure(.requirement)
-        let rawResult = dictionary[rawName].map(rawTransformer.transform(source:)) ?? .failure(.requirement)
+        let rawIntResult = dictionary[rawIntName].map(rawIntTransformer.transform(source:)) ?? .failure(.requirement)
         let metaResult = dictionary[metaName].map(metaTransformer.transform(source:)) ?? .failure(.requirement)
 
         var errors: [(String, TransformerError)] = []
         idResult.error.map { errors.append((idName, $0)) }
         kindResult.error.map { errors.append((kindName, $0)) }
+        rawKindResult.error.map { errors.append((rawKindName, $0)) }
         subKindResult.error.map { errors.append((subKindName, $0)) }
         titleResult.error.map { errors.append((titleName, $0)) }
         descriptionResult.error.map { errors.append((descriptionName, $0)) }
@@ -63,12 +67,13 @@ struct FeedTransformer: Transformer {
         tagsResult.error.map { errors.append((tagsName, $0)) }
         likesResult.error.map { errors.append((likesName, $0)) }
         subscriptionResult.error.map { errors.append((subscriptionName, $0)) }
-        rawResult.error.map { errors.append((rawName, $0)) }
+        rawIntResult.error.map { errors.append((rawIntName, $0)) }
         metaResult.error.map { errors.append((metaName, $0)) }
 
         guard
             let id = idResult.value,
             let kind = kindResult.value,
+            let rawKind = rawKindResult.value,
             let subKind = subKindResult.value,
             let title = titleResult.value,
             let description = descriptionResult.value,
@@ -77,7 +82,7 @@ struct FeedTransformer: Transformer {
             let tags = tagsResult.value,
             let likes = likesResult.value,
             let subscription = subscriptionResult.value,
-            let raw = rawResult.value,
+            let rawInt = rawIntResult.value,
             let meta = metaResult.value,
             errors.isEmpty
         else {
@@ -88,6 +93,7 @@ struct FeedTransformer: Transformer {
             Destination(
                 id: id,
                 kind: kind,
+                rawKind: rawKind,
                 subKind: subKind,
                 title: title,
                 description: description,
@@ -96,7 +102,7 @@ struct FeedTransformer: Transformer {
                 tags: tags,
                 likes: likes,
                 subscription: subscription,
-                raw: raw,
+                rawInt: rawInt,
                 meta: meta
             )
         )
@@ -105,6 +111,7 @@ struct FeedTransformer: Transformer {
     func transform(destination value: Destination) -> TransformerResult<Source> {
         let idResult = idTransformer.transform(destination: value.id)
         let kindResult = kindTransformer.transform(destination: value.kind)
+        let rawKindResult = rawKindTransformer.transform(destination: value.rawKind)
         let subKindResult = subKindTransformer.transform(destination: value.subKind)
         let titleResult = titleTransformer.transform(destination: value.title)
         let descriptionResult = descriptionTransformer.transform(destination: value.description)
@@ -113,12 +120,13 @@ struct FeedTransformer: Transformer {
         let tagsResult = tagsTransformer.transform(destination: value.tags)
         let likesResult = likesTransformer.transform(destination: value.likes)
         let subscriptionResult = subscriptionTransformer.transform(destination: value.subscription)
-        let rawResult = rawTransformer.transform(destination: value.raw)
+        let rawIntResult = rawIntTransformer.transform(destination: value.rawInt)
         let metaResult = metaTransformer.transform(destination: value.meta)
 
         var errors: [(String, TransformerError)] = []
         idResult.error.map { errors.append((idName, $0)) }
         kindResult.error.map { errors.append((kindName, $0)) }
+        rawKindResult.error.map { errors.append((rawKindName, $0)) }
         subKindResult.error.map { errors.append((subKindName, $0)) }
         titleResult.error.map { errors.append((titleName, $0)) }
         descriptionResult.error.map { errors.append((descriptionName, $0)) }
@@ -127,12 +135,13 @@ struct FeedTransformer: Transformer {
         tagsResult.error.map { errors.append((tagsName, $0)) }
         likesResult.error.map { errors.append((likesName, $0)) }
         subscriptionResult.error.map { errors.append((subscriptionName, $0)) }
-        rawResult.error.map { errors.append((rawName, $0)) }
+        rawIntResult.error.map { errors.append((rawIntName, $0)) }
         metaResult.error.map { errors.append((metaName, $0)) }
 
         guard
             let id = idResult.value,
             let kind = kindResult.value,
+            let rawKind = rawKindResult.value,
             let subKind = subKindResult.value,
             let title = titleResult.value,
             let description = descriptionResult.value,
@@ -141,7 +150,7 @@ struct FeedTransformer: Transformer {
             let tags = tagsResult.value,
             let likes = likesResult.value,
             let subscription = subscriptionResult.value,
-            let raw = rawResult.value,
+            let rawInt = rawIntResult.value,
             let meta = metaResult.value,
             errors.isEmpty
         else {
@@ -151,6 +160,7 @@ struct FeedTransformer: Transformer {
         var dictionary: [String: Any] = [:]
         dictionary[idName] = id
         dictionary[kindName] = kind
+        dictionary[rawKindName] = rawKind
         dictionary[subKindName] = subKind
         dictionary[titleName] = title
         dictionary[descriptionName] = description
@@ -159,7 +169,7 @@ struct FeedTransformer: Transformer {
         dictionary[tagsName] = tags
         dictionary[likesName] = likes
         dictionary[subscriptionName] = subscription
-        dictionary[rawName] = raw
+        dictionary[rawIntName] = rawInt
         dictionary[metaName] = meta
         return .success(dictionary)
     }

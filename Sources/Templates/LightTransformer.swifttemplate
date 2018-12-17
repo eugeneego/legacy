@@ -27,21 +27,19 @@ func transformer(for type: String) -> String {
 func enumValueTransformer(for type: Enum, prefix: String) -> String? {
     if let rawTransformer = type.annotations["\(prefix).transformer"] as? String {
         return rawTransformer
-    } else if let rawType = type.annotations["\(prefix).type"] as? String {
+    } else if let rawType = type.annotations["\(prefix).type"] as? String ?? type.rawType?.name ?? type.rawTypeName?.name {
         return transformer(for: cleanTypeName(rawType)) + "()"
-    } else if let rawType = type.rawType {
-        return transformer(for: cleanTypeName(rawType.name)) + "()"
-    } else if let rawType = type.rawTypeName {
-        return transformer(for: cleanTypeName(rawType.name)) + "()"
     }
     return nil
 }
 
-func enumRawValue(for enumCase: EnumCase, prefix: String) -> String {
+func enumRawValue(for enumCase: EnumCase, rawType: String?, prefix: String) -> String {
     if let string = enumCase.annotations["\(prefix).value"] as? String {
         return "\"\(string)\""
     } else if let int = enumCase.annotations["\(prefix).value"] as? Int {
         return "\(int)"
+    } else if rawType == "String", let string = enumCase.rawValue as? String {
+        return "\"\(string)\""
     } else {
         return enumCase.rawValue ?? "\"\(enumCase.name)\""
     }
@@ -82,7 +80,7 @@ struct <%= name %>: LightTransformer {
 
         switch rawValue {
             <%_ for enumCase in type.cases { -%>
-            case <%= enumRawValue(for: enumCase, prefix: enumTransformerName) %>:
+            case <%= enumRawValue(for: enumCase, rawType: type.rawType?.name ?? type.rawTypeName?.name, prefix: enumTransformerName) %>:
                 return .<%= enumCase.name %>
             <%_ } -%>
             default:
@@ -96,7 +94,7 @@ struct <%= name %>: LightTransformer {
         switch value {
             <%_ for enumCase in type.cases { -%>
             case .<%= enumCase.name %>:
-                return transformer.to(any: <%= enumRawValue(for: enumCase, prefix: enumTransformerName) %>)
+                return transformer.to(any: <%= enumRawValue(for: enumCase, rawType: type.rawType?.name ?? type.rawTypeName?.name, prefix: enumTransformerName) %>)
             <%_ } -%>
         }
     }

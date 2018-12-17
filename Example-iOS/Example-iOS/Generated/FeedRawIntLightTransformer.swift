@@ -5,8 +5,8 @@ import Foundation
 import Legacy
 
 // swiftlint:disable line_length type_name function_body_length identifier_name
-struct FeedRawLightTransformer: LightTransformer {
-    typealias T = Feed.Raw
+struct FeedRawIntLightTransformer: LightTransformer {
+    typealias T = Feed.RawInt
 
     private let transformer = CastLightTransformer<Int>()
 
