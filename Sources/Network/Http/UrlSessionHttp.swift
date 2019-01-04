@@ -34,9 +34,13 @@ open class UrlSessionHttp: Http {
     ) {
         self.logger = logger
         self.loggerTag = loggerTag
-        delegateObject = Delegate()
-        session = URLSession(configuration: configuration, delegate: delegateObject, delegateQueue: nil)
         self.responseQueue = responseQueue
+
+        let delegateQueue = OperationQueue()
+        delegateQueue.qualityOfService = .utility
+        delegateQueue.maxConcurrentOperationCount = 1
+        delegateObject = Delegate(queue: delegateQueue)
+        session = URLSession(configuration: configuration, delegate: delegateObject, delegateQueue: delegateQueue)
     }
 
     deinit {
@@ -144,7 +148,7 @@ open class UrlSessionHttp: Http {
             }
         }
 
-        delegateObject.tasks.append(task)
+        delegateObject.add(task: task)
 
         return task
     }
@@ -204,7 +208,18 @@ open class UrlSessionHttp: Http {
 
     private class Delegate: NSObject, URLSessionDataDelegate {
         var trustPolicies: [String: ServerTrustPolicy] = [:]
-        var tasks: [Task] = []
+        private var tasks: [Task] = []
+        private let queue: OperationQueue
+
+        init(queue: OperationQueue) {
+            self.queue = queue
+        }
+
+        func add(task: Task) {
+            queue.addOperation {
+                self.tasks.append(task)
+            }
+        }
 
         func urlSession(
             _ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
@@ -213,9 +228,10 @@ open class UrlSessionHttp: Http {
             var disposition: URLSession.AuthChallengeDisposition = .performDefaultHandling
             var credential: URLCredential?
 
-            let host = challenge.protectionSpace.host
-            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-                let serverTrust = challenge.protectionSpace.serverTrust, let policy = trustPolicies[host] {
+            let space = challenge.protectionSpace
+            let host = space.host
+            let isServerTrust = space.authenticationMethod == NSURLAuthenticationMethodServerTrust
+            if isServerTrust, let serverTrust = space.serverTrust, let policy = trustPolicies[host] {
                 if policy.evaluate(serverTrust: serverTrust, host: host) {
                     disposition = .useCredential
                     credential = URLCredential(trust: serverTrust)
