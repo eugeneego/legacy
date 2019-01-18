@@ -93,13 +93,13 @@ public extension UICollectionView {
             }
     }
 
-    public func registerReusableHeader<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>) {
+    public func registerReusableSupplementaryView<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>, kind: String) {
         switch reusable {
             case .class(let id):
-                register(CellType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: id)
+                register(CellType.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: id)
             case .nib(let id, let name, let bundle):
                 let nib = UINib(nibName: name, bundle: bundle)
-                register(nib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: id)
+                register(nib, forSupplementaryViewOfKind: kind, withReuseIdentifier: id)
             }
     }
 
@@ -113,13 +113,10 @@ public extension UICollectionView {
 
     public func dequeueReusableSupplementaryView<CellType: UICollectionReusableView>(
         _ reusable: Reusable<CellType>,
-        indexPath: IndexPath
+        indexPath: IndexPath,
+        kind: String
     ) -> CellType {
-        let anyCell = dequeueReusableSupplementaryView(
-            ofKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: reusable.id,
-            for: indexPath
-        )
+        let anyCell = dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: reusable.id, for: indexPath)
         guard let cell = anyCell as? CellType else {
             fatalError("Invalid collection view supplementary view type. Expected \(CellType.self), but received \(type(of: anyCell))")
         }
