@@ -45,6 +45,29 @@ open class ShadowView: UIView {
         }
     }
 
+    public override required init(frame: CGRect) {
+        super.init(frame: frame)
+
+        setup()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+    open override func awakeFromNib() {
+        super.awakeFromNib()
+
+        setup()
+    }
+
+    private func setup() {
+        layer.shadowColor = shadowColor.cgColor
+        layer.shadowOffset = shadowOffset
+        layer.shadowOpacity = shadowOpacity
+        layer.shadowRadius = shadowRadius
+    }
+
     open override func layoutSubviews() {
         super.layoutSubviews()
 
