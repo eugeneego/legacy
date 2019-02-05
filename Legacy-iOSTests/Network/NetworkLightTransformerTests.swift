@@ -71,6 +71,21 @@ class NetworkLightTransformerTests: NetworkTestCase {
         }
     }
 
+    func testPostPartialUpdate() {
+        expect("Update Partial Post") { description, expectation in
+            let object = Constants.partialPost
+            rest.partialUpdate(
+                path: Constants.posts, id: "1", object: object, headers: [:],
+                requestTransformer: PartialPostLightTransformer(), responseTransformer: PostLightTransformer()
+            ) { result in
+                guard let post = EEAssertSuccess(result, description, expectation) else { return }
+
+                XCTAssert(post.title == object.title)
+                expectation.fulfill()
+            }
+        }
+    }
+
     func testPostDelete() {
         expect("Delete Post") { description, expectation in
             rest.delete(

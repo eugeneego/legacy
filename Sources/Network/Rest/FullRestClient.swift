@@ -45,6 +45,13 @@ public protocol FullRestClient: RestClient, FullNetworkClient {
     ) -> NetworkTask where ResponseTransformer.Source == Any
 
     @discardableResult
+    func partialUpdate<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+        path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],
+        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
+    ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any
+
+    @discardableResult
     func delete<ResponseTransformer: Transformer>(
         path: String, id: String?, headers: [String: String],
         responseTransformer: ResponseTransformer,
@@ -54,7 +61,7 @@ public protocol FullRestClient: RestClient, FullNetworkClient {
 
 public extension FullRestClient {
     @discardableResult
-    func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    public func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -72,7 +79,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    func create<ResponseTransformer: Transformer>(
+    public func create<ResponseTransformer: Transformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -90,7 +97,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    func read<ResponseTransformer: Transformer>(
+    public func read<ResponseTransformer: Transformer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -108,7 +115,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    public func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -126,7 +133,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    func update<ResponseTransformer: Transformer>(
+    public func update<ResponseTransformer: Transformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -144,7 +151,25 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    func delete<ResponseTransformer: Transformer>(
+    public func partialUpdate<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+        path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],
+        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
+    ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any {
+        return request(
+            method: .patch,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestTransformer: requestTransformer,
+            responseTransformer: responseTransformer,
+            completion: completion
+        )
+    }
+
+    @discardableResult
+    public func delete<ResponseTransformer: Transformer>(
         path: String, id: String?, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void

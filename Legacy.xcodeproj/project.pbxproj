@@ -86,6 +86,7 @@
 		B2FA8936FB1C498BA374E613 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8915D4F0786B5A29F899 /* Subscription.swift */; };
 		B2FA89779BBFE1B071D9E98D /* VoidTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D1FD5C9DDBEFA447845 /* VoidTransformer.swift */; };
 		B2FA8A0DF9FDBCEC216879A5 /* TimestampTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88EE3C82A5FAA97CF24B /* TimestampTransformer.swift */; };
+		B2FA8A2C408DD67029593136 /* PartialPostLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8B2F3C9D2C054ECC0704 /* PartialPostLightTransformer.swift */; };
 		B2FA8A5AC450E6D4B76A17B8 /* UserTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8952D19DFDE64C8D55E9 /* UserTransformer.swift */; };
 		B2FA8A884FCEDDC22A9E1D9B /* StringMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89D51C66A26B2D105F83 /* StringMatcher.swift */; };
 		B2FA8A8C6D80661DD2D1BBAC /* Hpkp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8F6694A08CA964E4612E /* Hpkp.swift */; };
@@ -100,6 +101,7 @@
 		B2FA8C120B12C8A80F30F5B8 /* ArrayLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA865E04614EEE00078743 /* ArrayLightTransformer.swift */; };
 		B2FA8C2CB8B25FE75F462278 /* DateTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8114F6C4DC5F55A323F1 /* DateTransformer.swift */; };
 		B2FA8C38C49A3FED9B81F68C /* UrlEncodedHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA88ABD9166F294CB557C0 /* UrlEncodedHttpSerializer.swift */; };
+		B2FA8C6045EEBAB3A0B046DE /* PartialPostTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA86AE9787DF89AE8A6E44 /* PartialPostTransformer.swift */; };
 		B2FA8C7B9BF4A8A1E633859A /* DataHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89C55BC68D8637A6B6B2 /* DataHttpSerializer.swift */; };
 		B2FA8CCA33CDFD85FDA4C4CF /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D7FD120351052DC3441 /* NetworkClient.swift */; };
 		B2FA8CF3B40709A884BB20E9 /* NetworkLightTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA84EF1A00858D8ECBDB41 /* NetworkLightTransformerTests.swift */; };
@@ -187,6 +189,7 @@
 		B2FA85FE943584046C622540 /* Transformer.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = file.swifttemplate; path = Transformer.swifttemplate; sourceTree = "<group>"; };
 		B2FA8628B95B05FB210BABF0 /* UserCompanyLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCompanyLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA865E04614EEE00078743 /* ArrayLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA86AE9787DF89AE8A6E44 /* PartialPostTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartialPostTransformer.swift; sourceTree = "<group>"; };
 		B2FA871E8CDD13651A0653C9 /* CastTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastTransformer.swift; sourceTree = "<group>"; };
 		B2FA873002C781AA701C4253 /* UIView+Fade.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Fade.swift"; sourceTree = "<group>"; };
 		B2FA874D96896C94DD3FD899 /* UserAddressLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAddressLightTransformer.swift; sourceTree = "<group>"; };
@@ -218,6 +221,7 @@
 		B2FA8A70AC8E484E56F4A0FC /* FullRestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullRestClient.swift; sourceTree = "<group>"; };
 		B2FA8AB2D5F82CDE95F5E777 /* Odin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Odin.swift; sourceTree = "<group>"; };
 		B2FA8B11307D20C903178300 /* JsonModelHttpSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonModelHttpSerializer.swift; sourceTree = "<group>"; };
+		B2FA8B2F3C9D2C054ECC0704 /* PartialPostLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartialPostLightTransformer.swift; sourceTree = "<group>"; };
 		B2FA8B4CC7F989C0196CA4B6 /* ZoomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomTransition.swift; sourceTree = "<group>"; };
 		B2FA8B92E4FF28AD37A47198 /* GalleryVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryVideoViewController.swift; sourceTree = "<group>"; };
 		B2FA8BA2916372FD1C1B622A /* LoggingLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingLevel.swift; sourceTree = "<group>"; };
@@ -421,6 +425,8 @@
 				B2FA874D96896C94DD3FD899 /* UserAddressLightTransformer.swift */,
 				B2FA8FA85B91E15035E85A65 /* UserAddressGeoPointTransformer.swift */,
 				B2FA8628B95B05FB210BABF0 /* UserCompanyLightTransformer.swift */,
+				B2FA8B2F3C9D2C054ECC0704 /* PartialPostLightTransformer.swift */,
+				B2FA86AE9787DF89AE8A6E44 /* PartialPostTransformer.swift */,
 			);
 			path = Generated;
 			sourceTree = "<group>";
@@ -834,6 +840,8 @@
 				B2FA8CF3B40709A884BB20E9 /* NetworkLightTransformerTests.swift in Sources */,
 				B2FA85EA2B6961E0E6DE1D79 /* NetworkTransformerTests.swift in Sources */,
 				B2FA80417518D90CEF83190E /* NetworkTestCase.swift in Sources */,
+				B2FA8A2C408DD67029593136 /* PartialPostLightTransformer.swift in Sources */,
+				B2FA8C6045EEBAB3A0B046DE /* PartialPostTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

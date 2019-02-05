@@ -14,3 +14,12 @@ struct Post: Codable {
     var title: String
     var body: String
 }
+
+// sourcery: transformer
+// sourcery: lightTransformer
+struct PartialPost: Codable {
+    var userId: Int64?
+    var id: Int64?
+    var title: String?
+    var body: String?
+}
