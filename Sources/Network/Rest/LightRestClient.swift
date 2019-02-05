@@ -45,6 +45,13 @@ public protocol LightRestClient: RestClient, LightNetworkClient {
     ) -> NetworkTask
 
     @discardableResult
+    func partialUpdate<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+    ) -> NetworkTask
+
+    @discardableResult
     func delete<ResponseTransformer: LightTransformer>(
         path: String, id: String?, headers: [String: String],
         responseTransformer: ResponseTransformer,
@@ -139,6 +146,24 @@ public extension LightRestClient {
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
             responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer),
+            completion: completion
+        )
+    }
+
+    @discardableResult
+    public func partialUpdate<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
+        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+    ) -> NetworkTask {
+        return request(
+            method: .patch,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestTransformer: requestTransformer,
+            responseTransformer: responseTransformer,
             completion: completion
         )
     }

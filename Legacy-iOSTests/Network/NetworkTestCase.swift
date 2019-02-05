@@ -17,6 +17,7 @@ class NetworkTestCase: XCTestCase {
         static let users = "users"
 
         static let post = Post(userId: 1, id: 1, title: "Title", body: "Body")
+        static let partialPost = PartialPost(userId: nil, id: nil, title: "Updated Title", body: nil)
     }
 
     let rest: BaseRestClient = {
