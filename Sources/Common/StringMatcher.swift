@@ -26,9 +26,3 @@ public func ~= (pattern: StringMatcher, value: String) -> Bool {
 public func ~=<T> (pattern: (T) -> Bool, value: T) -> Bool {
     return pattern(value)
 }
-
-public func hasPrefix(_ prefix: String) -> ((String) -> Bool) {
-    return { value in
-        value.hasPrefix(prefix)
-    }
-}

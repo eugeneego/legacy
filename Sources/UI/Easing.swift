@@ -234,7 +234,9 @@ public struct Easing<T: EasingValueType> {
 
     /// The overshooting cubic y = x^3-x*sin(x*pi)
     public static func backIn(_ p: T) -> T {
-        return p * p * p - p * T.sin(p * T.pi)
+        let p3 = p * p * p
+        let psin = p * T.sin(p * T.pi)
+        return p3 - psin
     }
 
     /// The overshooting cubic y = 1-((1-x)^3-(1-x)*sin((1-x)*pi))
