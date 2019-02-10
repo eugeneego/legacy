@@ -20,7 +20,7 @@ public extension EEColor {
 
         - returns: AARRGGBB string
      */
-    public var hexARGB: String {
+    var hexARGB: String {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return String(format: "%02X%02X%02X%02X", Int(alpha * 255), Int(red * 255), Int(green * 255), Int(blue * 255))
@@ -31,7 +31,7 @@ public extension EEColor {
 
         - returns: RRGGBB string
      */
-    public var hexRGB: String {
+    var hexRGB: String {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return String(format: "%02X%02X%02X", Int(red * 255), Int(green * 255), Int(blue * 255))
@@ -51,7 +51,7 @@ public extension EEColor {
 
         - returns: A parsed color or a default value if parsing is failed.
      */
-    public static func from(hex: String, default: EEColor) -> EEColor {
+    static func from(hex: String, default: EEColor) -> EEColor {
         return from(hex: hex) ?? `default`
     }
 
@@ -68,7 +68,7 @@ public extension EEColor {
 
         - returns: A parsed color or crash if parsing is failed.
      */
-    public static func fromRequired(hex: String) -> EEColor {
+    static func fromRequired(hex: String) -> EEColor {
         guard let color = from(hex: hex) else {
             fatalError("Cannot create a color from hex string: \(hex)")
         }
@@ -88,7 +88,7 @@ public extension EEColor {
 
         - returns: A parsed color or nil if parsing is failed.
      */
-    public static func from(hex: String) -> EEColor? {
+    static func from(hex: String) -> EEColor? {
         guard !hex.isEmpty else { return nil }
 
         var string = hex.uppercased()

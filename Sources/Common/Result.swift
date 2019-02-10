@@ -88,7 +88,7 @@ public extension Result where E: Error {
         fatalError("Error type mismatch. Expected \(E.self), but given \(type(of: error))")
     }
 
-    public init(try closure: () throws -> T, unknown: (Error) -> E = Result.typeMismatchFatal) {
+    init(try closure: () throws -> T, unknown: (Error) -> E = Result.typeMismatchFatal) {
         do {
             self = .success(try closure())
         } catch let error as E {
@@ -98,7 +98,7 @@ public extension Result where E: Error {
         }
     }
 
-    public func `try`() throws -> T {
+    func `try`() throws -> T {
         switch self {
             case .success(let value):
                 return value
@@ -107,7 +107,7 @@ public extension Result where E: Error {
         }
     }
 
-    public func tryMap<U>(_ transform: (T) throws -> U, unknown: (Error) -> E = Result.typeMismatchFatal) -> Result<U, E> {
+    func tryMap<U>(_ transform: (T) throws -> U, unknown: (Error) -> E = Result.typeMismatchFatal) -> Result<U, E> {
         return flatMap { value in
             Result<U, E>(
                 try: {

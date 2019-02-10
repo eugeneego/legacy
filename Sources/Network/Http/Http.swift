@@ -69,7 +69,7 @@ public enum HttpMethod {
 
 public extension Http {
     @discardableResult
-    public func data(
+    func data(
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?, completion: @escaping HttpCompletion
     ) -> HttpTask {
@@ -78,7 +78,7 @@ public extension Http {
     }
 
     @discardableResult
-    public func data(
+    func data(
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], bodyStream: InputStream?, completion: @escaping HttpCompletion
     ) -> HttpTask {
@@ -87,7 +87,7 @@ public extension Http {
     }
 
     @discardableResult
-    public func data<T: HttpSerializer>(
+    func data<T: HttpSerializer>(
         request: URLRequest, serializer: T,
         completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
     ) -> HttpTask {
@@ -106,7 +106,7 @@ public extension Http {
         }
     }
 
-    public func urlWithParameters(url: URL, parameters: [String: String]) -> URL {
+    func urlWithParameters(url: URL, parameters: [String: String]) -> URL {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else { return url }
 
         if !parameters.isEmpty {
@@ -121,7 +121,7 @@ public extension Http {
         return components.url ?? url
     }
 
-    public func request(
+    func request(
         method: String, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?, bodyStream: InputStream?
     ) -> URLRequest {
@@ -138,14 +138,14 @@ public extension Http {
         return request
     }
 
-    public func request(
+    func request(
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?, bodyStream: InputStream?
     ) -> URLRequest {
         return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: bodyStream)
     }
 
-    public func request<T: HttpSerializer>(
+    func request<T: HttpSerializer>(
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String],
         object: T.Value?, serializer: T

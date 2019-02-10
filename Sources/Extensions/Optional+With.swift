@@ -8,7 +8,7 @@
 
 public extension Optional {
     @discardableResult
-    public func with(_ action: (Wrapped) throws -> Void) rethrows -> Optional {
+    func with(_ action: (Wrapped) throws -> Void) rethrows -> Optional {
         if let value = self {
             try action(value)
         }

@@ -276,7 +276,7 @@ open class UrlSessionHttp: Http {
         }
 
         func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-            guard let index = tasks.index(where: { $0.task === task }) else { return }
+            guard let index = tasks.firstIndex(where: { $0.task === task }) else { return }
 
             let httpTask = tasks.remove(at: index)
             httpTask.completion(httpTask.data, httpTask.task.response, httpTask.task.error ?? error)

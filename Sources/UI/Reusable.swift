@@ -35,7 +35,7 @@ public enum Reusable<CellType> {
 public extension UITableView {
     // Cell
 
-    public func registerReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) {
+    func registerReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) {
         switch reusable {
             case .class(let id):
                 register(CellType.self, forCellReuseIdentifier: id)
@@ -45,7 +45,7 @@ public extension UITableView {
         }
     }
 
-    public func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) -> CellType {
+    func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) -> CellType {
         let anyCell = dequeueReusableCell(withIdentifier: reusable.id)
         guard let cell = anyCell as? CellType else {
             fatalError("Invalid table view cell type. Expected \(CellType.self), but received \(type(of: anyCell))")
@@ -53,7 +53,7 @@ public extension UITableView {
         return cell
     }
 
-    public func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
+    func dequeueReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
         let anyCell = dequeueReusableCell(withIdentifier: reusable.id, for: indexPath)
         guard let cell = anyCell as? CellType else {
             fatalError("Invalid table view cell type. Expected \(CellType.self), but received \(type(of: anyCell))")
@@ -63,7 +63,7 @@ public extension UITableView {
 
     // Header/Footer
 
-    public func registerReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) {
+    func registerReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) {
         switch reusable {
             case .class(let id):
                 register(CellType.self, forHeaderFooterViewReuseIdentifier: id)
@@ -73,7 +73,7 @@ public extension UITableView {
         }
     }
 
-    public func dequeueReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) -> CellType {
+    func dequeueReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) -> CellType {
         let anyCell = dequeueReusableHeaderFooterView(withIdentifier: reusable.id)
         guard let cell = anyCell as? CellType else {
             fatalError("Invalid table view header/footer type. Expected \(CellType.self), but received \(type(of: anyCell))")
@@ -83,7 +83,7 @@ public extension UITableView {
 }
 
 public extension UICollectionView {
-    public func registerReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>) {
+    func registerReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>) {
         switch reusable {
             case .class(let id):
                 register(CellType.self, forCellWithReuseIdentifier: id)
@@ -93,7 +93,7 @@ public extension UICollectionView {
             }
     }
 
-    public func registerReusableSupplementaryView<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>, kind: String) {
+    func registerReusableSupplementaryView<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>, kind: String) {
         switch reusable {
             case .class(let id):
                 register(CellType.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: id)
@@ -103,7 +103,7 @@ public extension UICollectionView {
             }
     }
 
-    public func dequeueReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
+    func dequeueReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
         let anyCell = dequeueReusableCell(withReuseIdentifier: reusable.id, for: indexPath)
         guard let cell = anyCell as? CellType else {
             fatalError("Invalid collection view cell type. Expected \(CellType.self), but received \(type(of: anyCell))")
@@ -111,7 +111,7 @@ public extension UICollectionView {
         return cell
     }
 
-    public func dequeueReusableSupplementaryView<CellType: UICollectionReusableView>(
+    func dequeueReusableSupplementaryView<CellType: UICollectionReusableView>(
         _ reusable: Reusable<CellType>,
         indexPath: IndexPath,
         kind: String

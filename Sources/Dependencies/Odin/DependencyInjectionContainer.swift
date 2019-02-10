@@ -30,7 +30,7 @@ public extension DependencyInjectionContainer {
     ///
     ///       var dependency: Dependency?
     ///       dependency = container.resolveOrDie() as Dependency
-    public func resolveOrDie<D>() -> D? {
+    func resolveOrDie<D>() -> D? {
         guard let result: D = resolve() else { fatalError("Couldn't resolve dependency \(D.self)") }
         return result
     }
@@ -46,7 +46,7 @@ public extension DependencyInjectionContainer {
     ///       // optional type
     ///       var dependency: Dependency?
     ///       dependency = container.resolveOrDie() as Dependency
-    public func resolveOrDie<D>() -> D {
+    func resolveOrDie<D>() -> D {
         guard let result: D = resolve() else { fatalError("Couldn't resolve dependency \(D.self)") }
         return result
     }

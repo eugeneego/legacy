@@ -25,6 +25,6 @@ public class FilteringLogger: Logger {
         let configLevel = tagLoggingLevels[tag] ?? defaultLoggingLevel
         guard level.isEnabled(for: configLevel) else { return }
 
-        logger.log(message, level: level, tag: tag, function: function)
+        logger.log(message(), level: level, tag: tag, function: function)
     }
 }

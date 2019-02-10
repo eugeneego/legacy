@@ -9,7 +9,7 @@
 import UIKit
 
 public extension UIStoryboard {
-    public func instantiateInitial<T: UIViewController>() -> T {
+    func instantiateInitial<T: UIViewController>() -> T {
         guard let controller = instantiateInitialViewController() else {
             fatalError("Cannot instantiate initial view controller.")
         }
@@ -21,11 +21,11 @@ public extension UIStoryboard {
         return typedController
     }
 
-    public func instantiate<T: UIViewController>() -> T {
+    func instantiate<T: UIViewController>() -> T {
         return instantiate(id: String(describing: T.self))
     }
 
-    public func instantiate<T: UIViewController>(id: String) -> T {
+    func instantiate<T: UIViewController>(id: String) -> T {
         let controller = instantiateViewController(withIdentifier: id)
 
         guard let typedController = controller as? T else {
