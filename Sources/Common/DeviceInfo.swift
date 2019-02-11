@@ -21,29 +21,35 @@ public struct DeviceInfo: CustomStringConvertible {
 
     /// Machine name. Example: `iPhone10,6`
     public let machineName: String
+
     /// Machine display name. Example: `iPhone X (GSM, LTE)`
     public let machineDisplayName: String
 
     /// Operating system name. Example `iOS`
     public let system: String
+
     /// Operating system version. Example `11.2`
     public let systemVersion: String
 
     /// Application bundle name. Example: `MyApp`
     /// - **Info.plist**: CFBundleName
     public let bundleName: String
+
     /// Application bundle display name. Example: `MyApp`
     /// - **Xcode**: Target settings -> General -> Identity -> Display Name
     /// - **Info.plist**: CFBundleDisplayName or CFBundleName
     public let bundleDisplayName: String
+
     /// Application bundle identifier. Example: `com.company.app`
     /// - **Xcode**: Target settings -> General -> Identity -> Bundle Identifier
     /// - **Info.plist**: CFBundleIdentifier
     public let bundleIdentifier: String
+
     /// Application bundle version. Example: `3.14`
     /// - **Xcode**: Target settings -> General -> Identity -> Version
     /// - **Info.plist**: CFBundleShortVersionString
     public let bundleVersion: String
+
     /// Application bundle build. Example: `159`
     /// - **Xcode**: Target settings -> General -> Identity -> Build
     /// - **Info.plist**: CFBundleVersion
@@ -134,6 +140,10 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPhone10,4": "iPhone 8 (GSM, LTE)",
         "iPhone10,5": "iPhone 8 Plus (GSM, LTE)",
         "iPhone10,6": "iPhone X (GSM, LTE)",
+        "iPhone11,2": "iPhone XS",
+        "iPhone11,4": "iPhone XS Max (China)",
+        "iPhone11,6": "iPhone XS Max",
+        "iPhone11,8": "iPhone XR",
 
         "iPad1,1": "iPad",
         "iPad2,1": "iPad 2 (Wi-Fi)",
@@ -161,16 +171,26 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPad5,3": "iPad Air 2 (Wi-Fi)",
         "iPad5,4": "iPad Air 2 (Wi-Fi, Cellular)",
         "iPad5,5": "iPad Air 2 (Wi-Fi, Cellular, China)",
-        "iPad6,3": "iPad Pro (9.7, Wi-Fi)",
-        "iPad6,4": "iPad Pro (9.7, Wi-Fi, Cellular)",
-        "iPad6,7": "iPad Pro (12.9, Wi-Fi)",
-        "iPad6,8": "iPad Pro (12.9, Wi-Fi, Cellular)",
-        "iPad6,11": "iPad (2017, Wi-Fi)",
-        "iPad6,12": "iPad (2017, Wi-Fi, Cellular)",
-        "iPad7,1": "iPad Pro (12.9, 2nd Generation, Wi-Fi)",
-        "iPad7,2": "iPad Pro (12.9, 2nd Generation, Wi-Fi, Cellular)",
-        "iPad7,3": "iPad Pro (10.5, Wi-Fi)",
-        "iPad7,4": "iPad Pro (10.5, Wi-Fi, Cellular)",
+        "iPad6,3": "iPad Pro (9.7\", Wi-Fi)",
+        "iPad6,4": "iPad Pro (9.7\", Wi-Fi, Cellular)",
+        "iPad6,7": "iPad Pro (12.9\", Wi-Fi)",
+        "iPad6,8": "iPad Pro (12.9\", Wi-Fi, Cellular)",
+        "iPad6,11": "iPad (5th Gen, Wi-Fi)",
+        "iPad6,12": "iPad (5th Gen, Wi-Fi, Cellular)",
+        "iPad7,1": "iPad Pro (12.9\", 2nd Gen, Wi-Fi)",
+        "iPad7,2": "iPad Pro (12.9\", 2nd Gen, Wi-Fi, Cellular)",
+        "iPad7,3": "iPad Pro (10.5\", 2nd Gen, Wi-Fi)",
+        "iPad7,4": "iPad Pro (10.5\", 2nd Gen, Wi-Fi, Cellular)",
+        "iPad7,5": "iPad (6th Gen, Wi-Fi)",
+        "iPad7,6": "iPad (6th Gen, Wi-Fi, Cellular)",
+        "iPad8,1": "iPad Pro (11\", 3rd Gen, Wi-Fi)",
+        "iPad8,2": "iPad Pro (11\", 3rd Gen, 1TB, Wi-Fi)",
+        "iPad8,3": "iPad Pro (11\", 3rd Gen, Wi-Fi, Cellular)",
+        "iPad8,4": "iPad Pro (11\", 3rd Gen, 1TB, Wi-Fi, Cellular)",
+        "iPad8,5": "iPad Pro (12.9\", 3rd Gen, Wi-Fi)",
+        "iPad8,6": "iPad Pro (12.9\", 3rd Gen, 1TB, Wi-Fi)",
+        "iPad8,7": "iPad Pro (12.9\", 3rd Gen, Wi-Fi, Cellular)",
+        "iPad8,8": "iPad Pro (12.9\", 3rd Gen, 1TB, Wi-Fi, Cellular)",
 
         "iPod1,1": "iPod Touch",
         "iPod2,1": "iPod Touch (2nd Generation)",
@@ -189,6 +209,10 @@ public struct DeviceInfo: CustomStringConvertible {
         "Watch3,2": "Apple Watch Series 3 (42mm, Cellular)",
         "Watch3,3": "Apple Watch Series 3 (38mm, GPS)",
         "Watch3,4": "Apple Watch Series 3 (42mm, GPS)",
+        "Watch4,1": "Apple Watch Series 4 (40mm, GPS)",
+        "Watch4,2": "Apple Watch Series 4 (44mm, GPS)",
+        "Watch4,3": "Apple Watch Series 4 (40mm, GPS, Cellular)",
+        "Watch4,4": "Apple Watch Series 4 (44mm, GPS, Cellular)",
 
         "AppleTV5,3": "Apple TV (4th Generation)",
         "AppleTV6,2": "Apple TV 4K",
