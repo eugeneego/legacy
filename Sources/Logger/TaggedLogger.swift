@@ -29,27 +29,27 @@ public protocol TaggedLogger: Logger {
 }
 
 public extension TaggedLogger {
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, function: String) {
-        log(message, level: level, tag: tag, function: function)
+    func log(_ message: @autoclosure () -> String, level: LoggingLevel, function: String) {
+        log(message(), level: level, tag: tag, function: function)
     }
 
-    public func verbose(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message, level: .verbose, function: function)
+    func verbose(_ message: @autoclosure () -> String, function: String = #function) {
+        log(message(), level: .verbose, function: function)
     }
 
-    public func debug(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message, level: .debug, function: function)
+    func debug(_ message: @autoclosure () -> String, function: String = #function) {
+        log(message(), level: .debug, function: function)
     }
 
-    public func info(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message, level: .info, function: function)
+    func info(_ message: @autoclosure () -> String, function: String = #function) {
+        log(message(), level: .info, function: function)
     }
 
-    public func warning(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message, level: .warning, function: function)
+    func warning(_ message: @autoclosure () -> String, function: String = #function) {
+        log(message(), level: .warning, function: function)
     }
 
-    public func error(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message, level: .error, function: function)
+    func error(_ message: @autoclosure () -> String, function: String = #function) {
+        log(message(), level: .error, function: function)
     }
 }

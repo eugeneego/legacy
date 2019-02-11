@@ -13,23 +13,23 @@ public protocol Logger {
 }
 
 public extension Logger {
-    public func verbose(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
-        log(message, level: .verbose, tag: tag, function: function)
+    func verbose(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
+        log(message(), level: .verbose, tag: tag, function: function)
     }
 
-    public func debug(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
-        log(message, level: .debug, tag: tag, function: function)
+    func debug(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
+        log(message(), level: .debug, tag: tag, function: function)
     }
 
-    public func info(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
-        log(message, level: .info, tag: tag, function: function)
+    func info(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
+        log(message(), level: .info, tag: tag, function: function)
     }
 
-    public func warning(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
-        log(message, level: .warning, tag: tag, function: function)
+    func warning(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
+        log(message(), level: .warning, tag: tag, function: function)
     }
 
-    public func error(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
-        log(message, level: .error, tag: tag, function: function)
+    func error(_ message: @autoclosure () -> String, tag: String, function: String = #function) {
+        log(message(), level: .error, tag: tag, function: function)
     }
 }

@@ -30,7 +30,7 @@ public extension UIView {
         return view
     }
 
-    public class func fromNib(
+    class func fromNib(
         name: String? = nil,
         bundle: Bundle? = nil,
         owner: Any? = nil,

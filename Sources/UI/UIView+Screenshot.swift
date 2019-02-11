@@ -9,7 +9,7 @@
 import UIKit
 
 public extension UIView {
-    public func screenshot(afterUpdate: Bool = false) -> UIImage {
+    func screenshot(afterUpdate: Bool = false) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0.0)
         drawHierarchy(in: bounds, afterScreenUpdates: afterUpdate)
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else {

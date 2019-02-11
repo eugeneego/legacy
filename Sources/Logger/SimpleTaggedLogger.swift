@@ -21,6 +21,6 @@ public class SimpleTaggedLogger: TaggedLogger {
     }
 
     public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
-        logger.log(message, level: level, tag: tag, function: function)
+        logger.log(message(), level: level, tag: tag, function: function)
     }
 }

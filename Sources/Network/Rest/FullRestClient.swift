@@ -61,7 +61,7 @@ public protocol FullRestClient: RestClient, FullNetworkClient {
 
 public extension FullRestClient {
     @discardableResult
-    public func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    func create<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -79,7 +79,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    public func create<ResponseTransformer: Transformer>(
+    func create<ResponseTransformer: Transformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -97,7 +97,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    public func read<ResponseTransformer: Transformer>(
+    func read<ResponseTransformer: Transformer>(
         path: String, id: String?, parameters: [String: String], headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -115,7 +115,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    public func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    func update<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -133,7 +133,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    public func update<ResponseTransformer: Transformer>(
+    func update<ResponseTransformer: Transformer>(
         path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -151,7 +151,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    public func partialUpdate<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    func partialUpdate<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
         path: String, id: String?, object: RequestTransformer.Destination?, headers: [String: String],
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
@@ -169,7 +169,7 @@ public extension FullRestClient {
     }
 
     @discardableResult
-    public func delete<ResponseTransformer: Transformer>(
+    func delete<ResponseTransformer: Transformer>(
         path: String, id: String?, headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void

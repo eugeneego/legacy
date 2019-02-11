@@ -46,8 +46,8 @@ public enum LoggingLevel {
     ]
 
     public func isEnabled(for configurationLevel: LoggingConfigurationLevel) -> Bool {
-        let loggingLevel = LoggingLevel.loggingLevels.index(of: self) ?? Int.max
-        let configLevel = LoggingLevel.loggingConfigurationLevels.index(of: configurationLevel) ?? Int.max
+        let loggingLevel = LoggingLevel.loggingLevels.firstIndex(of: self) ?? Int.max
+        let configLevel = LoggingLevel.loggingConfigurationLevels.firstIndex(of: configurationLevel) ?? Int.max
         return loggingLevel >= configLevel
     }
 }

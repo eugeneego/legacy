@@ -9,7 +9,7 @@
 import UIKit
 
 public extension UIView {
-    public func addFadeTransition() {
+    func addFadeTransition() {
         let transition = CATransition()
         transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         transition.type = .fade
