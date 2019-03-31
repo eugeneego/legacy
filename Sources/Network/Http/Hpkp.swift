@@ -140,28 +140,29 @@ public class Hpkp {
     // Hash Calculation
 
     // These are the ASN1 headers for the Subject Public Key Info section of a certificate
-    private static let rsa2048Asn1Header: Data = Data([
+
+    private static let rsa2048Asn1Header: [UInt8] = [
         0x30, 0x82, 0x01, 0x22, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
         0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00, 0x03, 0x82, 0x01, 0x0f, 0x00
-    ])
+    ]
 
-    private static let rsa4096Asn1Header: Data = Data([
+    private static let rsa4096Asn1Header: [UInt8] = [
         0x30, 0x82, 0x02, 0x22, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
         0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00, 0x03, 0x82, 0x02, 0x0f, 0x00
-    ])
+    ]
 
-    private static let ecDsaSecp256r1Asn1Header: Data = Data([
+    private static let ecDsaSecp256r1Asn1Header: [UInt8] = [
         0x30, 0x59, 0x30, 0x13, 0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02,
         0x01, 0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07, 0x03,
         0x42, 0x00
-    ])
+    ]
 
-    private static let ecDsaSecp384r1Asn1Header: Data = Data([
+    private static let ecDsaSecp384r1Asn1Header: [UInt8] = [
         0x30, 0x76, 0x30, 0x10, 0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02,
         0x01, 0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x22, 0x03, 0x62, 0x00
-    ])
+    ]
 
-    private static func asn1HeaderBytes(for publicKeyAlgorithm: PublicKeyAlgorithm) -> Data {
+    private static func asn1HeaderBytes(for publicKeyAlgorithm: PublicKeyAlgorithm) -> [UInt8] {
         switch publicKeyAlgorithm {
             case .rsa2048: return rsa2048Asn1Header
             case .rsa4096: return rsa4096Asn1Header
@@ -179,12 +180,12 @@ public class Hpkp {
         CC_SHA256_Init(context)
 
         let asn1Header = asn1HeaderBytes(for: publicKeyAlgorithm)
-        asn1Header.withUnsafeBytes { bytes in
-            _ = CC_SHA256_Update(context, bytes, CC_LONG(asn1Header.count))
-        }
+        _ = CC_SHA256_Update(context, asn1Header, CC_LONG(asn1Header.count))
 
-        publicKeyData.withUnsafeBytes { bytes in
-            _ = CC_SHA256_Update(context, bytes, CC_LONG(publicKeyData.count))
+        publicKeyData.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> Void in
+            if let base = bytes.baseAddress {
+                _ = CC_SHA256_Update(context, base, CC_LONG(bytes.count))
+            }
         }
 
         var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))

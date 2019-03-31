@@ -24,7 +24,7 @@ public struct JsonHttpSerializer: HttpSerializer {
         guard let value = value else { return .success(Data()) }
 
         return Result(
-            try: { try JSONSerialization.data(withJSONObject: value, options: []) },
+            catching: { try JSONSerialization.data(withJSONObject: value, options: []) },
             unknown: { HttpSerializationError.error(Error.serialization($0)) }
         )
     }
@@ -33,7 +33,7 @@ public struct JsonHttpSerializer: HttpSerializer {
         guard let data = data, !data.isEmpty else { return .success([:]) }
 
         return Result(
-            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            catching: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
             unknown: { HttpSerializationError.error(Error.deserialization($0)) }
         )
     }

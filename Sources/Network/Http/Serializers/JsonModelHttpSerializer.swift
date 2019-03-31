@@ -29,7 +29,7 @@ public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: Http
         guard let value = transformer.to(any: value) else { return .success(Data()) }
 
         return Result(
-            try: { try JSONSerialization.data(withJSONObject: value, options: []) },
+            catching: { try JSONSerialization.data(withJSONObject: value, options: []) },
             unknown: { HttpSerializationError.error(Error.serialization($0)) }
         )
     }
@@ -40,7 +40,7 @@ public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: Http
         }
 
         let json = Result(
-            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            catching: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
             unknown: { HttpSerializationError.error(Error.deserialization($0)) }
         )
         return json.flatMap { json in
@@ -73,7 +73,7 @@ public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer
         return json.map(
             success: { json in
                 Result(
-                    try: { try JSONSerialization.data(withJSONObject: json, options: []) },
+                    catching: { try JSONSerialization.data(withJSONObject: json, options: []) },
                     unknown: { HttpSerializationError.error(Error.serialization($0)) }
                 )
             },
@@ -87,7 +87,7 @@ public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer
         }
 
         let json = Result(
-            try: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            catching: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
             unknown: { HttpSerializationError.error(Error.deserialization($0)) }
         )
         return json.flatMap { json in
@@ -139,7 +139,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
         guard let value = value else { return .success(Data()) }
 
         return Result(
-            try: { try encoder.encode(value) },
+            catching: { try encoder.encode(value) },
             unknown: { HttpSerializationError.error(Error.encoding($0)) }
         )
     }
@@ -152,7 +152,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
         guard let data = data else { return .failure(.noData) }
 
         return Result(
-            try: { try decoder.decode(T.self, from: data) },
+            catching: { try decoder.decode(T.self, from: data) },
             unknown: { HttpSerializationError.error(Error.decoding($0)) }
         )
     }
@@ -197,7 +197,7 @@ public struct JsonModelDecodableHttpSerializer<T: Decodable>: HttpSerializer {
         guard let data = data else { return .failure(.noData) }
 
         return Result(
-            try: { try decoder.decode(T.self, from: data) },
+            catching: { try decoder.decode(T.self, from: data) },
             unknown: { HttpSerializationError.error(Error.decoding($0)) }
         )
     }
@@ -236,7 +236,7 @@ public struct JsonModelEncodableHttpSerializer<T: Encodable>: HttpSerializer {
         guard let value = value else { return .success(Data()) }
 
         return Result(
-            try: { try encoder.encode(value) },
+            catching: { try encoder.encode(value) },
             unknown: { HttpSerializationError.error(Error.encoding($0)) }
         )
     }
