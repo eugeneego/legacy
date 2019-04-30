@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -19,7 +19,7 @@ struct UserTransformer: Transformer {
     let websiteName = "website"
     let companyName = "company"
 
-    let idTransformer = CastTransformer<Any, Int64>()
+    let idTransformer = NumberTransformer<Any, Int64>()
     let nameTransformer = CastTransformer<Any, String>()
     let usernameTransformer = CastTransformer<Any, String>()
     let emailTransformer = CastTransformer<Any, String>()

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -8,7 +8,7 @@ import Legacy
 struct FeedRawIntLightTransformer: LightTransformer {
     typealias T = Feed.RawInt
 
-    private let transformer = CastLightTransformer<Int>()
+    private let transformer = NumberLightTransformer<Int>()
 
     func from(any value: Any?) -> T? {
         guard let rawValue = transformer.from(any: value) else { return nil }

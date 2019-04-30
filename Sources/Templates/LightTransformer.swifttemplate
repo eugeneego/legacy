@@ -16,9 +16,12 @@ func stringAnnotation(_ object: Annotated, _ name: String, _ default: String) ->
 }
 
 func transformer(for type: String) -> String {
-    let casts = Set([ "Any", "String", "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "TimeInterval", "Bool" ])
-    if casts.contains(type) {
+    let castTypes = Set([ "Any", "String" ])
+    let numberTypes = Set([ "Int", "Int8", "Int16", "Int16", "Int32", "Int64", "UInt", "UInt8", "UInt16", "UInt16", "UInt32", "UInt64", "Float", "Double", "CGFloat", "TimeInterval", "Bool" ])
+    if castTypes.contains(type) {
         return "CastLightTransformer<\(type)>"
+    } else if numberTypes.contains(type) {
+        return "NumberLightTransformer<\(type)>"
     } else {
         return "\(type)LightTransformer"
     }
@@ -38,7 +41,7 @@ func enumRawValue(for enumCase: EnumCase, rawType: String?, prefix: String) -> S
         return "\"\(string)\""
     } else if let int = enumCase.annotations["\(prefix).value"] as? Int {
         return "\(int)"
-    } else if rawType == "String", let string = enumCase.rawValue as? String {
+    } else if rawType == "String", let string = enumCase.rawValue {
         return "\"\(string)\""
     } else {
         return enumCase.rawValue ?? "\"\(enumCase.name)\""
@@ -51,10 +54,10 @@ Enum Light Transformer
 
 -%>
 <%
-let enumTransformerName = "enumLightTransformer"
-for type in types.enums where type.annotations[enumTransformerName] != nil {
-    let transformerId = stringAnnotation(type, enumTransformerName, "")
-    let enumTransformerName = enumTransformerName + (transformerId.isEmpty ? "" : ".\(transformerId)")
+let enumTransformerBaseName = "enumLightTransformer"
+for type in types.enums where type.annotations[enumTransformerBaseName] != nil {
+    let transformerId = stringAnnotation(type, enumTransformerBaseName, "")
+    let enumTransformerName = enumTransformerBaseName + (transformerId.isEmpty ? "" : ".\(transformerId)")
     let name = stringAnnotation(type, "\(enumTransformerName).name", cleanTypeName(type.name) + "LightTransformer")
 -%>
 // sourcery:file:<%= name %>.swift
@@ -109,10 +112,10 @@ Object Light Transformer
 
 -%>
 <%
-let transformerName = "lightTransformer"
-for type in types.all where type.annotations[transformerName] != nil {
-    let transformerId = stringAnnotation(type, transformerName, "")
-    let transformerName = transformerName + (transformerId.isEmpty ? "" : ".\(transformerId)")
+let transformerBaseName = "lightTransformer"
+for type in types.all where type.annotations[transformerBaseName] != nil {
+    let transformerId = stringAnnotation(type, transformerBaseName, "")
+    let transformerName = transformerBaseName + (transformerId.isEmpty ? "" : ".\(transformerId)")
     let name = stringAnnotation(type, "\(transformerName).name", cleanTypeName(type.name) + "LightTransformer")
     let variables = type.storedVariables
 -%>
@@ -163,14 +166,10 @@ struct <%= name %>: LightTransformer {
             <%_ } -%>
         <%_ } -%>
 
-        <%_ var hasValidation = false -%>
         <%_ for variable in variables { -%>
             <%_ if let validate = variable.annotations["\(transformerName).validate"] as? String, !validate.isEmpty { -%>
         if let error = <%= validate %>(<%= variable.name %>) { return nil }
             <%_ } -%>
-        <%_ } -%>
-        <%_ if hasValidation { -%>
-
         <%_ } -%>
         return T(
             <%_ for (index, variable) in variables.enumerated() { -%>

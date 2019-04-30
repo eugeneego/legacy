@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -9,7 +9,7 @@ struct FeedSubscriptionTransformer: Transformer {
     typealias Source = Any
     typealias Destination = Feed.Subscription
 
-    private let transformer = CastTransformer<Source, Int>()
+    private let transformer = NumberTransformer<Source, Int>()
 
     func transform(source value: Source) -> TransformerResult<Destination> {
         guard let rawValue = transformer.transform(source: value).value else { return .failure(.transform) }

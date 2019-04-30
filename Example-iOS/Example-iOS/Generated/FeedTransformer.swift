@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -33,7 +33,7 @@ struct FeedTransformer: Transformer {
     let createdTransformer = TimestampTransformer<Any>(scale: 1)
     let authorTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
     let tagsTransformer = ArrayTransformer(from: Any.self, transformer: CastTransformer<Any, String>(), skipFailures: true)
-    let likesTransformer = CastTransformer<Any, Int>()
+    let likesTransformer = NumberTransformer<Any, Int>()
     let subscriptionTransformer = FeedSubscriptionTransformer()
     let rawIntTransformer = FeedRawIntTransformer()
     let metaTransformer = DictionaryTransformer(from: Any.self, keyTransformer: CastTransformer<AnyHashable, String>(), valueTransformer: CastTransformer<Any, String>(), skipFailures: true)

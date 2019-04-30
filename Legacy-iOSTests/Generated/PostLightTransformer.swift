@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -14,8 +14,8 @@ struct PostLightTransformer: LightTransformer {
     let titleName = "title"
     let bodyName = "body"
 
-    let userIdTransformer = CastLightTransformer<Int64>()
-    let idTransformer = CastLightTransformer<Int64>()
+    let userIdTransformer = NumberLightTransformer<Int64>()
+    let idTransformer = NumberLightTransformer<Int64>()
     let titleTransformer = CastLightTransformer<String>()
     let bodyTransformer = CastLightTransformer<String>()
 

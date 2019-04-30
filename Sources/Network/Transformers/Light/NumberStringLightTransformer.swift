@@ -8,10 +8,10 @@
 
 import Foundation
 
-public struct NumberStringLightTransformer<Number>: LightTransformer where Number: TransformerStringConvertible {
+public struct NumberStringLightTransformer<Number: NumberConvertible & TransformerStringConvertible>: LightTransformer {
     public typealias T = Number
 
-    private let numberTransformer = CastLightTransformer<Number>()
+    private let numberTransformer = NumberLightTransformer<Number>()
 
     public init() {}
 

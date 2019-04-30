@@ -9,6 +9,8 @@
 public struct EnumCastLightTransformer<Enum: RawRepresentable>: LightTransformer {
     public typealias T = Enum
 
+    public init() {}
+
     public func from(any value: Any?) -> T? {
         return (value as? T.RawValue).flatMap(T.init)
     }
