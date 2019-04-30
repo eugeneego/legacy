@@ -20,7 +20,12 @@ public class SimpleTaggedLogger: TaggedLogger {
         self.init(logger: logger, tag: String(describing: type(of: object)))
     }
 
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
-        logger.log(message(), level: level, tag: tag, function: function)
+    public func log(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String],
+        level: LoggingLevel, tag: String,
+        function: String
+    ) {
+        logger.log(message(), meta: meta(), level: level, tag: tag, function: function)
     }
 }

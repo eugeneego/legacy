@@ -25,31 +25,36 @@
 
 public protocol TaggedLogger: Logger {
     var tag: String { get }
-    func log(_ message: @autoclosure () -> String, level: LoggingLevel, function: String)
+    func log(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String], level: LoggingLevel, function: String)
 }
 
 public extension TaggedLogger {
-    func log(_ message: @autoclosure () -> String, level: LoggingLevel, function: String) {
-        log(message(), level: level, tag: tag, function: function)
+    func log(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String] = [:],
+        level: LoggingLevel,
+        function: String = #function
+    ) {
+        log(message(), meta: meta(), level: level, tag: tag, function: function)
     }
 
-    func verbose(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message(), level: .verbose, function: function)
+    func verbose(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
+        log(message(), meta: meta(), level: .verbose, function: function)
     }
 
-    func debug(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message(), level: .debug, function: function)
+    func debug(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
+        log(message(), meta: meta(), level: .debug, function: function)
     }
 
-    func info(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message(), level: .info, function: function)
+    func info(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
+        log(message(), meta: meta(), level: .info, function: function)
     }
 
-    func warning(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message(), level: .warning, function: function)
+    func warning(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
+        log(message(), meta: meta(), level: .warning, function: function)
     }
 
-    func error(_ message: @autoclosure () -> String, function: String = #function) {
-        log(message(), level: .error, function: function)
+    func error(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
+        log(message(), meta: meta(), level: .error, function: function)
     }
 }

@@ -21,10 +21,16 @@ public class FilteringLogger: Logger {
         self.defaultLoggingLevel = defaultLoggingLevel
     }
 
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
+    public func log(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String],
+        level: LoggingLevel,
+        tag: String,
+        function: String
+    ) {
         let configLevel = tagLoggingLevels[tag] ?? defaultLoggingLevel
         guard level.isEnabled(for: configLevel) else { return }
 
-        logger.log(message(), level: level, tag: tag, function: function)
+        logger.log(message(), meta: meta(), level: level, tag: tag, function: function)
     }
 }

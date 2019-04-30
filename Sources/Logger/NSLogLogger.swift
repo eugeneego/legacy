@@ -29,7 +29,13 @@ public class NSLogLogger: Logger {
         }
     }
 
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
+    public func log(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String],
+        level: LoggingLevel,
+        tag: String,
+        function: String
+    ) {
         NSLog("%@ %@%@ %@", name(for: level), tag, function.isEmpty ? "" : ".\(function)", message())
     }
 }
