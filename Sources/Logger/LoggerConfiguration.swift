@@ -8,5 +8,5 @@
 //
 
 public struct LoggerConfiguration {
-    var tagLoggingLevels: [String: LoggingConfigurationLevel]
+    public var tagLoggingLevels: [String: LoggingConfigurationLevel]
 }
