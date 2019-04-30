@@ -11,7 +11,7 @@ import Foundation
 public struct TimestampLightTransformer: LightTransformer {
     public typealias T = Date
 
-    private let numberTransformer = CastLightTransformer<Int64>()
+    private let numberTransformer = NumberLightTransformer<Int64>()
     private let scale: TimeInterval
 
     public init(scale: TimeInterval = 1) {
