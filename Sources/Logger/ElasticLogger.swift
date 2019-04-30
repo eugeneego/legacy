@@ -50,20 +50,16 @@ public class ElasticLogger: Logger {
             "app_build": deviceInfo.bundleBuild,
             "environment": environment,
         ]
-
-        subscribeToAppEvents()
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
+    func start() {
+        if !logsToSend.isEmpty {
+            startSendLogsTimer()
+        }
     }
 
-    private func subscribeToAppEvents() {
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(didEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(willEnterForeground),
-            name: UIApplication.willEnterForegroundNotification, object: nil)
+    func stop() {
+        stopSendLogsTimer()
     }
 
     private static let timestampFormatter: DateFormatter = {
@@ -90,9 +86,16 @@ public class ElasticLogger: Logger {
         }
     }
 
-    public func log(_ message: @autoclosure () -> String, level: LoggingLevel, tag: String, function: String) {
+    public func log(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String],
+        level: LoggingLevel,
+        tag: String,
+        function: String
+    ) {
         let timestamp = ElasticLogger.timestampFormatter.string(from: Date())
         let message = message()
+        let meta = meta()
 
         var logData: [String: String] = [
             "@timestamp": timestamp,
@@ -101,6 +104,7 @@ public class ElasticLogger: Logger {
             "function": function,
             "message": message,
         ]
+        meta.forEach { logData[$0.key] = $0.value }
         appAndSystemParameters.forEach { logData[$0.key] = $0.value }
         userParameters().forEach { logData[$0.key] = $0.value }
 
@@ -204,17 +208,5 @@ public class ElasticLogger: Logger {
     private func stopSendLogsTimer() {
         sendLogsTimer?.invalidate()
         sendLogsTimer = nil
-    }
-
-    // MARK: - App state notifications
-
-    @objc private func didEnterBackground() {
-        stopSendLogsTimer()
-    }
-
-    @objc private func willEnterForeground() {
-        if !logsToSend.isEmpty {
-            startSendLogsTimer()
-        }
     }
 }
