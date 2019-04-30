@@ -9,4 +9,8 @@
 
 public struct LoggerConfiguration {
     public var tagLoggingLevels: [String: LoggingConfigurationLevel]
+
+    public init(tagLoggingLevels: [String: LoggingConfigurationLevel]) {
+        self.tagLoggingLevels = tagLoggingLevels
+    }
 }
