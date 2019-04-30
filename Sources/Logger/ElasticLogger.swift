@@ -52,13 +52,13 @@ public class ElasticLogger: Logger {
         ]
     }
 
-    func start() {
+    public func start() {
         if !logsToSend.isEmpty {
             startSendLogsTimer()
         }
     }
 
-    func stop() {
+    public func stop() {
         stopSendLogsTimer()
     }
 
