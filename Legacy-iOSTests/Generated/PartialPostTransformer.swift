@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -15,8 +15,8 @@ struct PartialPostTransformer: Transformer {
     let titleName = "title"
     let bodyName = "body"
 
-    let userIdTransformer = OptionalTransformer(transformer: CastTransformer<Any, Int64>())
-    let idTransformer = OptionalTransformer(transformer: CastTransformer<Any, Int64>())
+    let userIdTransformer = OptionalTransformer(transformer: NumberTransformer<Any, Int64>())
+    let idTransformer = OptionalTransformer(transformer: NumberTransformer<Any, Int64>())
     let titleTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
     let bodyTransformer = OptionalTransformer(transformer: CastTransformer<Any, String>())
 
