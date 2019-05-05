@@ -6,16 +6,14 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-import Foundation
-
 @objc public protocol Action {
-    func performAction()
+    func perform()
 }
 
 public final class BlockAction: Action {
     public let action: () -> Void
 
-    public func performAction() {
+    public func perform() {
         action()
     }
 
@@ -28,7 +26,7 @@ public final class TargetAction<Target: AnyObject>: Action {
     public private(set) weak var target: Target?
     public let action: (Target) -> () -> Void
 
-    public func performAction() {
+    public func perform() {
         if let target = target {
             action(target)()
         }
@@ -45,7 +43,7 @@ public final class TargetSenderAction<Target: AnyObject, Sender: AnyObject>: Act
     public private(set) weak var sender: Sender?
     public let action: (Target) -> (Sender) -> Void
 
-    public func performAction() {
+    public func perform() {
         if let target = target, let sender = sender {
             action(target)(sender)
         }
