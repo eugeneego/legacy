@@ -1,15 +1,13 @@
 templates:
     - Sources/Templates
 output:
-    Example-iOS/Example-iOS/Generated
+    Legacy-iOSTests/Generated
 prune:
     true
 verbose:
     true
 project:
     file:
-        Example-iOS/Example-iOS.xcodeproj
-    root:
-        Example-iOS
+        Legacy.xcodeproj
     target:
-        name: Example-iOS
+        name: Legacy-iOSTests

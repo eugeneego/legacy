@@ -7,7 +7,10 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+import Foundation
+#if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
+#endif
 
 /// Logger that sends data to the backend using Elastic Search API.
 public class ElasticLogger: Logger {
@@ -155,7 +158,9 @@ public class ElasticLogger: Logger {
             return
         }
 
+        #if os(iOS) || os(tvOS)
         let taskId = UIApplication.shared.beginBackgroundTask(withName: String(describing: Swift.type(of: self)))
+        #endif
 
         restClient.create(
             path: path, id: nil,
@@ -170,7 +175,9 @@ public class ElasticLogger: Logger {
                 self.logsToSend.insert(contentsOf: logs, at: 0)
             }
 
+            #if os(iOS) || os(tvOS)
             UIApplication.shared.endBackgroundTask(taskId)
+            #endif
         }
     }
 

@@ -10,6 +10,8 @@
 import UIKit
 #elseif os(watchOS)
 import WatchKit
+#elseif os(macOS)
+import AppKit
 #endif
 
 /// Device and application information.
@@ -62,18 +64,24 @@ public struct DeviceInfo: CustomStringConvertible {
 
     /// Initializes with a bundle.
     public init(bundle: Bundle) {
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         let device = UIDevice.current
+        system = device.systemName
+        systemVersion = device.systemVersion
         #elseif os(watchOS)
         let device = WKInterfaceDevice.current()
+        system = device.systemName
+        systemVersion = device.systemVersion
+        #elseif os(macOS)
+        let processInfo = ProcessInfo.processInfo
+        system = "macOS"
+        let version = processInfo.operatingSystemVersion
+        systemVersion = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
         #endif
 
         let localMachineName = DeviceInfo.getMachineName()
         machineName = localMachineName
         machineDisplayName = DeviceInfo.machineDisplayNames[machineName] ?? localMachineName
-
-        system = device.systemName
-        systemVersion = device.systemVersion
 
         let localBundleName = bundle.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? ""
         bundleName = localBundleName

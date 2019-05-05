@@ -20,8 +20,8 @@ public struct EnumCastLightTransformer<Enum: RawRepresentable>: LightTransformer
     }
 }
 
-public struct EnumLightTransformer<Enum: RawRepresentable, RawTransformer: LightTransformer>:
-        LightTransformer where RawTransformer.T == Enum.RawValue {
+public struct EnumLightTransformer<Enum: RawRepresentable, RawTransformer: LightTransformer>: LightTransformer
+        where RawTransformer.T == Enum.RawValue {
     public typealias T = Enum
 
     public let transformer: RawTransformer
@@ -39,8 +39,8 @@ public struct EnumLightTransformer<Enum: RawRepresentable, RawTransformer: Light
     }
 }
 
-public struct DictionaryEnumLightTransformer<Enum: Hashable, ValueTransformer: LightTransformer>:
-        LightTransformer where ValueTransformer.T: Hashable {
+public struct DictionaryEnumLightTransformer<Enum: Hashable, ValueTransformer: LightTransformer>: LightTransformer
+        where ValueTransformer.T: Hashable {
     public typealias T = Enum
     public typealias Value = ValueTransformer.T
 
