@@ -11,8 +11,10 @@
 //
 
 import Foundation
+import CommonCrypto
 
 @available(iOS 10.0, *)
+@available(macOS 10.12, *)
 public class Hpkp {
     public enum PublicKeyAlgorithm {
         case rsa2048

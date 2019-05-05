@@ -6,7 +6,13 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
+public typealias EEImage = UIImage
+#elseif os(macOS)
+import AppKit
+public typealias EEImage = NSImage
+#endif
 
 public enum ImageLoaderError: Error {
     case http(HttpError)
@@ -28,7 +34,7 @@ public enum ResizeMode {
     case fill
 }
 
-public typealias ImageLoaderCompletion = (Result<(data: Data, image: UIImage), ImageLoaderError>) -> Void
+public typealias ImageLoaderCompletion = (Result<(data: Data, image: EEImage), ImageLoaderError>) -> Void
 
 public protocol ImageLoader {
     @discardableResult

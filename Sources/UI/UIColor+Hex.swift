@@ -6,10 +6,10 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-#if os(iOS)
+#if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
 public typealias EEColor = UIColor
-#elseif os(OSX)
+#elseif os(macOS)
 import AppKit
 public typealias EEColor = NSColor
 #endif

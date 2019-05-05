@@ -3,4 +3,8 @@ osx_image: xcode10.2
 branches:
   only:
     - master
-script: set -o pipefail && xcodebuild test -project Legacy.xcodeproj -scheme Legacy-iOS -destination 'platform=iOS Simulator,name=iPhone 8' | xcpretty
+script:
+  - set -o pipefail && xcodebuild test -project Legacy.xcodeproj -scheme Legacy-iOS -destination 'platform=iOS Simulator,name=iPhone 8' | xcpretty
+  - set -o pipefail && xcodebuild build -project Legacy.xcodeproj -scheme Legacy-tvOS | xcpretty
+  - set -o pipefail && xcodebuild build -project Legacy.xcodeproj -scheme Legacy-watchOS | xcpretty
+  - set -o pipefail && xcodebuild build -project Legacy.xcodeproj -scheme Legacy-macOS | xcpretty
