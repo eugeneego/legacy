@@ -6,7 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-open class SimpleSubscription: Subscription {
+public class SimpleSubscription: Subscription {
     private let unsubscribeClosure: () -> Void
 
     public init(unsubscribeClosure: @escaping () -> Void) {
@@ -17,7 +17,7 @@ open class SimpleSubscription: Subscription {
         unsubscribe()
     }
 
-    open func unsubscribe() {
+    public func unsubscribe() {
         unsubscribeClosure()
     }
 }

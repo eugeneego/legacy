@@ -8,21 +8,37 @@
 
 import Foundation
 
-open class Subscriptions<Value> {
+public class Subscriptions<Value> {
     public typealias Listener = (Value) -> Void
 
-    private var subscriptions: [String: Listener] = [:]
+    private var subscriptions: [String: Listener] = [:] {
+        didSet {
+            onChange?()
+        }
+    }
 
-    open var copy: Subscriptions<Value> {
+    public var onChange: (() -> Void)?
+
+    public var isEmpty: Bool {
+        return subscriptions.isEmpty
+    }
+
+    public var count: Int {
+        return subscriptions.count
+    }
+
+    public var copy: Subscriptions<Value> {
         let copy = Subscriptions<Value>()
         copy.subscriptions = subscriptions
+        copy.onChange = onChange
         return copy
     }
 
-    public init() {
+    public init(onChange: (() -> Void)? = nil) {
+        self.onChange = onChange
     }
 
-    open func add(_ listener: @escaping Listener) -> Subscription {
+    public func add(_ listener: @escaping Listener) -> Subscription {
         let id = UUID().uuidString
         let subscription = SimpleSubscription { [weak self] in
             self?.subscriptions[id] = nil
@@ -31,7 +47,7 @@ open class Subscriptions<Value> {
         return subscription
     }
 
-    open func fire(_ value: Value) {
+    public func fire(_ value: Value) {
         subscriptions.values.forEach { $0(value) }
     }
 }
