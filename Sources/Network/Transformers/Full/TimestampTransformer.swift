@@ -12,7 +12,7 @@ public struct TimestampTransformer<From>: Transformer {
     public typealias Source = From
     public typealias Destination = Date
 
-    private let numberTransformer = NumberTransformer<From, Int64>()
+    private let numberTransformer: NumberTransformer = NumberTransformer<From, Int64>()
     private let scale: TimeInterval
 
     public init(scale: TimeInterval = 1) {

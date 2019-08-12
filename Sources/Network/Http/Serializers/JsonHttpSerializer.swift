@@ -16,7 +16,7 @@ public struct JsonHttpSerializer: HttpSerializer {
         case deserialization(Swift.Error)
     }
 
-    public let contentType = "application/json"
+    public let contentType: String = "application/json"
 
     public init() {}
 

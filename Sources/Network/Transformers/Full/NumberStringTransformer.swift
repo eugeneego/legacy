@@ -12,7 +12,7 @@ public struct NumberStringTransformer<From, To: NumberConvertible & TransformerS
     public typealias Source = From
     public typealias Destination = To
 
-    private let numberTransformer = NumberTransformer<From, To>()
+    private let numberTransformer: NumberTransformer = NumberTransformer<From, To>()
 
     public init() {}
 

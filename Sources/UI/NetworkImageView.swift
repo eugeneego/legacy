@@ -29,7 +29,7 @@ open class NetworkImageView: UIImageView {
         }
     }
 
-    private var loading = false
+    private var loading: Bool = false
 
     private func update() {
         image = placeholder

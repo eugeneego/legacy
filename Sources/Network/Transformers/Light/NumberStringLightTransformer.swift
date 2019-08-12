@@ -11,7 +11,7 @@ import Foundation
 public struct NumberStringLightTransformer<Number: NumberConvertible & TransformerStringConvertible>: LightTransformer {
     public typealias T = Number
 
-    private let numberTransformer = NumberLightTransformer<Number>()
+    private let numberTransformer: NumberLightTransformer = NumberLightTransformer<Number>()
 
     public init() {}
 

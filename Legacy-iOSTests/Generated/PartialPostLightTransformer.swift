@@ -1,11 +1,11 @@
-// Generated using Sourcery 0.16.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
 import CoreGraphics
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length identifier_name
+// swiftlint:disable all
 struct PartialPostLightTransformer: LightTransformer {
     typealias T = PartialPost
 
@@ -46,4 +46,3 @@ struct PartialPostLightTransformer: LightTransformer {
         return dictionary
     }
 }
-// swiftlint:enable line_length type_name function_body_length identifier_name

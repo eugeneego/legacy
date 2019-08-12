@@ -11,7 +11,7 @@ import Foundation
 public struct UrlEncodedHttpSerializer: HttpSerializer {
     public typealias Value = [String: String]
 
-    public let contentType = "application/x-www-form-urlencoded"
+    public let contentType: String = "application/x-www-form-urlencoded"
 
     public init() {}
 

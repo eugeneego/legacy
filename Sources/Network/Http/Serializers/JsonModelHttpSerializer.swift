@@ -17,7 +17,7 @@ public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: Http
         case transformation
     }
 
-    public let contentType = "application/json"
+    public let contentType: String = "application/json"
 
     public let transformer: T
 
@@ -58,7 +58,7 @@ public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer
         case transformation(Swift.Error)
     }
 
-    public let contentType = "application/json"
+    public let contentType: String = "application/json"
 
     public let transformer: T
 
@@ -104,7 +104,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
         case encoding(Swift.Error)
     }
 
-    public let contentType = "application/json"
+    public let contentType: String = "application/json"
 
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
@@ -166,7 +166,7 @@ public struct JsonModelDecodableHttpSerializer<T: Decodable>: HttpSerializer {
         case notSupported
     }
 
-    public let contentType = "application/json"
+    public let contentType: String = "application/json"
 
     private let decoder: JSONDecoder
 
@@ -211,7 +211,7 @@ public struct JsonModelEncodableHttpSerializer<T: Encodable>: HttpSerializer {
         case notSupported
     }
 
-    public let contentType = "application/json"
+    public let contentType: String = "application/json"
 
     private let encoder: JSONEncoder
 

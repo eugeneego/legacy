@@ -11,7 +11,7 @@ import Foundation
 public struct VoidHttpSerializer: HttpSerializer {
     public typealias Value = Any
 
-    public let contentType = "application/json"
+    public let contentType: String = "application/json"
 
     public init() {}
 

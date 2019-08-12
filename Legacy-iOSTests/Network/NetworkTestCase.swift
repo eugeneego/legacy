@@ -12,12 +12,12 @@ import XCTest
 
 class NetworkTestCase: XCTestCase {
     enum Constants {
-        static let host = "https://jsonplaceholder.typicode.com"
-        static let posts = "posts"
-        static let users = "users"
+        static let host: String = "https://jsonplaceholder.typicode.com"
+        static let posts: String = "posts"
+        static let users: String = "users"
 
-        static let post = Post(userId: 1, id: 1, title: "Title", body: "Body")
-        static let partialPost = PartialPost(userId: nil, id: nil, title: "Updated Title", body: nil)
+        static let post: Post = Post(userId: 1, id: 1, title: "Title", body: "Body")
+        static let partialPost: PartialPost = PartialPost(userId: nil, id: nil, title: "Updated Title", body: nil)
     }
 
     let rest: BaseRestClient = {

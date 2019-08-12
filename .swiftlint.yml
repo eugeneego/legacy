@@ -15,6 +15,7 @@ opt_in_rules:
   - empty_count
   - explicit_enum_raw_value
   - explicit_init
+  - explicit_type_interface
   - fatal_error_message
   - first_where
   - force_unwrapping
@@ -117,6 +118,10 @@ cyclomatic_complexity:
 large_tuple:
   warning: 4
   error: 5
+
+explicit_type_interface:
+  excluded:
+    - local
 
 reporter: 'xcode'
 

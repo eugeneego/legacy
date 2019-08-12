@@ -72,7 +72,7 @@ import Legacy
 // No raw type detected.
 // sourcery:end
 <%_ continue } -%>
-// swiftlint:disable line_length type_name function_body_length identifier_name
+// swiftlint:disable all
 struct <%= name %>: Transformer {
     typealias Source = Any
     typealias Destination = <%= type.name %>
@@ -101,7 +101,6 @@ struct <%= name %>: Transformer {
         }
     }
 }
-// swiftlint:enable line_length type_name function_body_length identifier_name
 
 // sourcery:end
 <% } -%>
@@ -123,7 +122,7 @@ import Foundation
 import CoreGraphics
 import Legacy
 
-// swiftlint:disable line_length type_name function_body_length identifier_name
+// swiftlint:disable all
 struct <%= name %>: Transformer {
     typealias Source = Any
     typealias Destination = <%= type.name %>
@@ -223,7 +222,6 @@ struct <%= name %>: Transformer {
         return .success(dictionary)
     }
 }
-// swiftlint:enable line_length type_name function_body_length identifier_name
 
 // sourcery:end
 <% } -%>
