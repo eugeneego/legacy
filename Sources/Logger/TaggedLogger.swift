@@ -25,7 +25,12 @@
 
 public protocol TaggedLogger: Logger {
     var tag: String { get }
-    func log(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String], level: LoggingLevel, function: String)
+    func log(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String],
+        level: LoggingLevel,
+        function: String
+    )
 }
 
 public extension TaggedLogger {

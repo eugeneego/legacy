@@ -38,5 +38,10 @@ public typealias ImageLoaderCompletion = (Result<(data: Data, image: EEImage), I
 
 public protocol ImageLoader {
     @discardableResult
-    func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> ImageLoaderTask
+    func load(
+        url: URL,
+        size: CGSize,
+        mode: ResizeMode,
+        completion: @escaping ImageLoaderCompletion
+    ) -> ImageLoaderTask
 }

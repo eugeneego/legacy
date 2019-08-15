@@ -48,7 +48,8 @@ public class Odin: DependencyInjectionContainer {
     }
 
     /// Resolves an object with registered protocol resolvers.
-    /// The implementation checks conformance of an object to all registered protocols and run resolvers for appropriate ones.
+    /// The implementation checks conformance of an object to all registered protocols
+    /// and run resolvers for appropriate ones.
     /// It resolves using a parent container if present, then using its own registered resolvers.
     /// - parameter object: an object to resolve protocols.
     /// - note:
