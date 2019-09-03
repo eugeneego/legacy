@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+import Foundation
+
 @objc public protocol Action {
     func perform()
 }

@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if !os(watchOS)
+
 import Foundation
 import XCTest
 @testable import Legacy
@@ -113,3 +115,5 @@ func errorDebugDescription(_ error: Any) -> String {
     let description = String(describing: error).replacingOccurrences(of: "\n", with: ", ")
     return description
 }
+
+#endif

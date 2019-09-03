@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if !os(watchOS)
+
 import XCTest
 @testable import Legacy
 
@@ -49,3 +51,5 @@ class DeviceInfoTests: XCTestCase {
         XCTAssert(!deviceInfo.bundleBuild.isEmpty)
     }
 }
+
+#endif

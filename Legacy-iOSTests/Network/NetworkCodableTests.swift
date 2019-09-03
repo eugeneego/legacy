@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if !os(watchOS)
+
 import Foundation
 import XCTest
 @testable import Legacy
@@ -104,3 +106,5 @@ class NetworkCodableTests: NetworkTestCase {
         }
     }
 }
+
+#endif

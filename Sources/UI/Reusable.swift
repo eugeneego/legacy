@@ -6,6 +6,10 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if canImport(UIKit)
+
+#if !os(watchOS)
+
 import UIKit
 
 public enum Reusable<CellType> {
@@ -123,3 +127,7 @@ public extension UICollectionView {
         return cell
     }
 }
+
+#endif
+
+#endif

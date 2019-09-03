@@ -6,6 +6,10 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if canImport(UIKit)
+
+#if !os(watchOS)
+
 import UIKit
 
 open class NetworkImageView: UIImageView {
@@ -50,3 +54,7 @@ open class NetworkImageView: UIImageView {
         }
     }
 }
+
+#endif
+
+#endif

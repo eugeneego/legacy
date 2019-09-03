@@ -15,6 +15,7 @@ import CommonCrypto
 
 @available(iOS 10.0, *)
 @available(macOS 10.12, *)
+@available(watchOS 3.0, *)
 public class Hpkp {
     public enum PublicKeyAlgorithm {
         case rsa2048
