@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension UIImage {
@@ -25,3 +27,5 @@ public extension UIImage {
         return image
     }
 }
+
+#endif

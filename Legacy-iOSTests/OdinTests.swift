@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if !os(watchOS)
+
 import XCTest
 @testable import Legacy
 
@@ -98,3 +100,5 @@ class OdinTests: XCTestCase {
         XCTAssert(resolvedTestObject === testObject)
     }
 }
+
+#endif

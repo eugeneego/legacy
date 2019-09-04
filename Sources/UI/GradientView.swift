@@ -6,6 +6,10 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if canImport(UIKit)
+
+#if !os(watchOS)
+
 import UIKit
 
 open class GradientView: UIView {
@@ -53,3 +57,7 @@ open class GradientView: UIView {
         }
     }
 }
+
+#endif
+
+#endif

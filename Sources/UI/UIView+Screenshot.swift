@@ -6,6 +6,10 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+#if canImport(UIKit)
+
+#if !os(watchOS)
+
 import UIKit
 
 public extension UIView {
@@ -19,3 +23,7 @@ public extension UIView {
         return image
     }
 }
+
+#endif
+
+#endif
