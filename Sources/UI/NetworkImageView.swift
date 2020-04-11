@@ -44,7 +44,7 @@ open class NetworkImageView: UIImageView {
         loading = true
 
         imageLoader.load(url: imageUrl, size: frame.size, mode: resizeMode) { [weak self] result in
-            guard let `self` = self, imageUrl == self.imageUrl else { return }
+            guard let self = self, imageUrl == self.imageUrl else { return }
 
             self.loading = false
             guard let image = result.value?.1 else { return }
