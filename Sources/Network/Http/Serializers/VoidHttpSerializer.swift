@@ -16,10 +16,10 @@ public struct VoidHttpSerializer: HttpSerializer {
     public init() {}
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        return .success(Data())
+        .success(Data())
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        return .success(())
+        .success(())
     }
 }

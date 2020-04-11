@@ -28,11 +28,11 @@ public extension Result {
     // MARK: - Accessors
 
     var value: Success? {
-        return map(success: { $0 }, failure: { _ in nil })
+        map(success: { $0 }, failure: { _ in nil })
     }
 
     var error: Failure? {
-        return map(success: { _ in nil }, failure: { $0 })
+        map(success: { _ in nil }, failure: { $0 })
     }
 
     // MARK: - Map
@@ -63,7 +63,7 @@ public extension Result {
     }
 
     func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess, unknown: (Error) -> Failure) -> Result<NewSuccess, Failure> {
-        return flatMap { value in
+        flatMap { value in
             Result<NewSuccess, Failure>(
                 catching: {
                     try transform(value)

@@ -14,10 +14,10 @@ public struct UrlLightTransformer: LightTransformer {
     public init() {}
 
     public func from(any value: Any?) -> T? {
-        return (value as? String).flatMap(T.init)
+        (value as? String).flatMap(T.init)
     }
 
     public func to(any value: T?) -> Any? {
-        return value?.absoluteString
+        value?.absoluteString
     }
 }

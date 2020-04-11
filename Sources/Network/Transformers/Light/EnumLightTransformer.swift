@@ -12,11 +12,11 @@ public struct EnumCastLightTransformer<Enum: RawRepresentable>: LightTransformer
     public init() {}
 
     public func from(any value: Any?) -> T? {
-        return (value as? T.RawValue).flatMap(T.init)
+        (value as? T.RawValue).flatMap(T.init)
     }
 
     public func to(any value: T?) -> Any? {
-        return value?.rawValue
+        value?.rawValue
     }
 }
 
@@ -31,11 +31,11 @@ public struct EnumLightTransformer<Enum: RawRepresentable, RawTransformer: Light
     }
 
     public func from(any value: Any?) -> T? {
-        return transformer.from(any: value).flatMap(T.init)
+        transformer.from(any: value).flatMap(T.init)
     }
 
     public func to(any value: T?) -> Any? {
-        return transformer.to(any: value?.rawValue)
+        transformer.to(any: value?.rawValue)
     }
 }
 
@@ -61,10 +61,10 @@ public struct DictionaryEnumLightTransformer<Enum: Hashable, ValueTransformer: L
     }
 
     public func from(any value: Any?) -> T? {
-        return transformer.from(any: value).flatMap { valueEnumDictionary[$0] }
+        transformer.from(any: value).flatMap { valueEnumDictionary[$0] }
     }
 
     public func to(any value: T?) -> Any? {
-        return value.flatMap { enumValueDictionary[$0] }.flatMap(transformer.to(any:))
+        value.flatMap { enumValueDictionary[$0] }.flatMap(transformer.to(any:))
     }
 }

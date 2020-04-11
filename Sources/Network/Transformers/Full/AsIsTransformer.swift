@@ -13,10 +13,10 @@ public struct AsIsTransformer<From>: Transformer {
     public init() {}
 
     public func transform(source value: Source) -> TransformerResult<Destination> {
-        return .success(value)
+        .success(value)
     }
 
     public func transform(destination value: Destination) -> TransformerResult<Source> {
-        return .success(value)
+        .success(value)
     }
 }

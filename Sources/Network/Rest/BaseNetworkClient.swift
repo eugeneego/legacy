@@ -186,7 +186,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         parameters: [String: String], object: RequestObject?, headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask {
-        return request(
+        request(
             method: method, path: path, parameters: parameters, object: object, headers: headers,
             decoder: decoder, encoder: encoder,
             completion: completion
@@ -194,8 +194,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     }
 
     private class Progress: HttpProgress {
-        var bytes: Int64? { return progress?.bytes }
-        var totalBytes: Int64? { return progress?.totalBytes }
+        var bytes: Int64? { progress?.bytes }
+        var totalBytes: Int64? { progress?.totalBytes }
         var callback: HttpProgressCallback?
 
         var progress: HttpProgress? {
@@ -211,8 +211,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
 
     private class Task: NetworkTask {
         var httpTask: HttpTask?
-        var uploadProgress: HttpProgress { return upload }
-        var downloadProgress: HttpProgress { return download }
+        var uploadProgress: HttpProgress { upload }
+        var downloadProgress: HttpProgress { download }
 
         var upload: Progress = Progress()
         var download: Progress = Progress()

@@ -91,7 +91,7 @@ public extension Http {
         request: URLRequest, serializer: T,
         completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
     ) -> HttpTask {
-        return data(request: request) { response, data, error in
+        data(request: request) { response, data, error in
             if let error = error {
                 completion(response, nil, data, error)
             } else {
@@ -142,7 +142,7 @@ public extension Http {
         method: HttpMethod, url: URL, urlParameters: [String: String],
         headers: [String: String], body: Data?, bodyStream: InputStream?
     ) -> URLRequest {
-        return request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: bodyStream)
+        request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: bodyStream)
     }
 
     func request<T: HttpSerializer>(

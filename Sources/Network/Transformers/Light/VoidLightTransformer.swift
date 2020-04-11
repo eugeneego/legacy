@@ -12,10 +12,10 @@ public struct VoidLightTransformer: LightTransformer {
     public init() {}
 
     public func from(any value: Any?) -> T? {
-        return ()
+        ()
     }
 
     public func to(any value: T?) -> Any? {
-        return nil
+        nil
     }
 }

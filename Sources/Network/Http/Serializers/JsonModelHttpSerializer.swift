@@ -186,7 +186,7 @@ public struct JsonModelDecodableHttpSerializer<T: Decodable>: HttpSerializer {
     }
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        return .failure(HttpSerializationError.error(Error.notSupported))
+        .failure(HttpSerializationError.error(Error.notSupported))
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
@@ -242,7 +242,7 @@ public struct JsonModelEncodableHttpSerializer<T: Encodable>: HttpSerializer {
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        return .failure(HttpSerializationError.error(Error.notSupported))
+        .failure(HttpSerializationError.error(Error.notSupported))
     }
 }
 

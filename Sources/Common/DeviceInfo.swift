@@ -57,6 +57,9 @@ public struct DeviceInfo: CustomStringConvertible {
     /// - **Info.plist**: CFBundleVersion
     public let bundleBuild: String
 
+    /// An alphanumeric string that uniquely identifies a device to the app’s vendor. Example: `EA7583CD-A667-48BC-B806-42ECB2B48606`
+    public let identifierForVendor: UUID?
+
     /// Initializes with a bundle with a reference class.
     public init(class: AnyClass) {
         self.init(bundle: Bundle(for: `class`))
@@ -68,15 +71,22 @@ public struct DeviceInfo: CustomStringConvertible {
         let device = UIDevice.current
         system = device.systemName
         systemVersion = device.systemVersion
+        identifierForVendor = device.identifierForVendor
         #elseif os(watchOS)
         let device = WKInterfaceDevice.current()
         system = device.systemName
         systemVersion = device.systemVersion
+        if #available(watchOS 6.2, *) {
+            identifierForVendor = device.identifierForVendor
+        } else {
+            identifierForVendor = nil
+        }
         #elseif os(macOS)
-        let processInfo = ProcessInfo.processInfo
         system = "macOS"
+        let processInfo = ProcessInfo.processInfo
         let version = processInfo.operatingSystemVersion
         systemVersion = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        identifierForVendor = nil
         #endif
 
         let localMachineName = DeviceInfo.getMachineName()
@@ -92,7 +102,7 @@ public struct DeviceInfo: CustomStringConvertible {
     }
 
     public var description: String {
-        return """
+        """
         DeviceInfo:
             machineName: \(machineName)
             machineDisplayName: \(machineDisplayName)
@@ -152,6 +162,9 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPhone11,4": "iPhone XS Max (China)",
         "iPhone11,6": "iPhone XS Max",
         "iPhone11,8": "iPhone XR",
+        "iPhone12,1": "iPhone 11",
+        "iPhone12,3": "iPhone 11 Pro",
+        "iPhone12,5": "iPhone 11 Pro Max",
 
         "iPad1,1": "iPad",
         "iPad2,1": "iPad 2 (Wi-Fi)",
@@ -176,6 +189,8 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPad4,7": "iPad mini 3 (Wi-Fi)",
         "iPad4,8": "iPad mini 3 (Wi-Fi, Cellular)",
         "iPad4,9": "iPad mini 3 (Wi-Fi, Cellular, China)",
+        "iPad5,1": "iPad mini 4 (Wi-Fi)",
+        "iPad5,2": "iPad mini 4 (Wi-Fi, Cellular)",
         "iPad5,3": "iPad Air 2 (Wi-Fi)",
         "iPad5,4": "iPad Air 2 (Wi-Fi, Cellular)",
         "iPad5,5": "iPad Air 2 (Wi-Fi, Cellular, China)",
@@ -187,18 +202,28 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPad6,12": "iPad (5th Gen, Wi-Fi, Cellular)",
         "iPad7,1": "iPad Pro (12.9\", 2nd Gen, Wi-Fi)",
         "iPad7,2": "iPad Pro (12.9\", 2nd Gen, Wi-Fi, Cellular)",
-        "iPad7,3": "iPad Pro (10.5\", 2nd Gen, Wi-Fi)",
-        "iPad7,4": "iPad Pro (10.5\", 2nd Gen, Wi-Fi, Cellular)",
+        "iPad7,3": "iPad Pro (10.5\", Wi-Fi)",
+        "iPad7,4": "iPad Pro (10.5\", Wi-Fi, Cellular)",
         "iPad7,5": "iPad (6th Gen, Wi-Fi)",
         "iPad7,6": "iPad (6th Gen, Wi-Fi, Cellular)",
-        "iPad8,1": "iPad Pro (11\", 3rd Gen, Wi-Fi)",
-        "iPad8,2": "iPad Pro (11\", 3rd Gen, 1TB, Wi-Fi)",
-        "iPad8,3": "iPad Pro (11\", 3rd Gen, Wi-Fi, Cellular)",
-        "iPad8,4": "iPad Pro (11\", 3rd Gen, 1TB, Wi-Fi, Cellular)",
+        "iPad7,11": "iPad (10.2\", 7th Gen, Wi-Fi)",
+        "iPad7,12": "iPad (10.2\", 7th Gen, Wi-Fi, Cellular)",
+        "iPad8,1": "iPad Pro (11\", Wi-Fi)",
+        "iPad8,2": "iPad Pro (11\", 1TB, Wi-Fi)",
+        "iPad8,3": "iPad Pro (11\", Wi-Fi, Cellular)",
+        "iPad8,4": "iPad Pro (11\", 1TB, Wi-Fi, Cellular)",
         "iPad8,5": "iPad Pro (12.9\", 3rd Gen, Wi-Fi)",
         "iPad8,6": "iPad Pro (12.9\", 3rd Gen, 1TB, Wi-Fi)",
         "iPad8,7": "iPad Pro (12.9\", 3rd Gen, Wi-Fi, Cellular)",
         "iPad8,8": "iPad Pro (12.9\", 3rd Gen, 1TB, Wi-Fi, Cellular)",
+        "iPad8,9": "iPad Pro (11\", 2nd Gen, Wi-Fi)",
+        "iPad8,10": "iPad Pro (11\", 2nd Gen, Wi-Fi, Cellular)",
+        "iPad8,11": "iPad Pro (12.9\", 4th Gen, Wi-Fi)",
+        "iPad8,12": "iPad Pro (12.9\", 4th Gen, Wi-Fi, Cellular)",
+        "iPad11,1": "iPad mini 5 (Wi-Fi)",
+        "iPad11,2": "iPad mini 5 (Wi-Fi, Cellular)",
+        "iPad11,3": "iPad Air 3 (Wi-Fi)",
+        "iPad11,4": "iPad Air 3 (Wi-Fi, Cellular)",
 
         "iPod1,1": "iPod Touch",
         "iPod2,1": "iPod Touch (2nd Generation)",
@@ -206,6 +231,7 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPod4,1": "iPod Touch (4th Generation)",
         "iPod5,1": "iPod Touch (5th Generation)",
         "iPod7,1": "iPod Touch (6th Generation)",
+        "iPod9,1": "iPod Touch (7th Generation)",
 
         "Watch1,1": "Apple Watch (38mm)",
         "Watch1,2": "Apple Watch (42mm)",
@@ -221,6 +247,10 @@ public struct DeviceInfo: CustomStringConvertible {
         "Watch4,2": "Apple Watch Series 4 (44mm, GPS)",
         "Watch4,3": "Apple Watch Series 4 (40mm, GPS, Cellular)",
         "Watch4,4": "Apple Watch Series 4 (44mm, GPS, Cellular)",
+        "Watch5,1": "Apple Watch Series 5 (40mm, GPS)",
+        "Watch5,2": "Apple Watch Series 5 (44mm, GPS)",
+        "Watch5,3": "Apple Watch Series 5 (40mm, GPS, Cellular)",
+        "Watch5,4": "Apple Watch Series 5 (44mm, GPS, Cellular)",
 
         "AppleTV5,3": "Apple TV (4th Generation)",
         "AppleTV6,2": "Apple TV 4K",

@@ -20,10 +20,10 @@ public struct TimestampTransformer<From>: Transformer {
     }
 
     public func transform(source value: Source) -> TransformerResult<Destination> {
-        return numberTransformer.transform(source: value).map { Date(timeIntervalSince1970: TimeInterval($0) * scale) }
+        numberTransformer.transform(source: value).map { Date(timeIntervalSince1970: TimeInterval($0) * scale) }
     }
 
     public func transform(destination value: Destination) -> TransformerResult<Source> {
-        return numberTransformer.transform(destination: Int64(value.timeIntervalSince1970 / scale))
+        numberTransformer.transform(destination: Int64(value.timeIntervalSince1970 / scale))
     }
 }

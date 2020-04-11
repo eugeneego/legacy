@@ -14,7 +14,7 @@ public enum Random {
         - returns: An unsigned integer number in a [0, UInt32.max) range.
      */
     public static func uint32() -> UInt32 {
-        return arc4random_uniform(UInt32.max)
+        arc4random_uniform(UInt32.max)
     }
 
     /**
@@ -23,7 +23,7 @@ public enum Random {
         - returns: An integer number in a [0, max) range.
      */
     public static func int(_ max: Int) -> Int {
-        return Int(arc4random_uniform(UInt32(max)))
+        Int(arc4random_uniform(UInt32(max)))
     }
 
     /**
@@ -33,7 +33,7 @@ public enum Random {
         - returns: An integer number in a [min, max] range.
      */
     public static func int(min: Int, max: Int) -> Int {
-        return min + Int(arc4random_uniform(UInt32(max - min + 1)))
+        min + Int(arc4random_uniform(UInt32(max - min + 1)))
     }
 
     /**
@@ -42,7 +42,7 @@ public enum Random {
         - returns: An integer number in a given range.
      */
     public static func int(_ range: Range<Int>) -> Int {
-        return range.lowerBound + Int(arc4random_uniform(UInt32(range.upperBound - range.lowerBound + 1)))
+        range.lowerBound + Int(arc4random_uniform(UInt32(range.upperBound - range.lowerBound + 1)))
     }
 
     /**
@@ -50,7 +50,7 @@ public enum Random {
         - returns: *true* with 50% chance
      */
     public static func bool() -> Bool {
-        return bool(chance: 50)
+        bool(chance: 50)
     }
 
     /**
@@ -59,6 +59,6 @@ public enum Random {
         - returns: *true* with a given chance (from 0% to 100%)
      */
     public static func bool(chance: Int) -> Bool {
-        return arc4random_uniform(100) < UInt32(min(max(chance, 0), 100))
+        arc4random_uniform(100) < UInt32(min(max(chance, 0), 100))
     }
 }

@@ -18,10 +18,10 @@ public struct ColorLightTransformer: LightTransformer {
     public init() {}
 
     public func from(any value: Any?) -> T? {
-        return (value as? String).flatMap(T.from(hex:))
+        (value as? String).flatMap(T.from(hex:))
     }
 
     public func to(any value: T?) -> Any? {
-        return value?.hexARGB
+        value?.hexARGB
     }
 }

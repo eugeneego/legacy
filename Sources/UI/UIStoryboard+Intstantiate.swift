@@ -26,7 +26,7 @@ public extension UIStoryboard {
     }
 
     func instantiate<T: UIViewController>() -> T {
-        return instantiate(id: String(describing: T.self))
+        instantiate(id: String(describing: T.self))
     }
 
     func instantiate<T: UIViewController>(id: String) -> T {

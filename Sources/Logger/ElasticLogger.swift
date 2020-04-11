@@ -199,7 +199,7 @@ public class ElasticLogger: Logger {
     }
 
     private func serialize(log: [String: String]) -> String? {
-        return Json(value: log).string
+        Json(value: log).string
     }
 
     private func startSendLogsTimer() {

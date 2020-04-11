@@ -28,18 +28,18 @@ public struct Json {
     }
 
     public var dictionary: [String: Any]? {
-        return value as? [String: Any]
+        value as? [String: Any]
     }
 
     public var array: [Any]? {
-        return value as? [Any]
+        value as? [Any]
     }
 
     public var data: Data? {
-        return value.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
+        value.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: []) }
     }
 
     public var string: String? {
-        return data.flatMap { String(data: $0, encoding: .utf8) }
+        data.flatMap { String(data: $0, encoding: .utf8) }
     }
 }

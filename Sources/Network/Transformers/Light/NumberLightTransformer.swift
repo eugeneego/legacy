@@ -14,10 +14,10 @@ public struct NumberLightTransformer<Number: NumberConvertible>: LightTransforme
     public init() {}
 
     public func from(any value: Any?) -> T? {
-        return (value as? NSNumber).flatMap(T.fromNumber) ?? (value as? T)
+        (value as? NSNumber).flatMap(T.fromNumber) ?? (value as? T)
     }
 
     public func to(any value: T?) -> Any? {
-        return value?.toNumber()
+        value?.toNumber()
     }
 }
