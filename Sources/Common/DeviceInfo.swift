@@ -76,12 +76,17 @@ public struct DeviceInfo: CustomStringConvertible {
         let device = WKInterfaceDevice.current()
         system = device.systemName
         systemVersion = device.systemVersion
-        identifierForVendor = device.identifierForVendor
+        if #available(watchOS 6.2, *) {
+            identifierForVendor = device.identifierForVendor
+        } else {
+            identifierForVendor = nil
+        }
         #elseif os(macOS)
         system = "macOS"
         let processInfo = ProcessInfo.processInfo
         let version = processInfo.operatingSystemVersion
         systemVersion = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        identifierForVendor = nil
         #endif
 
         let localMachineName = DeviceInfo.getMachineName()
