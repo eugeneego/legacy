@@ -24,7 +24,7 @@ public enum Reusable<CellType> {
     }
 
     public static func fromClass<CellType>(id: String = String(describing: CellType.self)) -> Reusable<CellType> {
-        return .class(id: id)
+        .class(id: id)
     }
 
     public static func fromNib(
@@ -32,7 +32,7 @@ public enum Reusable<CellType> {
         name: String = String(describing: CellType.self),
         bundle: Bundle? = nil
     ) -> Reusable<CellType> {
-        return .nib(id: id, name: name, bundle: bundle)
+        .nib(id: id, name: name, bundle: bundle)
     }
 }
 

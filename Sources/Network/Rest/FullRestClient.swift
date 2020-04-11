@@ -66,7 +66,7 @@ public extension FullRestClient {
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any {
-        return request(
+        request(
             method: .post,
             path: pathWithId(path: path, id: id),
             parameters: [:],
@@ -84,7 +84,7 @@ public extension FullRestClient {
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where ResponseTransformer.Source == Any {
-        return request(
+        request(
             method: .post,
             path: pathWithId(path: path, id: id),
             parameters: [:],
@@ -102,7 +102,7 @@ public extension FullRestClient {
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where ResponseTransformer.Source == Any {
-        return request(
+        request(
             method: .get,
             path: pathWithId(path: path, id: id),
             parameters: parameters,
@@ -120,7 +120,7 @@ public extension FullRestClient {
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any {
-        return request(
+        request(
             method: .put,
             path: pathWithId(path: path, id: id),
             parameters: [:],
@@ -138,7 +138,7 @@ public extension FullRestClient {
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where ResponseTransformer.Source == Any {
-        return request(
+        request(
             method: .put,
             path: pathWithId(path: path, id: id),
             parameters: [:],
@@ -156,7 +156,7 @@ public extension FullRestClient {
         requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any {
-        return request(
+        request(
             method: .patch,
             path: pathWithId(path: path, id: id),
             parameters: [:],
@@ -174,7 +174,7 @@ public extension FullRestClient {
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where ResponseTransformer.Source == Any {
-        return request(
+        request(
             method: .delete,
             path: pathWithId(path: path, id: id),
             parameters: [:],

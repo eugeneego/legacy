@@ -97,7 +97,7 @@ public enum ServerTrustPolicy {
     }
 
     private func dataForCertificates(_ certificates: [SecCertificate]) -> [Data] {
-        return certificates.map { SecCertificateCopyData($0) as Data }
+        certificates.map { SecCertificateCopyData($0) as Data }
     }
 
     private func publicKeysForTrust(_ trust: SecTrust) -> [SecKey] {
@@ -137,10 +137,10 @@ public enum ServerTrustPolicy {
     }
 
     public static func publicKey(path: String) -> SecKey? {
-        return certificate(path: path).flatMap(publicKeyForCertificate)
+        certificate(path: path).flatMap(publicKeyForCertificate)
     }
 
     public static func publicKey(url: URL) -> SecKey? {
-        return certificate(url: url).flatMap(publicKeyForCertificate)
+        certificate(url: url).flatMap(publicKeyForCertificate)
     }
 }

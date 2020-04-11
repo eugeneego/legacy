@@ -20,6 +20,6 @@ public struct DecimalTransformer<From>: Transformer {
     }
 
     public func transform(destination value: Destination) -> TransformerResult<Source> {
-        return TransformerResult(NSDecimalNumber(decimal: value) as? From, .transform)
+        TransformerResult(NSDecimalNumber(decimal: value) as? From, .transform)
     }
 }

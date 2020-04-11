@@ -14,10 +14,10 @@ public struct DecimalLightTransformer: LightTransformer {
     public init() {}
 
     public func from(any value: Any?) -> T? {
-        return (value as? NSNumber).flatMap { Decimal(string: "\($0)", locale: Locale(identifier: "en_US")) }
+        (value as? NSNumber).flatMap { Decimal(string: "\($0)", locale: Locale(identifier: "en_US")) }
     }
 
     public func to(any value: T?) -> Any? {
-        return value.map { NSDecimalNumber(decimal: $0) }
+        value.map { NSDecimalNumber(decimal: $0) }
     }
 }

@@ -20,11 +20,11 @@ public class Subscriptions<Value> {
     public var onChange: (() -> Void)?
 
     public var isEmpty: Bool {
-        return subscriptions.isEmpty
+        subscriptions.isEmpty
     }
 
     public var count: Int {
-        return subscriptions.count
+        subscriptions.count
     }
 
     public var copy: Subscriptions<Value> {

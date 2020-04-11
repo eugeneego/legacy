@@ -20,10 +20,10 @@ public struct DateLightTransformer: LightTransformer {
     }
 
     public func from(any value: Any?) -> T? {
-        return (value as? String).flatMap(formatter.date(from:))
+        (value as? String).flatMap(formatter.date(from:))
     }
 
     public func to(any value: T?) -> Any? {
-        return value.flatMap(formatter.string(from:))
+        value.flatMap(formatter.string(from:))
     }
 }

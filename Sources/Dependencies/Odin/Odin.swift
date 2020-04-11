@@ -69,7 +69,7 @@ public class Odin: DependencyInjectionContainer {
     /// - parameter type: an object type.
     /// - returns: a string representation of a type. For example, `Module.Type.NestedType`.
     private func key<D>(_ type: D.Type) -> String {
-        return String(reflecting: type)
+        String(reflecting: type)
     }
 
     /// Registers a type resolver.
@@ -92,6 +92,6 @@ public class Odin: DependencyInjectionContainer {
     ///
     ///       let dependency: Dependency? = container.resolve()
     public func resolve<D>() -> D? {
-        return typeResolvers[key(D.self)]?() as? D ?? parentContainer?.resolve()
+        typeResolvers[key(D.self)]?() as? D ?? parentContainer?.resolve()
     }
 }

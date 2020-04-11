@@ -23,7 +23,7 @@ open class GradientView: UIView {
     open var colors: [UIColor]?
 
     open override class var layerClass: AnyClass {
-        return CAGradientLayer.self
+        CAGradientLayer.self
     }
 
     public override init(frame: CGRect) {

@@ -19,10 +19,10 @@ public struct TimestampLightTransformer: LightTransformer {
     }
 
     public func from(any value: Any?) -> T? {
-        return numberTransformer.from(any: value).map { Date(timeIntervalSince1970: TimeInterval($0) * scale) }
+        numberTransformer.from(any: value).map { Date(timeIntervalSince1970: TimeInterval($0) * scale) }
     }
 
     public func to(any value: T?) -> Any? {
-        return value.flatMap { numberTransformer.to(any: Int64($0.timeIntervalSince1970 / scale)) }
+        value.flatMap { numberTransformer.to(any: Int64($0.timeIntervalSince1970 / scale)) }
     }
 }

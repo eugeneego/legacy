@@ -12,10 +12,10 @@ public struct CastLightTransformer<Object>: LightTransformer {
     public init() {}
 
     public func from(any value: Any?) -> T? {
-        return value as? T
+        value as? T
     }
 
     public func to(any value: T?) -> Any? {
-        return value
+        value
     }
 }

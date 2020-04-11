@@ -38,7 +38,7 @@ public class Hpkp {
     }
 
     public static func hashes(_ hashes: [String]) -> Set<Data> {
-        return Set(hashes.compactMap { Data(base64Encoded: $0) })
+        Set(hashes.compactMap { Data(base64Encoded: $0) })
     }
 
     private class Cache {

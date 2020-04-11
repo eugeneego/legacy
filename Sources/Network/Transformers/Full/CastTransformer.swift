@@ -13,10 +13,10 @@ public struct CastTransformer<From, To>: Transformer {
     public init() {}
 
     public func transform(source value: Source) -> TransformerResult<Destination> {
-        return TransformerResult(value as? To, .transform)
+        TransformerResult(value as? To, .transform)
     }
 
     public func transform(destination value: Destination) -> TransformerResult<Source> {
-        return TransformerResult(value as? From, .transform)
+        TransformerResult(value as? From, .transform)
     }
 }
