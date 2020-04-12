@@ -18,6 +18,7 @@ public enum NetworkError: Error {
 public protocol NetworkTask {
     var uploadProgress: HttpProgress { get }
     var downloadProgress: HttpProgress { get }
+
     func cancel()
 }
 
@@ -27,9 +28,13 @@ public protocol NetworkClient {
 
     @discardableResult
     func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestSerializer.Value?, headers: [String: String],
-        requestSerializer: RequestSerializer, responseSerializer: ResponseSerializer,
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: RequestSerializer.Value?,
+        headers: [String: String],
+        requestSerializer: RequestSerializer,
+        responseSerializer: ResponseSerializer,
         completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
     ) -> NetworkTask
 }
@@ -39,9 +44,13 @@ public protocol NetworkClient {
 public protocol LightNetworkClient: NetworkClient {
     @discardableResult
     func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: RequestTransformer.T?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
 }
@@ -49,9 +58,13 @@ public protocol LightNetworkClient: NetworkClient {
 public protocol FullNetworkClient: NetworkClient {
     @discardableResult
     func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestTransformer.Destination?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: RequestTransformer.Destination?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
     ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any
 }
@@ -64,16 +77,23 @@ public protocol CodableNetworkClient: NetworkClient {
 
     @discardableResult
     func request<RequestObject: Encodable, ResponseObject: Decodable>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestObject?, headers: [String: String],
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: RequestObject?,
+        headers: [String: String],
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
     func request<RequestObject: Encodable, ResponseObject: Decodable>(
-        method: HttpMethod, path: String,
-        parameters: [String: String], object: RequestObject?, headers: [String: String],
-        decoder: JSONDecoder, encoder: JSONEncoder,
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: RequestObject?,
+        headers: [String: String],
+        decoder: JSONDecoder,
+        encoder: JSONEncoder,
         completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
     ) -> NetworkTask
 }

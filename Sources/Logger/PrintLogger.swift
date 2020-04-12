@@ -10,7 +10,11 @@ import Foundation
 
 /// Simple print logger. Output is similar to NSLogLogger, but does not have its limitations. Output goes to stdout.
 public class PrintLogger: Logger {
+    private let dateFormatter: DateFormatter
+
     public init() {
+        dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ"
     }
 
     private func name(for level: LoggingLevel) -> String {
@@ -27,8 +31,6 @@ public class PrintLogger: Logger {
                 return "⛑"
         }
     }
-
-    private let dateFormatter: DateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSS ZZZZZ")
 
     public func log(
         _ message: @autoclosure () -> String,

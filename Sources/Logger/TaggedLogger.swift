@@ -25,6 +25,7 @@
 
 public protocol TaggedLogger: Logger {
     var tag: String { get }
+
     func log(
         _ message: @autoclosure () -> String,
         meta: @autoclosure () -> [String: String],

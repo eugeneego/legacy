@@ -17,8 +17,10 @@ extension XCTestCase {
 
     /// Asynchronous expectation helper.
     func expect(
-        _ description: String, timeout: TimeInterval = 15,
-        file: StaticString = #file, line: UInt = #line,
+        _ description: String,
+        timeout: TimeInterval = 15,
+        file: StaticString = #file,
+        line: UInt = #line,
         handler: ExpectationHandler
     ) {
         let asyncExpectation = expectation(description: description)
@@ -40,24 +42,13 @@ func EEAssertNotError(_ error: Error?, _ description: String, file: StaticString
     XCTAssertNil(error, "\(description): error: " + errorDescription, file: file, line: line)
 }
 
-/// Asserts the variable has non nil value.
-func EEAssertNotNil<T>(
-    _ value: T?,
-    _ description: String, _ expectation: XCTestExpectation? = nil,
-    file: StaticString = #file, line: UInt = #line
-) -> T? {
-    if value == nil {
-        XCTFail("\(description): non nil value expected.", file: file, line: line)
-        expectation?.fulfill()
-    }
-    return value
-}
-
 /// Asserts the error is nil.
 func EEAssertNotError(
     _ error: Error?,
-    _ description: String, _ expectation: XCTestExpectation?,
-    file: StaticString = #file, line: UInt = #line
+    _ description: String,
+    _ expectation: XCTestExpectation?,
+    file: StaticString = #file,
+    line: UInt = #line
 ) -> Bool {
     if let error = error {
         XCTFail("\(description): no error expected, but got: \(errorDebugDescription(error))", file: file, line: line)
@@ -69,8 +60,10 @@ func EEAssertNotError(
 /// Asserts the error is not nil.
 func EEAssertError(
     _ error: Error?,
-    _ description: String, _ expectation: XCTestExpectation?,
-    file: StaticString = #file, line: UInt = #line
+    _ description: String,
+    _ expectation: XCTestExpectation?,
+    file: StaticString = #file,
+    line: UInt = #line
 ) -> Bool {
     if error == nil {
         XCTFail("\(description): error expected", file: file, line: line)
@@ -82,8 +75,10 @@ func EEAssertError(
 /// Asserts the result is success.
 func EEAssertSuccess<T, E>(
     _ result: Result<T, E>,
-    _ description: String, _ expectation: XCTestExpectation? = nil,
-    file: StaticString = #file, line: UInt = #line
+    _ description: String,
+    _ expectation: XCTestExpectation? = nil,
+    file: StaticString = #file,
+    line: UInt = #line
 ) -> T? {
     switch result {
         case .success(let value):
@@ -95,11 +90,28 @@ func EEAssertSuccess<T, E>(
     }
 }
 
+/// Asserts the variable has non nil value.
+func EEAssertNotNil<T>(
+    _ value: T?,
+    _ description: String,
+    _ expectation: XCTestExpectation? = nil,
+    file: StaticString = #file,
+    line: UInt = #line
+) -> T? {
+    if value == nil {
+        XCTFail("\(description): non nil value expected.", file: file, line: line)
+        expectation?.fulfill()
+    }
+    return value
+}
+
 /// Asserts the result is failure.
 func EEAssertFailure<T, E>(
     _ result: Result<T, E>,
-    _ description: String, _ expectation: XCTestExpectation? = nil,
-    file: StaticString = #file, line: UInt = #line
+    _ description: String,
+    _ expectation: XCTestExpectation? = nil,
+    file: StaticString = #file,
+    line: UInt = #line
 ) -> E? {
     switch result {
         case .success:

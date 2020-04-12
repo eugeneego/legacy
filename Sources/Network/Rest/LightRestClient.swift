@@ -11,49 +11,74 @@ import Foundation
 public protocol LightRestClient: RestClient, LightNetworkClient {
     @discardableResult
     func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        path: String,
+        id: String?,
+        object: RequestTransformer.T?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
     func create<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
     func read<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, parameters: [String: String], headers: [String: String],
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
     func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        path: String,
+        id: String?,
+        object: RequestTransformer.T?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
     func update<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
     func partialUpdate<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        path: String,
+        id: String?,
+        object: RequestTransformer.T?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
     func delete<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, headers: [String: String],
+        path: String,
+        id: String?,
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask
@@ -62,8 +87,12 @@ public protocol LightRestClient: RestClient, LightNetworkClient {
 public extension LightRestClient {
     @discardableResult
     func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        path: String,
+        id: String?,
+        object: RequestTransformer.T?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
@@ -80,7 +109,11 @@ public extension LightRestClient {
 
     @discardableResult
     func create<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -98,7 +131,10 @@ public extension LightRestClient {
 
     @discardableResult
     func read<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, parameters: [String: String], headers: [String: String],
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -116,8 +152,12 @@ public extension LightRestClient {
 
     @discardableResult
     func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        path: String,
+        id: String?,
+        object: RequestTransformer.T?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
@@ -134,7 +174,11 @@ public extension LightRestClient {
 
     @discardableResult
     func update<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, data: Data?, contentType: String, headers: [String: String],
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask {
@@ -152,8 +196,12 @@ public extension LightRestClient {
 
     @discardableResult
     func partialUpdate<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
-        path: String, id: String?, object: RequestTransformer.T?, headers: [String: String],
-        requestTransformer: RequestTransformer, responseTransformer: ResponseTransformer,
+        path: String,
+        id: String?,
+        object: RequestTransformer.T?,
+        headers: [String: String],
+        requestTransformer: RequestTransformer,
+        responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
@@ -170,7 +218,9 @@ public extension LightRestClient {
 
     @discardableResult
     func delete<ResponseTransformer: LightTransformer>(
-        path: String, id: String?, headers: [String: String],
+        path: String,
+        id: String?,
+        headers: [String: String],
         responseTransformer: ResponseTransformer,
         completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
     ) -> NetworkTask {

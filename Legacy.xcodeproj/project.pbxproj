@@ -14,7 +14,6 @@
 		44073F73227E429F0090545A /* RequestAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441D90341DDF70F800B4493B /* RequestAuthorizer.swift */; };
 		44073F79227E429F0090545A /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8343F8CC638295A9178B /* Json.swift */; };
 		44073F7A227E429F0090545A /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA821B587ACD8434FFAA0F /* Action.swift */; };
-		44073F7B227E429F0090545A /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA841D3A1CF42F932BA8A7 /* Random.swift */; };
 		44073F7C227E429F0090545A /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8915D4F0786B5A29F899 /* Subscription.swift */; };
 		44073F7D227E429F0090545A /* SimpleSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */; };
 		44073F7E227E429F0090545A /* Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D9E17BD746E31E8C38D /* Arithmetic.swift */; };
@@ -96,7 +95,6 @@
 		44073FE4227E4C0D0090545A /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8824B5BEBC35BA83FCC4 /* UIView+Screenshot.swift */; };
 		44073FE5227E4C0D0090545A /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8343F8CC638295A9178B /* Json.swift */; };
 		44073FE6227E4C0D0090545A /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA821B587ACD8434FFAA0F /* Action.swift */; };
-		44073FE7227E4C0D0090545A /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA841D3A1CF42F932BA8A7 /* Random.swift */; };
 		44073FE8227E4C0D0090545A /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8915D4F0786B5A29F899 /* Subscription.swift */; };
 		44073FE9227E4C0D0090545A /* SimpleSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */; };
 		44073FEA227E4C0D0090545A /* Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D9E17BD746E31E8C38D /* Arithmetic.swift */; };
@@ -176,7 +174,6 @@
 		44074043227E4DB40090545A /* UIImage+Prerender.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D0E1B4C307E2B3DEAC9 /* UIImage+Prerender.swift */; };
 		44074045227E4DB40090545A /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8343F8CC638295A9178B /* Json.swift */; };
 		44074046227E4DB40090545A /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA821B587ACD8434FFAA0F /* Action.swift */; };
-		44074047227E4DB40090545A /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA841D3A1CF42F932BA8A7 /* Random.swift */; };
 		44074048227E4DB40090545A /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8915D4F0786B5A29F899 /* Subscription.swift */; };
 		44074049227E4DB40090545A /* SimpleSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8909F5DDE13AF54FEBB3 /* SimpleSubscription.swift */; };
 		4407404A227E4DB40090545A /* Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D9E17BD746E31E8C38D /* Arithmetic.swift */; };
@@ -312,7 +309,6 @@
 		B2FA88AF5BBF3EB361C70D03 /* BaseRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8E388D31A7F4BAE25FE8 /* BaseRestClient.swift */; };
 		B2FA88BAEAE03162B87FADE4 /* JsonHttpSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89997C8960D3CDBFF0BA /* JsonHttpSerializer.swift */; };
 		B2FA88E4BB5159D3DA1308BB /* NetworkCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA87EEB1A6721B00E69021 /* NetworkCodableTests.swift */; };
-		B2FA88EDDAD7499F2169BFA3 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA841D3A1CF42F932BA8A7 /* Random.swift */; };
 		B2FA88F8CFFB1DE42E1AF232 /* OdinTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA878FCCBF587FE70C5A5F /* OdinTests.swift */; };
 		B2FA890118833BBAAEC499FC /* TimestampLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8D5AEE04AEAAC1E9ADA3 /* TimestampLightTransformer.swift */; };
 		B2FA890878316BD05F862FDC /* ElasticLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8827F09C732B46B404DE /* ElasticLogger.swift */; };
@@ -399,7 +395,6 @@
 		B2FA8320303EF0DB8654A3D2 /* NetworkImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkImageView.swift; sourceTree = "<group>"; };
 		B2FA832A7D8E587420E22722 /* ColorTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorTransformer.swift; sourceTree = "<group>"; };
 		B2FA8343F8CC638295A9178B /* Json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
-		B2FA841D3A1CF42F932BA8A7 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		B2FA843FFDC103AEBF23E09C /* EETestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EETestCase.swift; sourceTree = "<group>"; };
 		B2FA844184D1B3827C980DB3 /* LightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightTransformer.swift; sourceTree = "<group>"; };
 		B2FA84534DB7DB97709D64A7 /* UserAddressGeoPointLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAddressGeoPointLightTransformer.swift; sourceTree = "<group>"; };
@@ -760,7 +755,6 @@
 				B2FA8D9E17BD746E31E8C38D /* Arithmetic.swift */,
 				44EE86001E92A4BD00E3F6AD /* DeviceInfo.swift */,
 				B2FA8343F8CC638295A9178B /* Json.swift */,
-				B2FA841D3A1CF42F932BA8A7 /* Random.swift */,
 				44EE86021E92A4DC00E3F6AD /* Result.swift */,
 				B2FA89D51C66A26B2D105F83 /* StringMatcher.swift */,
 			);
@@ -1107,7 +1101,6 @@
 				44073F73227E429F0090545A /* RequestAuthorizer.swift in Sources */,
 				44073F79227E429F0090545A /* Json.swift in Sources */,
 				44073F7A227E429F0090545A /* Action.swift in Sources */,
-				44073F7B227E429F0090545A /* Random.swift in Sources */,
 				44073F7C227E429F0090545A /* Subscription.swift in Sources */,
 				44073F7D227E429F0090545A /* SimpleSubscription.swift in Sources */,
 				44073F7E227E429F0090545A /* Arithmetic.swift in Sources */,
@@ -1195,7 +1188,6 @@
 				44073FE4227E4C0D0090545A /* UIView+Screenshot.swift in Sources */,
 				44073FE5227E4C0D0090545A /* Json.swift in Sources */,
 				44073FE6227E4C0D0090545A /* Action.swift in Sources */,
-				44073FE7227E4C0D0090545A /* Random.swift in Sources */,
 				44073FE8227E4C0D0090545A /* Subscription.swift in Sources */,
 				44073FE9227E4C0D0090545A /* SimpleSubscription.swift in Sources */,
 				44073FEA227E4C0D0090545A /* Arithmetic.swift in Sources */,
@@ -1281,7 +1273,6 @@
 				44074043227E4DB40090545A /* UIImage+Prerender.swift in Sources */,
 				44074045227E4DB40090545A /* Json.swift in Sources */,
 				44074046227E4DB40090545A /* Action.swift in Sources */,
-				44074047227E4DB40090545A /* Random.swift in Sources */,
 				44074048227E4DB40090545A /* Subscription.swift in Sources */,
 				44074049227E4DB40090545A /* SimpleSubscription.swift in Sources */,
 				4407404A227E4DB40090545A /* Arithmetic.swift in Sources */,
@@ -1369,7 +1360,6 @@
 				B2FA8E2D218194F836DB8CFD /* UIView+Screenshot.swift in Sources */,
 				B2FA8E616DD222761559959E /* Json.swift in Sources */,
 				B2FA855F1E59C64BA008037F /* Action.swift in Sources */,
-				B2FA88EDDAD7499F2169BFA3 /* Random.swift in Sources */,
 				B2FA8936FB1C498BA374E613 /* Subscription.swift in Sources */,
 				B2FA875B3DC4B7E32A882A4C /* SimpleSubscription.swift in Sources */,
 				B2FA849298F5E83473B6F567 /* Arithmetic.swift in Sources */,

@@ -66,8 +66,14 @@ public enum ServerTrustPolicy {
                 return false
             case .hpkp(let hashes, let algorithms, let checkChain, let checkHost):
                 guard #available(iOS 10.0, macOS 10.12, *) else { return false }
-                return Hpkp.check(serverTrust: serverTrust, host: host, hashes: hashes, algorithms: algorithms,
-                    checkChain: checkChain, checkHost: checkHost)
+                return Hpkp.check(
+                    serverTrust: serverTrust,
+                    host: host,
+                    hashes: hashes,
+                    algorithms: algorithms,
+                    checkChain: checkChain,
+                    checkHost: checkHost
+                )
             case let .custom(closure):
                 return closure(serverTrust, host)
             case .disabled:

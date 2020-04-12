@@ -34,8 +34,12 @@ public class ElasticLogger: Logger {
     private let queue: DispatchQueue
 
     public init(
-        restClient: LightRestClient, queue: DispatchQueue,
-        token: String, type: String, environment: String, deviceInfo: DeviceInfo,
+        restClient: LightRestClient,
+        queue: DispatchQueue,
+        token: String,
+        type: String,
+        environment: String,
+        deviceInfo: DeviceInfo,
         userParameters: @escaping () -> [String: String] = { [:] }
     ) {
         self.restClient = restClient
@@ -163,7 +167,8 @@ public class ElasticLogger: Logger {
         #endif
 
         restClient.create(
-            path: path, id: nil,
+            path: path,
+            id: nil,
             data: data,
             contentType: "",
             headers: [:],

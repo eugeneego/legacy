@@ -18,7 +18,10 @@ class NetworkLightTransformerTests: NetworkTestCase {
     func testPostsRead() {
         expect("Read Posts") { description, expectation in
             rest.read(
-                path: Constants.posts, id: nil, parameters: [:], headers: [:],
+                path: Constants.posts,
+                id: nil,
+                parameters: [:],
+                headers: [:],
                 responseTransformer: ArrayLightTransformer(transformer: PostLightTransformer())
             ) { result in
                 guard let posts = EEAssertSuccess(result, description, expectation) else { return }
@@ -32,7 +35,10 @@ class NetworkLightTransformerTests: NetworkTestCase {
     func testPostRead() {
         expect("Read Post") { description, expectation in
             rest.read(
-                path: Constants.posts, id: "1", parameters: [:], headers: [:],
+                path: Constants.posts,
+                id: "1",
+                parameters: [:],
+                headers: [:],
                 responseTransformer: PostLightTransformer()
             ) { result in
                 guard EEAssertSuccess(result, description, expectation) != nil else { return }
@@ -47,8 +53,12 @@ class NetworkLightTransformerTests: NetworkTestCase {
             var object = Constants.post
             object.id = 0
             rest.create(
-                path: Constants.posts, id: nil, object: object, headers: [:],
-                requestTransformer: PostLightTransformer(), responseTransformer: PostLightTransformer()
+                path: Constants.posts,
+                id: nil,
+                object: object,
+                headers: [:],
+                requestTransformer: PostLightTransformer(),
+                responseTransformer: PostLightTransformer()
             ) { result in
                 guard let post = EEAssertSuccess(result, description, expectation) else { return }
 
@@ -62,8 +72,12 @@ class NetworkLightTransformerTests: NetworkTestCase {
         expect("Update Post") { description, expectation in
             let object = Constants.post
             rest.update(
-                path: Constants.posts, id: "1", object: object, headers: [:],
-                requestTransformer: PostLightTransformer(), responseTransformer: PostLightTransformer()
+                path: Constants.posts,
+                id: "1",
+                object: object,
+                headers: [:],
+                requestTransformer: PostLightTransformer(),
+                responseTransformer: PostLightTransformer()
             ) { result in
                 guard let post = EEAssertSuccess(result, description, expectation) else { return }
 
@@ -77,8 +91,12 @@ class NetworkLightTransformerTests: NetworkTestCase {
         expect("Update Partial Post") { description, expectation in
             let object = Constants.partialPost
             rest.partialUpdate(
-                path: Constants.posts, id: "1", object: object, headers: [:],
-                requestTransformer: PartialPostLightTransformer(), responseTransformer: PostLightTransformer()
+                path: Constants.posts,
+                id: "1",
+                object: object,
+                headers: [:],
+                requestTransformer: PartialPostLightTransformer(),
+                responseTransformer: PostLightTransformer()
             ) { result in
                 guard let post = EEAssertSuccess(result, description, expectation) else { return }
 
@@ -90,10 +108,7 @@ class NetworkLightTransformerTests: NetworkTestCase {
 
     func testPostDelete() {
         expect("Delete Post") { description, expectation in
-            rest.delete(
-                path: Constants.posts, id: "1", headers: [:],
-                responseTransformer: VoidLightTransformer()
-            ) { result in
+            rest.delete(path: Constants.posts, id: "1", headers: [:], responseTransformer: VoidLightTransformer()) { result in
                 guard EEAssertSuccess(result, description, expectation) != nil else { return }
 
                 expectation.fulfill()
@@ -106,7 +121,10 @@ class NetworkLightTransformerTests: NetworkTestCase {
     func testUsersRead() {
         expect("Read Users") { description, expectation in
             rest.read(
-                path: Constants.users, id: nil, parameters: [:], headers: [:],
+                path: Constants.users,
+                id: nil,
+                parameters: [:],
+                headers: [:],
                 responseTransformer: ArrayLightTransformer(transformer: UserLightTransformer())
             ) { result in
                 guard let users = EEAssertSuccess(result, description, expectation) else { return }
@@ -120,7 +138,10 @@ class NetworkLightTransformerTests: NetworkTestCase {
     func testUserRead() {
         expect("Read User") { description, expectation in
             rest.read(
-                path: Constants.users, id: "1", parameters: [:], headers: [:],
+                path: Constants.users,
+                id: "1",
+                parameters: [:],
+                headers: [:],
                 responseTransformer: UserLightTransformer()
             ) { result in
                 guard EEAssertSuccess(result, description, expectation) != nil else { return }

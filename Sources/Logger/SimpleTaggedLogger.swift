@@ -23,7 +23,8 @@ public class SimpleTaggedLogger: TaggedLogger {
     public func log(
         _ message: @autoclosure () -> String,
         meta: @autoclosure () -> [String: String],
-        level: LoggingLevel, tag: String,
+        level: LoggingLevel,
+        tag: String,
         function: String
     ) {
         logger.log(message(), meta: meta(), level: level, tag: tag, function: function)

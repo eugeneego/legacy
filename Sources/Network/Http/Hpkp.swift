@@ -32,8 +32,15 @@ public class Hpkp {
         checkChain: Bool,
         checkHost: Bool
     ) -> Bool {
-        let result = verifyPublicKeys(serverTrust: serverTrust, host: host, algorithms: algorithms,
-            hashes: hashes, hashCache: Cache.instance, checkChain: checkChain, checkHost: checkHost)
+        let result = verifyPublicKeys(
+            serverTrust: serverTrust,
+            host: host,
+            algorithms: algorithms,
+            hashes: hashes,
+            hashCache: Cache.instance,
+            checkChain: checkChain,
+            checkHost: checkHost
+        )
         return result == .success
     }
 

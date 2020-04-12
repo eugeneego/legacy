@@ -14,6 +14,7 @@ public typealias HttpProgressCallback = (_ bytes: Int64?, _ totalBytes: Int64?) 
 public protocol HttpProgress {
     var bytes: Int64? { get }
     var totalBytes: Int64? { get }
+
     func setCallback(_ callback: HttpProgressCallback?)
 }
 
@@ -67,28 +68,29 @@ public enum HttpMethod {
     }
 }
 
+public enum HttpBody {
+    case data(Data)
+    case stream(InputStream)
+}
+
 public extension Http {
     @discardableResult
     func data(
-        method: HttpMethod, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?, completion: @escaping HttpCompletion
+        method: HttpMethod,
+        url: URL,
+        urlParameters: [String: String],
+        headers: [String: String],
+        body: HttpBody?,
+        completion: @escaping HttpCompletion
     ) -> HttpTask {
-        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: nil)
-        return data(request: req, completion: completion)
-    }
-
-    @discardableResult
-    func data(
-        method: HttpMethod, url: URL, urlParameters: [String: String],
-        headers: [String: String], bodyStream: InputStream?, completion: @escaping HttpCompletion
-    ) -> HttpTask {
-        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: nil, bodyStream: bodyStream)
+        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
         return data(request: req, completion: completion)
     }
 
     @discardableResult
     func data<T: HttpSerializer>(
-        request: URLRequest, serializer: T,
+        request: URLRequest,
+        serializer: T,
         completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
     ) -> HttpTask {
         data(request: request) { response, data, error in
@@ -122,15 +124,21 @@ public extension Http {
     }
 
     func request(
-        method: String, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?, bodyStream: InputStream?
+        method: HttpMethod,
+        url: URL,
+        urlParameters: [String: String],
+        headers: [String: String],
+        body: HttpBody?
     ) -> URLRequest {
         var request = URLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
-        request.httpMethod = method
-        if let bodyStream = bodyStream {
-            request.httpBodyStream = bodyStream
-        } else {
-            request.httpBody = body
+        request.httpMethod = method.value
+        switch body {
+            case .data(let data):
+                request.httpBody = data
+            case .stream(let stream):
+                request.httpBodyStream = stream
+            case nil:
+                break
         }
         headers.forEach { name, value in
             request.setValue(value, forHTTPHeaderField: name)
@@ -138,23 +146,19 @@ public extension Http {
         return request
     }
 
-    func request(
-        method: HttpMethod, url: URL, urlParameters: [String: String],
-        headers: [String: String], body: Data?, bodyStream: InputStream?
-    ) -> URLRequest {
-        request(method: method.value, url: url, urlParameters: urlParameters, headers: headers, body: body, bodyStream: bodyStream)
-    }
-
     func request<T: HttpSerializer>(
-        method: HttpMethod, url: URL, urlParameters: [String: String],
+        method: HttpMethod,
+        url: URL,
+        urlParameters: [String: String],
         headers: [String: String],
-        object: T.Value?, serializer: T
+        object: T.Value?,
+        serializer: T
     ) -> Result<URLRequest, HttpError> {
         let body = serializer.serialize(object)
         return body.map(
             success: { body in
-                let data = !body.isEmpty ? body : nil
-                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: data, bodyStream: nil)
+                let data: HttpBody? = !body.isEmpty ? .data(body) : nil
+                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: data)
                 req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
                 return .success(req)
             },

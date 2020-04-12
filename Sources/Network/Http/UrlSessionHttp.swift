@@ -29,8 +29,10 @@ open class UrlSessionHttp: Http {
     private let delegateObject: Delegate
 
     public init(
-        configuration: URLSessionConfiguration, responseQueue: DispatchQueue,
-        logger: Logger? = nil, loggerTag: String = String(describing: UrlSessionHttp.self)
+        configuration: URLSessionConfiguration,
+        responseQueue: DispatchQueue,
+        logger: Logger? = nil,
+        loggerTag: String = String(describing: UrlSessionHttp.self)
     ) {
         self.logger = logger
         self.loggerTag = loggerTag
@@ -83,9 +85,12 @@ open class UrlSessionHttp: Http {
     }
 
     private func log(
-        _ response: URLResponse?, _ request: URLRequest,
-        _ data: Data?, _ error: NSError?,
-        duration: TimeInterval, date: Date
+        _ response: URLResponse?,
+        _ request: URLRequest,
+        _ data: Data?,
+        _ error: NSError?,
+        duration: TimeInterval,
+        date: Date
     ) {
         guard let logger = logger else { return }
 
@@ -222,7 +227,8 @@ open class UrlSessionHttp: Http {
         }
 
         func urlSession(
-            _ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
+            _ session: URLSession,
+            didReceive challenge: URLAuthenticationChallenge,
             completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
         ) {
             var disposition: URLSession.AuthChallengeDisposition = .performDefaultHandling
@@ -244,8 +250,11 @@ open class UrlSessionHttp: Http {
         }
 
         func urlSession(
-            _ session: URLSession, task: URLSessionTask,
-            didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64
+            _ session: URLSession,
+            task: URLSessionTask,
+            didSendBodyData bytesSent: Int64,
+            totalBytesSent: Int64,
+            totalBytesExpectedToSend: Int64
         ) {
             guard let httpTask = tasks.first(where: { $0.task === task }) else { return }
 
@@ -256,7 +265,9 @@ open class UrlSessionHttp: Http {
         }
 
         func urlSession(
-            _ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse,
+            _ session: URLSession,
+            dataTask: URLSessionDataTask,
+            didReceive response: URLResponse,
             completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
         ) {
             guard let httpTask = tasks.first(where: { $0.task === dataTask }) else { return completionHandler(.cancel) }

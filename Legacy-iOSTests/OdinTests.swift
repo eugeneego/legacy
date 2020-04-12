@@ -11,7 +11,7 @@
 import XCTest
 @testable import Legacy
 
-private protocol Test: class {
+private protocol Test: AnyObject {
 }
 
 private protocol TestDependency {
