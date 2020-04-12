@@ -78,9 +78,9 @@ public extension Http {
     func data(
         method: HttpMethod,
         url: URL,
-        urlParameters: [String: String],
-        headers: [String: String],
-        body: HttpBody?,
+        urlParameters: [String: String] = [:],
+        headers: [String: String] = [:],
+        body: HttpBody? = nil,
         completion: @escaping HttpCompletion
     ) -> HttpTask {
         let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
@@ -126,9 +126,9 @@ public extension Http {
     func request(
         method: HttpMethod,
         url: URL,
-        urlParameters: [String: String],
-        headers: [String: String],
-        body: HttpBody?
+        urlParameters: [String: String] = [:],
+        headers: [String: String] = [:],
+        body: HttpBody? = nil
     ) -> URLRequest {
         var request = URLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
         request.httpMethod = method.value
@@ -149,9 +149,9 @@ public extension Http {
     func request<T: HttpSerializer>(
         method: HttpMethod,
         url: URL,
-        urlParameters: [String: String],
-        headers: [String: String],
-        object: T.Value?,
+        urlParameters: [String: String] = [:],
+        headers: [String: String] = [:],
+        object: T.Value? = nil,
         serializer: T
     ) -> Result<URLRequest, HttpError> {
         let body = serializer.serialize(object)
