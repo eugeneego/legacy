@@ -39,9 +39,9 @@ open class UrlSessionHttp: Http {
         self.responseQueue = responseQueue
 
         let delegateQueue = OperationQueue()
-        delegateQueue.qualityOfService = .utility
+        delegateQueue.qualityOfService = .userInitiated
         delegateQueue.maxConcurrentOperationCount = 1
-        delegateObject = Delegate(queue: delegateQueue)
+        delegateObject = Delegate(queue: delegateQueue, responseQueue: responseQueue)
         session = URLSession(configuration: configuration, delegate: delegateObject, delegateQueue: delegateQueue)
     }
 
@@ -215,9 +215,11 @@ open class UrlSessionHttp: Http {
         var trustPolicies: [String: ServerTrustPolicy] = [:]
         private var tasks: [Task] = []
         private let queue: OperationQueue
+        private let responseQueue: DispatchQueue
 
-        init(queue: OperationQueue) {
+        init(queue: OperationQueue, responseQueue: DispatchQueue) {
             self.queue = queue
+            self.responseQueue = responseQueue
         }
 
         func add(task: Task) {
@@ -261,7 +263,9 @@ open class UrlSessionHttp: Http {
             let total = totalBytesExpectedToSend != NSURLSessionTransferSizeUnknown ? totalBytesExpectedToSend : nil
             httpTask.upload.bytes = totalBytesSent
             httpTask.upload.totalBytes = total
-            httpTask.upload.callback?(httpTask.upload.bytes, httpTask.upload.totalBytes)
+            responseQueue.async {
+                httpTask.upload.callback?(totalBytesSent, total)
+            }
         }
 
         func urlSession(
@@ -274,7 +278,10 @@ open class UrlSessionHttp: Http {
 
             let total = response.expectedContentLength != NSURLSessionTransferSizeUnknown ? response.expectedContentLength : nil
             httpTask.download.totalBytes = total
-            httpTask.download.callback?(httpTask.download.bytes, httpTask.download.totalBytes)
+            let bytes = httpTask.download.bytes
+            responseQueue.async {
+                httpTask.download.callback?(bytes, total)
+            }
             completionHandler(.allow)
         }
 
@@ -282,8 +289,12 @@ open class UrlSessionHttp: Http {
             guard let httpTask = tasks.first(where: { $0.task === dataTask }) else { return }
 
             httpTask.data.append(data)
-            httpTask.download.bytes = Int64(httpTask.data.count)
-            httpTask.download.callback?(httpTask.download.bytes, httpTask.download.totalBytes)
+            let bytes = Int64(httpTask.data.count)
+            httpTask.download.bytes = bytes
+            let total = httpTask.download.totalBytes
+            responseQueue.async {
+                httpTask.download.callback?(bytes, total)
+            }
         }
 
         func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
