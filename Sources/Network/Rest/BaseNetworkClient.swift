@@ -46,7 +46,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         responseSerializer: ResponseSerializer,
         completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
     ) -> NetworkTask {
-        let task = Task()
+        let task = Task<ResponseSerializer>()
 
         let http = self.http
         let baseUrl = self.baseURL
@@ -87,7 +87,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             authorizer.authorize(request: request) { result in
                 switch result {
                     case .success(let request):
-                        let httpTask = http.data(request: request, serializer: responseSerializer) { response, object, data, error in
+                        let httpTask = http.data(request: request, serializer: responseSerializer)
+                        httpTask.completion = { response, object, data, error in
                             task.httpTask = nil
 
                             if case .status(let code, let error)? = error {
@@ -116,7 +117,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
                             authorizeAndRunRequest(requestAuthorizer, request, nil)
                         }
                     } else {
-                        let httpTask = http.data(request: request, serializer: responseSerializer) { response, object, data, error in
+                        let httpTask = http.data(request: request, serializer: responseSerializer)
+                        httpTask.completion = { response, object, data, error in
                             task.httpTask = nil
 
                             if case .status(let code, let error)? = error {
@@ -243,7 +245,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
 
         var progress: HttpProgress? {
             didSet {
-                progress?.setCallback(callback)
+                progress?.callback = callback
             }
         }
 
@@ -252,8 +254,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         }
     }
 
-    private class Task: NetworkTask {
-        var httpTask: HttpTask?
+    private class Task<T: HttpSerializer>: NetworkTask {
+        var httpTask: HttpSerializedDataTask<T>?
         var uploadProgress: HttpProgress { upload }
         var downloadProgress: HttpProgress { download }
 

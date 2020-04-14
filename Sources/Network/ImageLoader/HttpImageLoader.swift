@@ -23,7 +23,8 @@ open class HttpImageLoader: ImageLoader {
         let task = Task(url: url, size: size, mode: mode)
 
         let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)
-        let httpTask = http.data(request: request) { _, data, error in
+        let httpTask = http.data(request: request)
+        httpTask.completion = { _, data, error in
             let asyncCompletion = { (result: Result<(data: Data, image: EEImage), ImageLoaderError>) in
                 DispatchQueue.main.async {
                     completion(result)
@@ -58,7 +59,7 @@ open class HttpImageLoader: ImageLoader {
         let size: CGSize
         let mode: ResizeMode
 
-        var httpTask: HttpTask?
+        var httpTask: HttpDataTask?
 
         init(url: URL, size: CGSize, mode: ResizeMode) {
             self.url = url

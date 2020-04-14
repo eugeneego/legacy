@@ -8,27 +8,39 @@
 
 import Foundation
 
-public typealias HttpCompletion = (HTTPURLResponse?, Data?, HttpError?) -> Void
+public typealias HttpDataCompletion = (HTTPURLResponse?, Data?, HttpError?) -> Void
+public typealias HttpDownloadCompletion = (HTTPURLResponse?, URL?, HttpError?) -> Void
 public typealias HttpProgressCallback = (_ bytes: Int64?, _ totalBytes: Int64?) -> Void
 
-public protocol HttpProgress {
+public protocol HttpProgress: AnyObject {
     var bytes: Int64? { get }
     var totalBytes: Int64? { get }
-
-    func setCallback(_ callback: HttpProgressCallback?)
+    var callback: HttpProgressCallback? { get set }
 }
 
-public protocol HttpTask {
+public protocol HttpDataTask: AnyObject {
     var uploadProgress: HttpProgress { get }
     var downloadProgress: HttpProgress { get }
+    var completion: HttpDataCompletion? { get set }
 
     func resume()
     func cancel()
 }
 
-public protocol Http {
+public protocol HttpDownloadTask: AnyObject {
+    var uploadProgress: HttpProgress { get }
+    var downloadProgress: HttpProgress { get }
+    var completion: HttpDownloadCompletion? { get set }
+
+    func resume()
+    func cancel()
+}
+
+public protocol Http: AnyObject {
     @discardableResult
-    func data(request: URLRequest, completion: @escaping HttpCompletion) -> HttpTask
+    func data(request: URLRequest) -> HttpDataTask
+    @discardableResult
+    func download(request: URLRequest) -> HttpDownloadTask
 }
 
 public enum HttpError: Error {
@@ -37,7 +49,6 @@ public enum HttpError: Error {
     case unreachable(Error)
     case error(Error)
     case status(code: Int, error: Error?)
-    case serialization(HttpSerializationError)
 }
 
 public enum HttpMethod {
@@ -80,32 +91,22 @@ public extension Http {
         url: URL,
         urlParameters: [String: String] = [:],
         headers: [String: String] = [:],
-        body: HttpBody? = nil,
-        completion: @escaping HttpCompletion
-    ) -> HttpTask {
+        body: HttpBody? = nil
+    ) -> HttpDataTask {
         let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        return data(request: req, completion: completion)
+        return data(request: req)
     }
 
     @discardableResult
-    func data<T: HttpSerializer>(
-        request: URLRequest,
-        serializer: T,
-        completion: @escaping (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
-    ) -> HttpTask {
-        data(request: request) { response, data, error in
-            if let error = error {
-                completion(response, nil, data, error)
-            } else {
-                let result = serializer.deserialize(data)
-                switch result {
-                    case .success(let value):
-                        completion(response, value, data, error)
-                    case .failure(let error):
-                        completion(response, nil, data, .serialization(error))
-                }
-            }
-        }
+    func download(
+        method: HttpMethod,
+        url: URL,
+        urlParameters: [String: String] = [:],
+        headers: [String: String] = [:],
+        body: HttpBody? = nil
+    ) -> HttpDownloadTask {
+        let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
+        return download(request: req)
     }
 
     func urlWithParameters(url: URL, parameters: [String: String]) -> URL {
@@ -144,25 +145,5 @@ public extension Http {
             request.setValue(value, forHTTPHeaderField: name)
         }
         return request
-    }
-
-    func request<T: HttpSerializer>(
-        method: HttpMethod,
-        url: URL,
-        urlParameters: [String: String] = [:],
-        headers: [String: String] = [:],
-        object: T.Value? = nil,
-        serializer: T
-    ) -> Result<URLRequest, HttpError> {
-        let body = serializer.serialize(object)
-        return body.map(
-            success: { body in
-                let data: HttpBody? = !body.isEmpty ? .data(body) : nil
-                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: data)
-                req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
-                return .success(req)
-            },
-            failure: { .failure(.serialization($0)) }
-        )
     }
 }

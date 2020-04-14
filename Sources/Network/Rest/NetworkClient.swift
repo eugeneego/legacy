@@ -15,7 +15,7 @@ public enum NetworkError: Error {
     case error(error: HttpError?, response: HTTPURLResponse?, data: Data?)
 }
 
-public protocol NetworkTask {
+public protocol NetworkTask: AnyObject {
     var uploadProgress: HttpProgress { get }
     var downloadProgress: HttpProgress { get }
 

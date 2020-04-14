@@ -20,7 +20,7 @@ public enum ImageLoaderError: Error {
     case unknown(Error?)
 }
 
-public protocol ImageLoaderTask {
+public protocol ImageLoaderTask: AnyObject {
     var url: URL { get }
     var size: CGSize { get }
     var mode: ResizeMode { get }
