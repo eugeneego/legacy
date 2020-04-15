@@ -40,7 +40,7 @@ public protocol Http: AnyObject {
     @discardableResult
     func data(request: URLRequest) -> HttpDataTask
     @discardableResult
-    func download(request: URLRequest) -> HttpDownloadTask
+    func download(request: URLRequest, destination: URL) -> HttpDownloadTask
 }
 
 public enum HttpError: Error {
@@ -103,22 +103,22 @@ public extension Http {
         url: URL,
         urlParameters: [String: String] = [:],
         headers: [String: String] = [:],
-        body: HttpBody? = nil
+        body: HttpBody? = nil,
+        destination: URL
     ) -> HttpDownloadTask {
         let req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        return download(request: req)
+        return download(request: req, destination: destination)
     }
 
     func urlWithParameters(url: URL, parameters: [String: String]) -> URL {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else { return url }
 
         if !parameters.isEmpty {
-            let serializer = UrlEncodedHttpSerializer()
-            var params = serializer.deserialize(components.query ?? "")
+            var queryItems = components.queryItems ?? []
             parameters.forEach { key, value in
-                params[key] = value
+                queryItems.append(URLQueryItem(name: key, value: value))
             }
-            components.percentEncodedQuery = serializer.serialize(params)
+            components.queryItems = queryItems
         }
 
         return components.url ?? url

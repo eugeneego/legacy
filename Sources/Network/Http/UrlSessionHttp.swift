@@ -46,14 +46,14 @@ open class UrlSessionHttp: Http {
 
     open func data(request: URLRequest) -> HttpDataTask {
         let dataTask = session.dataTask(with: request)
-        let task = DataTask(task: dataTask, request: request, responseQueue: responseQueue, logger: logger)
+        let task = DataTask(task: dataTask, request: request, queue: responseQueue, logger: logger)
         delegateObject.add(task: task)
         return task
     }
 
-    open func download(request: URLRequest) -> HttpDownloadTask {
+    open func download(request: URLRequest, destination: URL) -> HttpDownloadTask {
         let downloadTask = session.downloadTask(with: request)
-        let task = DownloadTask(task: downloadTask, request: request, responseQueue: responseQueue, logger: logger)
+        let task = DownloadTask(task: downloadTask, destination: destination, request: request, queue: responseQueue, logger: logger)
         delegateObject.add(task: task)
         return task
     }
@@ -76,15 +76,15 @@ open class UrlSessionHttp: Http {
 
         var startDate: Date = Date()
         let request: URLRequest
-        let responseQueue: DispatchQueue
+        let queue: DispatchQueue
         let logger: HttpLogger?
 
         var internalCompletion: (URLResponse?, Error?) -> Void { { _, _ in } }
 
-        init(task: URLSessionTask, request: URLRequest, responseQueue: DispatchQueue, logger: HttpLogger?) {
+        init(task: URLSessionTask, request: URLRequest, queue: DispatchQueue, logger: HttpLogger?) {
             self.task = task
             self.request = request
-            self.responseQueue = responseQueue
+            self.queue = queue
             self.logger = logger
         }
 
@@ -106,17 +106,20 @@ open class UrlSessionHttp: Http {
 
         var completion: Completion?
         var result: T? { nil }
+        var error: Error?
 
         override var internalCompletion: (URLResponse?, Error?) -> Void { resultCompletion }
 
         private lazy var resultCompletion: (URLResponse?, Error?) -> Void = { [weak self] response, error in
             guard let self = self else { return }
 
+            let error = error ?? self.error
+
             let resultString = self.log(result: self.result, response: response)
             self.logger?.log(response, self.request, resultString, error as NSError?, startDate: self.startDate, date: Date())
 
             let completion: Completion = { response, result, error in
-                self.responseQueue.async {
+                self.queue.async {
                     self.completion?(response, result, error)
                 }
             }
@@ -151,11 +154,17 @@ open class UrlSessionHttp: Http {
 
     private class DownloadTask: ResultTask<URL>, HttpDownloadTask {
         var url: URL?
+        let destination: URL
 
         override var result: URL? { url }
 
         override func log(result: URL?, response: URLResponse?) -> String {
             logger?.log(result) ?? ""
+        }
+
+        init(task: URLSessionTask, destination: URL, request: URLRequest, queue: DispatchQueue, logger: HttpLogger?) {
+            self.destination = destination
+            super.init(task: task, request: request, queue: queue, logger: logger)
         }
     }
 
@@ -267,7 +276,13 @@ open class UrlSessionHttp: Http {
         func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
             guard let httpTask = tasks.first(where: { $0.task === downloadTask }) as? DownloadTask else { return }
 
-            httpTask.url = location
+            do {
+                try? FileManager.default.removeItem(at: httpTask.destination)
+                try FileManager.default.moveItem(at: location, to: httpTask.destination)
+                httpTask.url = httpTask.destination
+            } catch {
+                httpTask.error = error
+            }
         }
 
         func urlSession(
@@ -311,7 +326,7 @@ open class UrlSessionHttp: Http {
             }
             let string =
                 """
-                __
+                \n__
                 \(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))
                 \(tag) Headers: \(nils(logHeaders(request.allHTTPHeaderFields)))
                 \(tag) Body: \(nils(body))
@@ -334,7 +349,7 @@ open class UrlSessionHttp: Http {
             let tag = "→"
             let string =
                 """
-                __
+                \n__
                 \(tag) Request: \(nils(request.httpMethod)) \(nils(request.url))
                 \(tag) Response: \(nils(urlResponse?.statusCode)), Duration: \(String(format: "%0.3f", duration)) s
                 \(tag) Headers: \(nils(logHeaders(urlResponse?.allHeaderFields)))
