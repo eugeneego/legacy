@@ -20,6 +20,10 @@ public class SimpleTaggedLogger: TaggedLogger {
         self.init(logger: logger, tag: String(describing: type(of: object)))
     }
 
+    public convenience init(logger: Logger, for type: Any.Type) {
+        self.init(logger: logger, tag: String(describing: type))
+    }
+
     public func log(
         _ message: @autoclosure () -> String,
         meta: @autoclosure () -> [String: String],
