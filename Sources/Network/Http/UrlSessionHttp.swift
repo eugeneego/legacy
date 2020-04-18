@@ -323,7 +323,7 @@ open class UrlSessionHttp: Http {
                 } else {
                     return "\(data.count) bytes"
                 }
-            }
+            } ?? request.httpBodyStream.map { _ in "stream" }
             let string =
                 """
                 \n__
