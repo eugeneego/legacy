@@ -8,13 +8,14 @@
 
 import Foundation
 
+public enum JsonHttpSerializerError: Error {
+    case serialization(Error)
+    case deserialization(Error)
+}
+
 public struct JsonHttpSerializer: HttpSerializer {
     public typealias Value = Any
-
-    public enum Error: Swift.Error {
-        case serialization(Swift.Error)
-        case deserialization(Swift.Error)
-    }
+    public typealias Error = JsonHttpSerializerError
 
     public let contentType: String = "application/json"
 
@@ -33,7 +34,7 @@ public struct JsonHttpSerializer: HttpSerializer {
         guard let data = data, !data.isEmpty else { return .success([:]) }
 
         return Result(
-            catching: { try JSONSerialization.jsonObject(with: data, options: .allowFragments) },
+            catching: { try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) },
             unknown: { HttpSerializationError.error(Error.deserialization($0)) }
         )
     }
