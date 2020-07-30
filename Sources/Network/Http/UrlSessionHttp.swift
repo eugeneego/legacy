@@ -386,7 +386,7 @@ open class UrlSessionHttp: Http {
         }
 
         private func isText(type: String) -> Bool {
-            type.contains("json") || type.contains("xml") || type.contains("text")
+            type.contains("json") || type.contains("xml") || type.contains("text") || type.contains("www-form-urlencoded")
         }
     }
 
