@@ -224,6 +224,8 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPad11,2": "iPad mini 5 (Wi-Fi, Cellular)",
         "iPad11,3": "iPad Air 3 (Wi-Fi)",
         "iPad11,4": "iPad Air 3 (Wi-Fi, Cellular)",
+        "iPad11,6": "iPad (10.2\", 8th Gen, Wi-Fi)",
+        "iPad11,7": "iPad (10.2\", 8th Gen, Wi-Fi, Cellular)",
 
         "iPod1,1": "iPod Touch",
         "iPod2,1": "iPod Touch (2nd Generation)",
@@ -251,6 +253,14 @@ public struct DeviceInfo: CustomStringConvertible {
         "Watch5,2": "Apple Watch Series 5 (44mm, GPS)",
         "Watch5,3": "Apple Watch Series 5 (40mm, GPS, Cellular)",
         "Watch5,4": "Apple Watch Series 5 (44mm, GPS, Cellular)",
+        "Watch5,9": "Apple Watch SE (40mm, GPS)",
+        "Watch5,10": "Apple Watch SE (40mm, GPS)",
+        "Watch5,11": "Apple Watch SE (40mm, GPS, Cellular)",
+        "Watch5,12": "Apple Watch SE (44mm, GPS, Cellular)",
+        "Watch6,1": "Apple Watch Series 6 (40mm, GPS)",
+        "Watch6,2": "Apple Watch Series 6 (44mm, GPS)",
+        "Watch6,3": "Apple Watch Series 6 (40mm, GPS, Cellular)",
+        "Watch6,4": "Apple Watch Series 6 (44mm, GPS, Cellular)",
 
         "AppleTV5,3": "Apple TV (4th Generation)",
         "AppleTV6,2": "Apple TV 4K",
