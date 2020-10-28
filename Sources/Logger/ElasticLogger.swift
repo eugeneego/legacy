@@ -98,7 +98,9 @@ public class ElasticLogger: Logger {
         meta: @autoclosure () -> [String: String],
         level: LoggingLevel,
         tag: String,
-        function: String
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
     ) {
         let timestamp = ElasticLogger.timestampFormatter.string(from: Date())
         let message = message()
@@ -108,7 +110,7 @@ public class ElasticLogger: Logger {
             "@timestamp": timestamp,
             "severity": severity(for: level),
             "tag": tag,
-            "function": function,
+            "function": "\(function)",
             "message": message,
         ]
         meta.forEach { logData[$0.key] = $0.value }

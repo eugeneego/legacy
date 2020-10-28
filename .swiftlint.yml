@@ -88,7 +88,6 @@ comma: error
 colon:
   severity: error
 opening_brace: error
-empty_count: error
 legacy_constructor: error
 statement_position:
   statement_mode: default
