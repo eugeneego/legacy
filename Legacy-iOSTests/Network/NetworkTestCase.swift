@@ -29,7 +29,7 @@ class NetworkTestCase: XCTestCase {
         configuration.urlCache = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         let queue = DispatchQueue.global(qos: .default)
-        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: nil)
+        let http = UrlSessionHttp(configuration: configuration, responseQueue: queue, logger: PrintLogger())
         let rest = BaseRestClient(http: http, baseURL: baseUrl, workQueue: queue, completionQueue: DispatchQueue.main)
         return rest
     }()

@@ -29,8 +29,10 @@ public class SimpleTaggedLogger: TaggedLogger {
         meta: @autoclosure () -> [String: String],
         level: LoggingLevel,
         tag: String,
-        function: String
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
     ) {
-        logger.log(message(), meta: meta(), level: level, tag: tag, function: function)
+        logger.log(message(), meta: meta(), level: level, tag: tag, file: file, function: function, line: line)
     }
 }

@@ -30,7 +30,9 @@ public protocol TaggedLogger: Logger {
         _ message: @autoclosure () -> String,
         meta: @autoclosure () -> [String: String],
         level: LoggingLevel,
-        function: String
+        file: StaticString,
+        function: StaticString,
+        line: UInt
     )
 }
 
@@ -39,28 +41,60 @@ public extension TaggedLogger {
         _ message: @autoclosure () -> String,
         meta: @autoclosure () -> [String: String] = [:],
         level: LoggingLevel,
-        function: String = #function
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
     ) {
-        log(message(), meta: meta(), level: level, tag: tag, function: function)
+        log(message(), meta: meta(), level: level, tag: tag, file: file, function: function, line: line)
     }
 
-    func verbose(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
-        log(message(), meta: meta(), level: .verbose, function: function)
+    func verbose(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String] = [:],
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) {
+        log(message(), meta: meta(), level: .verbose, file: file, function: function, line: line)
     }
 
-    func debug(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
-        log(message(), meta: meta(), level: .debug, function: function)
+    func debug(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String] = [:],
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) {
+        log(message(), meta: meta(), level: .debug, file: file, function: function, line: line)
     }
 
-    func info(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
-        log(message(), meta: meta(), level: .info, function: function)
+    func info(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String] = [:],
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) {
+        log(message(), meta: meta(), level: .info, file: file, function: function, line: line)
     }
 
-    func warning(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
-        log(message(), meta: meta(), level: .warning, function: function)
+    func warning(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String] = [:],
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) {
+        log(message(), meta: meta(), level: .warning, file: file, function: function, line: line)
     }
 
-    func error(_ message: @autoclosure () -> String, meta: @autoclosure () -> [String: String] = [:], function: String = #function) {
-        log(message(), meta: meta(), level: .error, function: function)
+    func error(
+        _ message: @autoclosure () -> String,
+        meta: @autoclosure () -> [String: String] = [:],
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) {
+        log(message(), meta: meta(), level: .error, file: file, function: function, line: line)
     }
 }

@@ -37,8 +37,11 @@ public class PrintLogger: Logger {
         meta: @autoclosure () -> [String: String],
         level: LoggingLevel,
         tag: String,
-        function: String
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
     ) {
-        print("\(dateFormatter.string(from: Date())) \(name(for: level)) \(tag)\(function.isEmpty ? "" : ".\(function)") \(message())")
+        let date = dateFormatter.string(from: Date())
+        print("\(date) \(name(for: level)) \(tag)\(function.utf8CodeUnitCount == 0 ? "" : ".\(function)") \(message())")
     }
 }

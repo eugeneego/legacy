@@ -26,11 +26,13 @@ public class FilteringLogger: Logger {
         meta: @autoclosure () -> [String: String],
         level: LoggingLevel,
         tag: String,
-        function: String
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
     ) {
         let configLevel = tagLoggingLevels[tag] ?? defaultLoggingLevel
         guard level.isEnabled(for: configLevel) else { return }
 
-        logger.log(message(), meta: meta(), level: level, tag: tag, function: function)
+        logger.log(message(), meta: meta(), level: level, tag: tag, file: file, function: function, line: line)
     }
 }
