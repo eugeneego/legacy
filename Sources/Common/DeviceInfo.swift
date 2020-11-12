@@ -165,6 +165,11 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPhone12,1": "iPhone 11",
         "iPhone12,3": "iPhone 11 Pro",
         "iPhone12,5": "iPhone 11 Pro Max",
+        "iPhone12,8": "iPhone SE (2nd Gen)",
+        "iPhone13,1": "iPhone 12 Mini",
+        "iPhone13,2": "iPhone 12",
+        "iPhone13,3": "iPhone 12 Pro",
+        "iPhone13,4": "iPhone 12 Pro Max",
 
         "iPad1,1": "iPad",
         "iPad2,1": "iPad 2 (Wi-Fi)",
@@ -226,6 +231,8 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPad11,4": "iPad Air 3 (Wi-Fi, Cellular)",
         "iPad11,6": "iPad (10.2\", 8th Gen, Wi-Fi)",
         "iPad11,7": "iPad (10.2\", 8th Gen, Wi-Fi, Cellular)",
+        "iPad13,1": "iPad Air 4 (Wi-Fi)",
+        "iPad13,2": "iPad Air 4 (Wi-Fi, Cellular)",
 
         "iPod1,1": "iPod Touch",
         "iPod2,1": "iPod Touch (2nd Generation)",
