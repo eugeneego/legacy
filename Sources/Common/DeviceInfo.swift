@@ -67,10 +67,26 @@ public struct DeviceInfo: CustomStringConvertible {
 
     /// Initializes with a bundle.
     public init(bundle: Bundle) {
+        let processInfo = ProcessInfo.processInfo
+
+        let version = processInfo.operatingSystemVersion
+        let versionString = "\(version.majorVersion).\(version.minorVersion)\(version.patchVersion == 0 ? "" : ".\(version.patchVersion)")"
+
         #if os(iOS) || os(tvOS)
         let device = UIDevice.current
-        system = device.systemName
-        systemVersion = device.systemVersion
+        if #available(iOS 14.0, tvOS 14.0, *), processInfo.isiOSAppOnMac {
+            system = "\(device.systemName) (macOS, Native)"
+            systemVersion = "\(device.systemVersion) / \(versionString)"
+            machineName = Self.product
+        } else if #available(iOS 13.0, tvOS 13.0, *), processInfo.isMacCatalystApp {
+            system = "\(device.systemName) (macOS, Catalyst)"
+            systemVersion = "\(device.systemVersion) (\(versionString))"
+            machineName = Self.product
+        } else {
+            system = device.systemName
+            systemVersion = device.systemVersion
+            machineName = Self.machine
+        }
         identifierForVendor = device.identifierForVendor
         #elseif os(watchOS)
         let device = WKInterfaceDevice.current()
@@ -81,17 +97,16 @@ public struct DeviceInfo: CustomStringConvertible {
         } else {
             identifierForVendor = nil
         }
+        machineName = Self.machine
         #elseif os(macOS)
         system = "macOS"
-        let processInfo = ProcessInfo.processInfo
-        let version = processInfo.operatingSystemVersion
-        systemVersion = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        systemVersion = versionString
         identifierForVendor = nil
+        machineName = Self.product
         #endif
 
-        let localMachineName = DeviceInfo.getMachineName()
-        machineName = localMachineName
-        machineDisplayName = DeviceInfo.machineDisplayNames[machineName] ?? localMachineName
+        let localName = machineName
+        machineDisplayName = Self.machineDisplayNames[machineName] ?? localName
 
         let localBundleName = bundle.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? ""
         bundleName = localBundleName
@@ -116,13 +131,29 @@ public struct DeviceInfo: CustomStringConvertible {
         """
     }
 
-    private static func getMachineName() -> String {
-        var name: [Int32] = [ CTL_HW, HW_MACHINE ]
-        var size: Int = 2
-        sysctl(&name, 2, nil, &size, nil, 0)
-        var machine: [CChar] = Array(repeating: 0, count: size)
-        sysctl(&name, 2, &machine, &size, nil, 0)
-        return String(cString: machine)
+    private static var product: String {
+        sysctlString(keys: [ CTL_HW, HW_PRODUCT ])
+    }
+
+    private static var machine: String {
+        sysctlString(keys: [ CTL_HW, HW_MACHINE ])
+    }
+
+    private static var model: String {
+        sysctlString(keys: [ CTL_HW, HW_MODEL ])
+    }
+
+    private static var target: String {
+        sysctlString(keys: [ CTL_HW, HW_TARGET ])
+    }
+
+    private static func sysctlString(keys: [Int32]) -> String {
+        var keys = keys
+        var size: Int = 0
+        sysctl(&keys, u_int(keys.count), nil, &size, nil, 0)
+        var value: [CChar] = Array(repeating: 0, count: size)
+        sysctl(&keys, 2, &value, &size, nil, 0)
+        return String(cString: value)
     }
 
     private static let machineDisplayNames: [String: String] = [
@@ -170,6 +201,10 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPhone13,2": "iPhone 12",
         "iPhone13,3": "iPhone 12 Pro",
         "iPhone13,4": "iPhone 12 Pro Max",
+        "iPhone14,2": "iPhone 13 Pro",
+        "iPhone14,3": "iPhone 13 Pro Max",
+        "iPhone14,4": "iPhone 13 Mini",
+        "iPhone14,5": "iPhone 13",
 
         "iPad1,1": "iPad",
         "iPad2,1": "iPad 2 (Wi-Fi)",
@@ -231,8 +266,20 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPad11,4": "iPad Air 3 (Wi-Fi, Cellular)",
         "iPad11,6": "iPad (10.2\", 8th Gen, Wi-Fi)",
         "iPad11,7": "iPad (10.2\", 8th Gen, Wi-Fi, Cellular)",
+        "iPad12,1": "iPad (10.2\", 9th Gen, Wi-Fi)",
+        "iPad12,2": "iPad (10.2\", 9th Gen, Wi-Fi, Cellular)",
         "iPad13,1": "iPad Air 4 (Wi-Fi)",
         "iPad13,2": "iPad Air 4 (Wi-Fi, Cellular)",
+        "iPad13,4": "iPad Pro (11\", 3rd Gen, Wi-Fi)",
+        "iPad13,5": "iPad Pro (11\", 3rd Gen, Wi-Fi, Cellular, US)",
+        "iPad13,6": "iPad Pro (11\", 3rd Gen, Wi-Fi, Cellular, Global)",
+        "iPad13,7": "iPad Pro (11\", 3rd Gen, Wi-Fi, Cellular, China)",
+        "iPad13,8": "iPad Pro (12.9\", 5th Gen, Wi-Fi)",
+        "iPad13,9": "iPad Pro (12.9\", 5th Gen, Wi-Fi, Cellular, US)",
+        "iPad13,10": "iPad Pro (12.9\", 5th Gen, Wi-Fi, Cellular, Global)",
+        "iPad13,11": "iPad Pro (12.9\", 5th Gen, Wi-Fi, Cellular, China)",
+        "iPad14,1": "iPad mini 6 (Wi-Fi)",
+        "iPad14,2": "iPad mini 6 (Wi-Fi, Cellular)",
 
         "iPod1,1": "iPod Touch",
         "iPod2,1": "iPod Touch (2nd Generation)",
@@ -261,7 +308,7 @@ public struct DeviceInfo: CustomStringConvertible {
         "Watch5,3": "Apple Watch Series 5 (40mm, GPS, Cellular)",
         "Watch5,4": "Apple Watch Series 5 (44mm, GPS, Cellular)",
         "Watch5,9": "Apple Watch SE (40mm, GPS)",
-        "Watch5,10": "Apple Watch SE (40mm, GPS)",
+        "Watch5,10": "Apple Watch SE (44mm, GPS)",
         "Watch5,11": "Apple Watch SE (40mm, GPS, Cellular)",
         "Watch5,12": "Apple Watch SE (44mm, GPS, Cellular)",
         "Watch6,1": "Apple Watch Series 6 (40mm, GPS)",

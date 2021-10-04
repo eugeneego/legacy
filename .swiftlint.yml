@@ -87,7 +87,9 @@ switch_case_alignment:
 comma: error
 colon:
   severity: error
-opening_brace: error
+opening_brace:
+  allow_multiline_func: false
+  severity: error
 legacy_constructor: error
 statement_position:
   statement_mode: default

@@ -15,8 +15,6 @@ public enum ServerTrustPolicy {
     case `default`(checkHost: Bool)
     case certificates(certificates: [SecCertificate], checkChain: Bool, checkHost: Bool)
     case publicKeys(keys: [SecKey], checkChain: Bool, checkHost: Bool)
-    @available(iOS 10.0, *)
-    @available(macOS 10.12, *)
     case hpkp(hashes: Set<Data>, algorithms: [Hpkp.PublicKeyAlgorithm], checkChain: Bool, checkHost: Bool)
     case custom((_ serverTrust: SecTrust, _ host: String) -> Bool)
     case disabled
@@ -26,7 +24,7 @@ public enum ServerTrustPolicy {
             case .default(let checkHost):
                 let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
                 SecTrustSetPolicies(serverTrust, policy)
-                return trustIsValid(serverTrust)
+                return SecHelper.evaluate(trust: serverTrust)
             case .certificates(let certificates, let checkChain, let checkHost):
                 if checkChain {
                     let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
@@ -35,7 +33,7 @@ public enum ServerTrustPolicy {
                     SecTrustSetAnchorCertificates(serverTrust, certificates as CFArray)
                     SecTrustSetAnchorCertificatesOnly(serverTrust, true)
 
-                    return trustIsValid(serverTrust)
+                    return SecHelper.evaluate(trust: serverTrust)
                 } else {
                     let serverDataArray = dataForTrust(serverTrust)
                     let pinnedDataArray = dataForCertificates(certificates)
@@ -52,7 +50,7 @@ public enum ServerTrustPolicy {
                 if checkChain {
                     let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
                     SecTrustSetPolicies(serverTrust, policy)
-                    if !trustIsValid(serverTrust) {
+                    if !SecHelper.evaluate(trust: serverTrust) {
                         return false
                     }
                 }
@@ -83,15 +81,6 @@ public enum ServerTrustPolicy {
 
     // MARK: - Routines
 
-    private func trustIsValid(_ trust: SecTrust) -> Bool {
-        var isValid = false
-        var result: SecTrustResultType = .invalid
-        if SecTrustEvaluate(trust, &result) == errSecSuccess {
-            isValid = result == .unspecified || result == .proceed
-        }
-        return isValid
-    }
-
     private func dataForTrust(_ trust: SecTrust) -> [Data] {
         var certificates: [SecCertificate] = []
         for index in 0 ..< SecTrustGetCertificateCount(trust) {
@@ -109,44 +98,10 @@ public enum ServerTrustPolicy {
     private func publicKeysForTrust(_ trust: SecTrust) -> [SecKey] {
         var keys: [SecKey] = []
         for index in 0 ..< SecTrustGetCertificateCount(trust) {
-            if let cert = SecTrustGetCertificateAtIndex(trust, index), let key = ServerTrustPolicy.publicKeyForCertificate(cert) {
+            if let cert = SecTrustGetCertificateAtIndex(trust, index), let key = SecHelper.publicKey(certificate: cert) {
                 keys.append(key)
             }
         }
         return keys
-    }
-
-    private static func publicKeyForCertificate(_ certificate: SecCertificate) -> SecKey? {
-        var key: SecKey?
-
-        let policy = SecPolicyCreateBasicX509()
-        var trust: SecTrust?
-        let trustCreationStatus = SecTrustCreateWithCertificates(certificate, policy, &trust)
-
-        if let trust = trust, trustCreationStatus == errSecSuccess {
-            key = SecTrustCopyPublicKey(trust)
-        }
-
-        return key
-    }
-
-    // MARK: - Loading
-
-    public static func certificate(path: String) -> SecCertificate? {
-        let data = try? Data(contentsOf: URL(fileURLWithPath: path))
-        return data.flatMap { SecCertificateCreateWithData(nil, $0 as CFData) }
-    }
-
-    public static func certificate(url: URL) -> SecCertificate? {
-        let data = try? Data(contentsOf: url)
-        return data.flatMap { SecCertificateCreateWithData(nil, $0 as CFData) }
-    }
-
-    public static func publicKey(path: String) -> SecKey? {
-        certificate(path: path).flatMap(publicKeyForCertificate)
-    }
-
-    public static func publicKey(url: URL) -> SecKey? {
-        certificate(url: url).flatMap(publicKeyForCertificate)
     }
 }
