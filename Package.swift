@@ -1,10 +1,10 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
     name: "Legacy",
     platforms: [
-        .iOS(.v9), .tvOS(.v10), .watchOS(.v3), .macOS(.v10_10),
+        .iOS(.v10), .tvOS(.v10), .watchOS(.v3), .macOS(.v10_10),
     ],
     products: [
         .library(name: "Legacy", targets: [ "Legacy" ])

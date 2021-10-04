@@ -13,9 +13,6 @@
 import Foundation
 import CommonCrypto
 
-@available(iOS 10.0, *)
-@available(macOS 10.12, *)
-@available(watchOS 3.0, *)
 public class Hpkp {
     public enum PublicKeyAlgorithm {
         case rsa2048
@@ -78,15 +75,6 @@ public class Hpkp {
         }
     }
 
-    private static func trustIsValid(_ trust: SecTrust) -> Bool {
-        var isValid = false
-        var result: SecTrustResultType = .invalid
-        if SecTrustEvaluate(trust, &result) == errSecSuccess {
-            isValid = result == .unspecified || result == .proceed
-        }
-        return isValid
-    }
-
     private enum Result {
         case success
         case noMatchingPin
@@ -107,7 +95,7 @@ public class Hpkp {
             let sslPolicy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
             SecTrustSetPolicies(serverTrust, sslPolicy)
 
-            if !trustIsValid(serverTrust) {
+            if !SecHelper.evaluate(trust: serverTrust) {
                 return .invalidCertificateChain
             }
         }
@@ -139,12 +127,15 @@ public class Hpkp {
 
         guard let trust = createdTrust else { return nil }
 
-        var result: SecTrustResultType = .invalid
-        SecTrustEvaluate(trust, &result)
+        _ = SecHelper.evaluate(trust: trust)
         guard let publicKey = SecTrustCopyPublicKey(trust) else { return nil }
 
-        let publicKeyData = SecKeyCopyExternalRepresentation(publicKey, nil) as Data?
-        return publicKeyData
+        if #available(macOS 10.12, *) {
+            let publicKeyData = SecKeyCopyExternalRepresentation(publicKey, nil) as Data?
+            return publicKeyData
+        } else {
+            return nil
+        }
     }
 
     // Hash Calculation
