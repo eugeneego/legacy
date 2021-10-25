@@ -315,6 +315,10 @@ public struct DeviceInfo: CustomStringConvertible {
         "Watch6,2": "Apple Watch Series 6 (44mm, GPS)",
         "Watch6,3": "Apple Watch Series 6 (40mm, GPS, Cellular)",
         "Watch6,4": "Apple Watch Series 6 (44mm, GPS, Cellular)",
+        "Watch6,6": "Apple Watch Series 7 (41mm, GPS)",
+        "Watch6,7": "Apple Watch Series 7 (45mm, GPS)",
+        "Watch6,8": "Apple Watch Series 7 (41mm, GPS, Cellular)",
+        "Watch6,9": "Apple Watch Series 7 (45mm, GPS, Cellular)",
 
         "AppleTV5,3": "Apple TV (4th Generation)",
         "AppleTV6,2": "Apple TV 4K",
