@@ -33,9 +33,9 @@ open class HttpImageLoader: ImageLoader {
             }
 
             let processImage = { (data: Data) -> EEImage? in
-                #if os(iOS) || os(tvOS) || os(watchOS)
+                #if os(iOS) || os(tvOS)
                 return EEImage(data: data)?.prerenderedImage()
-                #elseif os(macOS)
+                #else
                 return EEImage(data: data)
                 #endif
             }
