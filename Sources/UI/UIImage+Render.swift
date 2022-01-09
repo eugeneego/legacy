@@ -6,17 +6,17 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 
 import UIKit
 
 public extension UIImage {
-    typealias RenderingActions = (_ rendererContext: UIGraphicsImageRendererContext, _ bounds: CGRect) -> Void
+    typealias Render = (_ rendererContext: UIGraphicsImageRendererContext, _ bounds: CGRect) -> Void
 
-    static func image(size: CGSize, renderingActions: RenderingActions) -> UIImage {
+    static func image(size: CGSize, render: Render) -> UIImage {
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { context in
-            renderingActions(context, renderer.format.bounds)
+            render(context, renderer.format.bounds)
         }
     }
 

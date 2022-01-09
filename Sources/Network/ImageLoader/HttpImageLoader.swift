@@ -30,9 +30,9 @@ open class HttpImageLoader: ImageLoader {
         httpTask.completion = { [completionQueue, prerendered] result in
             let processImage = { (data: Data) -> EEImage? in
                 let image = EEImage(data: data)
-                #if os(iOS) || os(tvOS) || os(watchOS)
+                #if os(iOS) || os(tvOS)
                 return prerendered ? image?.prerenderedImage() : image
-                #elseif os(macOS)
+                #else
                 return image
                 #endif
             }
