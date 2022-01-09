@@ -8,8 +8,20 @@
 
 import Foundation
 
+public struct HttpSerializedResult<ObjectType, DataType> {
+    public var response: HTTPURLResponse?
+    public var object: ObjectType?
+    public var data: DataType?
+    public var error: HttpError?
+
+    public var httpResult: HttpResult<DataType> {
+        HttpResult(response: response, data: data, error: error)
+    }
+}
+
 public class HttpSerializedDataTask<T: HttpSerializer> {
-    public typealias Completion = (HTTPURLResponse?, T.Value?, Data?, HttpError?) -> Void
+    public typealias Result = HttpSerializedResult<T.Value, Data>
+    public typealias Completion = (Result) -> Void
 
     public var uploadProgress: HttpProgress { task.uploadProgress }
     public var downloadProgress: HttpProgress { task.downloadProgress }
@@ -28,18 +40,17 @@ public class HttpSerializedDataTask<T: HttpSerializer> {
     init(task: HttpDataTask, serializer: T) {
         self.task = task
 
-        task.completion = { response, data, error in
-            if let error = error {
-                self.completion?(response, nil, data, error)
-            } else {
-                let result = serializer.deserialize(data)
-                switch result {
+        task.completion = { result in
+            var serializedResult = Result(response: result.response, object: nil, data: result.data, error: result.error)
+            if result.error == nil {
+                switch serializer.deserialize(result.data) {
                     case .success(let value):
-                        self.completion?(response, value, data, error)
+                        serializedResult.object = value
                     case .failure(let error):
-                        self.completion?(response, nil, data, .error(error))
+                        serializedResult.error = .error(error)
                 }
             }
+            self.completion?(serializedResult)
             self.task.completion = nil
         }
     }

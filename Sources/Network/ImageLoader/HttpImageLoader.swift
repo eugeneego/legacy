@@ -14,38 +14,40 @@ import AppKit
 
 open class HttpImageLoader: ImageLoader {
     public let http: Http
+    public let completionQueue: DispatchQueue
+    public let prerendered: Bool
 
-    public init(http: Http) {
+    public init(http: Http, completionQueue: DispatchQueue = .main, prerendered: Bool = true) {
         self.http = http
+        self.completionQueue = completionQueue
+        self.prerendered = prerendered
     }
 
     open func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> ImageLoaderTask {
         let task = Task(url: url, size: size, mode: mode)
-
         let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)
         let httpTask = http.data(request: request)
-        httpTask.completion = { _, data, error in
-            let asyncCompletion = { (result: Result<(data: Data, image: EEImage), ImageLoaderError>) in
-                DispatchQueue.main.async {
-                    completion(result)
-                    task.httpTask = nil
-                }
-            }
-
+        httpTask.completion = { [completionQueue, prerendered] result in
             let processImage = { (data: Data) -> EEImage? in
+                let image = EEImage(data: data)
                 #if os(iOS) || os(tvOS) || os(watchOS)
-                return EEImage(data: data)?.prerenderedImage()
+                return prerendered ? image?.prerenderedImage() : image
                 #elseif os(macOS)
-                return EEImage(data: data)
+                return image
                 #endif
             }
 
-            if let error = error {
-                asyncCompletion(.failure(.http(error)))
-            } else if let data = data, let image = processImage(data) {
-                asyncCompletion(.success((data, image)))
+            let imageResult: ImageLoaderResult
+            if let error = result.error {
+                imageResult = .failure(.http(error))
+            } else if let data = result.data, let image = processImage(data) {
+                imageResult = .success((data, image))
             } else {
-                asyncCompletion(.failure(.creating))
+                imageResult = .failure(.creating)
+            }
+            completionQueue.async {
+                completion(imageResult)
+                task.httpTask = nil
             }
         }
         task.httpTask = httpTask

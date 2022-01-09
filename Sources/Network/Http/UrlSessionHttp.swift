@@ -83,12 +83,15 @@ open class UrlSessionHttp: Http {
             self.logger = logger
         }
 
+        func process(response: URLResponse?, error: Error?) {
+        }
+
         func resume() {
-            if task.state == .suspended {
-                startDate = Date()
-                logger?.log(request, date: startDate)
-                task.resume()
-            }
+            guard task.state == .suspended else { return }
+
+            startDate = Date()
+            logger?.log(request, date: startDate)
+            task.resume()
         }
 
         func cancel() {
@@ -97,38 +100,23 @@ open class UrlSessionHttp: Http {
     }
 
     private class ResultTask<T>: Task {
-        typealias Completion = (HTTPURLResponse?, T?, HttpError?) -> Void
-
-        var completion: Completion?
+        var completion: ((HttpResult<T>) -> Void)?
         var result: T? { nil }
         var error: Error?
 
-        override var internalCompletion: (URLResponse?, Error?) -> Void { resultCompletion }
-
-        private lazy var resultCompletion: (URLResponse?, Error?) -> Void = { [weak self] response, error in
-            guard let self = self else { return }
-
+        override func process(response: URLResponse?, error: Error?) {
             let error = error ?? self.error
+            let resultString = log(result: result, response: response)
+            logger?.log(response, request, resultString, error as NSError?, startDate: startDate, date: Date())
 
-            let resultString = self.log(result: self.result, response: response)
-            self.logger?.log(response, self.request, resultString, error as NSError?, startDate: self.startDate, date: Date())
-
-            let completion: Completion = { response, result, error in
-                self.queue.async {
-                    self.completion?(response, result, error)
-                }
+            var result = HttpResult<T>(response: response as? HTTPURLResponse, data: result, error: error.map(Routines.processError))
+            if let httpResponse = result.response, httpResponse.statusCode >= 400 {
+                result.error = .status(code: httpResponse.statusCode, error: error)
+            } else if let response = response, result.response == nil {
+                result.error = .nonHttpResponse(response: response)
             }
-
-            guard let response = response else {
-                return completion(nil, nil, error.map(Routines.processError))
-            }
-            guard let httpResponse = response as? HTTPURLResponse else {
-                return completion(nil, self.result, .nonHttpResponse(response: response))
-            }
-            if httpResponse.statusCode >= 400 {
-                completion(httpResponse, self.result, .status(code: httpResponse.statusCode, error: error))
-            } else {
-                completion(httpResponse, self.result, error.map(Routines.processError))
+            queue.async {
+                self.completion?(result)
             }
         }
 
@@ -238,7 +226,7 @@ open class UrlSessionHttp: Http {
             httpTask.upload.bytes = totalBytesSent
             httpTask.upload.totalBytes = total
             responseQueue.async {
-                httpTask.upload.callback?(totalBytesSent, total)
+                httpTask.upload.callback?(HttpProgressData(bytes: totalBytesSent, totalBytes: total))
             }
         }
 
@@ -246,7 +234,7 @@ open class UrlSessionHttp: Http {
             guard let index = tasks.firstIndex(where: { $0.task === task }) else { return }
 
             let httpTask = tasks.remove(at: index)
-            httpTask.internalCompletion(httpTask.task.response, httpTask.task.error ?? error)
+            httpTask.process(response: httpTask.task.response, error: httpTask.task.error ?? error)
         }
 
         // MARK: - Data
@@ -263,7 +251,7 @@ open class UrlSessionHttp: Http {
             httpTask.download.totalBytes = total
             let bytes = httpTask.download.bytes
             responseQueue.async {
-                httpTask.download.callback?(bytes, total)
+                httpTask.download.callback?(HttpProgressData(bytes: bytes, totalBytes: total))
             }
             completionHandler(.allow)
         }
@@ -276,7 +264,7 @@ open class UrlSessionHttp: Http {
             httpTask.download.bytes = bytes
             let total = httpTask.download.totalBytes
             responseQueue.async {
-                httpTask.download.callback?(bytes, total)
+                httpTask.download.callback?(HttpProgressData(bytes: bytes, totalBytes: total))
             }
         }
 
@@ -307,7 +295,7 @@ open class UrlSessionHttp: Http {
             httpTask.download.bytes = totalBytesWritten
             httpTask.download.totalBytes = total
             responseQueue.async {
-                httpTask.download.callback?(totalBytesWritten, total)
+                httpTask.download.callback?(HttpProgressData(bytes: totalBytesWritten, totalBytes: total))
             }
         }
     }

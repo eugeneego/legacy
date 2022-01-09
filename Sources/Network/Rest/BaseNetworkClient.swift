@@ -48,13 +48,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     ) -> NetworkTask {
         let task = Task<ResponseSerializer>()
 
-        let http = self.http
-        let baseUrl = self.baseURL
-        let workQueue = self.workQueue
-        let completionQueue = self.completionQueue
-        let requestAuthorizer = self.requestAuthorizer
-
-        let requestCompletion = { (result: Result<ResponseSerializer.Value, NetworkError>) in
+        let requestCompletion = { [completionQueue] (result: Result<ResponseSerializer.Value, NetworkError>) in
             completionQueue.async {
                 completion(result)
             }
@@ -62,12 +56,12 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
 
         let pathUrl = URL(string: path)
         let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
-        guard let url = pathUrlIsFull ? pathUrl : baseUrl.appendingPathComponent(path) else {
+        guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else {
             requestCompletion(.failure(.badUrl))
             return task
         }
 
-        let createRequest = { (createCompletion: @escaping (Result<URLRequest, HttpError>) -> Void) -> Void in
+        let createRequest = { [http, workQueue] (createCompletion: @escaping (Result<URLRequest, HttpError>) -> Void) -> Void in
             workQueue.async {
                 let request = http.request(
                     method: method,
@@ -83,22 +77,22 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             }
         }
 
-        let authorizeAndRunRequest = { (authorizer: RequestAuthorizer, request: URLRequest, authCompletion: (() -> Void)?) in
+        let authorizeAndRunRequest = { [http] (authorizer: RequestAuthorizer, request: URLRequest, authCompletion: (() -> Void)?) in
             authorizer.authorize(request: request) { result in
                 switch result {
                     case .success(let request):
                         let httpTask = http.data(request: request, serializer: responseSerializer)
-                        httpTask.completion = { response, object, data, error in
+                        httpTask.completion = { result in
                             task.httpTask = nil
 
-                            if case .status(let code, let error)? = error {
+                            if case .status(let code, _)? = result.error {
                                 if code == 401, let authCompletion = authCompletion {
                                     authCompletion()
                                 } else {
-                                    requestCompletion(.failure(.http(code: code, error: error, response: response, data: data)))
+                                    requestCompletion(.failure(.http(code: code, result: result.httpResult)))
                                 }
                             } else {
-                                requestCompletion(Result(object, .error(error: error, response: response, data: data)))
+                                requestCompletion(Result(result.object, .error(result: result.httpResult)))
                             }
                         }
                         task.httpTask = httpTask
@@ -109,7 +103,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             }
         }
 
-        createRequest { result in
+        createRequest { [http, requestAuthorizer] result in
             switch result {
                 case .success(let request):
                     if let requestAuthorizer = requestAuthorizer {
@@ -118,20 +112,19 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
                         }
                     } else {
                         let httpTask = http.data(request: request, serializer: responseSerializer)
-                        httpTask.completion = { response, object, data, error in
+                        httpTask.completion = { result in
                             task.httpTask = nil
-
-                            if case .status(let code, let error)? = error {
-                                requestCompletion(.failure(.http(code: code, error: error, response: response, data: data)))
+                            if case .status(let code, _)? = result.error {
+                                requestCompletion(.failure(.http(code: code, result: result.httpResult)))
                             } else {
-                                requestCompletion(Result(object, .error(error: error, response: response, data: data)))
+                                requestCompletion(Result(result.object, .error(result: result.httpResult)))
                             }
                         }
                         task.httpTask = httpTask
                         httpTask.resume()
                     }
                 case .failure(let error):
-                    requestCompletion(.failure(.error(error: error, response: nil, data: nil)))
+                    requestCompletion(.failure(.error(result: HttpResult(response: nil, data: nil, error: error))))
             }
         }
 

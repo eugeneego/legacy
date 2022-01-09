@@ -34,14 +34,10 @@ public enum ResizeMode {
     case fill
 }
 
-public typealias ImageLoaderCompletion = (Result<(data: Data, image: EEImage), ImageLoaderError>) -> Void
+public typealias ImageLoaderResult = Result<(data: Data, image: EEImage), ImageLoaderError>
+public typealias ImageLoaderCompletion = (ImageLoaderResult) -> Void
 
 public protocol ImageLoader {
     @discardableResult
-    func load(
-        url: URL,
-        size: CGSize,
-        mode: ResizeMode,
-        completion: @escaping ImageLoaderCompletion
-    ) -> ImageLoaderTask
+    func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> ImageLoaderTask
 }
