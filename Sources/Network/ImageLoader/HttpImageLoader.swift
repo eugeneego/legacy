@@ -25,8 +25,7 @@ open class HttpImageLoader: ImageLoader {
 
     open func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> ImageLoaderTask {
         let task = Task(url: url, size: size, mode: mode)
-        let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)
-        let httpTask = http.data(request: request)
+        let httpTask = http.data(request: http.request(parameters: .init(method: .get, url: url)))
         httpTask.completion = { [completionQueue, prerendered] result in
             let processImage = { (data: Data) -> EEImage? in
                 let image = EEImage(data: data)

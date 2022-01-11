@@ -8,16 +8,40 @@
 
 import Foundation
 
-public struct HttpResult<DataType> {
-    public var response: HTTPURLResponse?
-    public var data: DataType?
-    public var error: HttpError?
+public protocol Http {
+    @discardableResult
+    func data(request: URLRequest) -> HttpDataTask
 
-    public init(response: HTTPURLResponse?, data: DataType?, error: HttpError?) {
-        self.response = response
-        self.data = data
-        self.error = error
-    }
+    @discardableResult
+    func download(request: URLRequest, destination: URL) -> HttpDownloadTask
+
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    func data(request: URLRequest) async -> HttpResult<Data>
+
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    func download(request: URLRequest, destination: URL) async -> HttpResult<URL>
+}
+
+public protocol HttpTask: AnyObject {
+    var uploadProgress: HttpProgress { get }
+    var downloadProgress: HttpProgress { get }
+
+    func resume()
+    func cancel()
+}
+
+public protocol HttpDataTask: HttpTask {
+    var completion: ((HttpResult<Data>) -> Void)? { get set }
+
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    func await() async -> HttpResult<Data>
+}
+
+public protocol HttpDownloadTask: HttpTask {
+    var completion: ((HttpResult<URL>) -> Void)? { get set }
+
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    func await() async -> HttpResult<URL>
 }
 
 public struct HttpProgressData {
@@ -30,38 +54,22 @@ public struct HttpProgressData {
     }
 }
 
-public typealias HttpDataCompletion = (HttpResult<Data>) -> Void
-public typealias HttpDownloadCompletion = (HttpResult<URL>) -> Void
-public typealias HttpProgressCallback = (HttpProgressData) -> Void
-
 public protocol HttpProgress: AnyObject {
     var bytes: Int64? { get }
     var totalBytes: Int64? { get }
-    var callback: HttpProgressCallback? { get set }
+    var callback: ((HttpProgressData) -> Void)? { get set }
 }
 
-public protocol HttpTask: AnyObject {
-    var uploadProgress: HttpProgress { get }
-    var downloadProgress: HttpProgress { get }
+public struct HttpResult<DataType> {
+    public var response: HTTPURLResponse?
+    public var data: DataType?
+    public var error: HttpError?
 
-    func resume()
-    func cancel()
-}
-
-public protocol HttpDataTask: HttpTask {
-    var completion: HttpDataCompletion? { get set }
-}
-
-public protocol HttpDownloadTask: HttpTask {
-    var completion: HttpDownloadCompletion? { get set }
-}
-
-public protocol Http {
-    @discardableResult
-    func data(request: URLRequest) -> HttpDataTask
-
-    @discardableResult
-    func download(request: URLRequest, destination: URL) -> HttpDownloadTask
+    public init(response: HTTPURLResponse?, data: DataType?, error: HttpError?) {
+        self.response = response
+        self.data = data
+        self.error = error
+    }
 }
 
 public enum HttpError: Error {
@@ -70,6 +78,22 @@ public enum HttpError: Error {
     case unreachable(Error)
     case error(Error)
     case status(code: Int, error: Error?)
+}
+
+public struct HttpRequestParameters {
+    var method: HttpMethod
+    var url: URL
+    var query: [String: String]
+    var headers: [String: String] = [:]
+    var body: HttpBody?
+
+    public init(method: HttpMethod, url: URL, query: [String: String] = [:], headers: [String: String] = [:], body: HttpBody? = nil) {
+        self.method = method
+        self.url = url
+        self.query = query
+        self.headers = headers
+        self.body = body
+    }
 }
 
 public enum HttpMethod {
@@ -107,35 +131,20 @@ public enum HttpBody {
 
 public extension Http {
     @discardableResult
-    func data(
-        method: HttpMethod,
-        url: URL,
-        urlParameters: [String: String] = [:],
-        headers: [String: String] = [:],
-        body: HttpBody? = nil
-    ) -> HttpDataTask {
-        let request = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        return data(request: request)
+    func data(parameters: HttpRequestParameters) -> HttpDataTask {
+        data(request: request(parameters: parameters))
     }
 
     @discardableResult
-    func download(
-        method: HttpMethod,
-        url: URL,
-        urlParameters: [String: String] = [:],
-        headers: [String: String] = [:],
-        body: HttpBody? = nil,
-        destination: URL
-    ) -> HttpDownloadTask {
-        let request = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        return download(request: request, destination: destination)
+    func download(parameters: HttpRequestParameters, destination: URL) -> HttpDownloadTask {
+        download(request: request(parameters: parameters), destination: destination)
     }
 
-    func urlWithParameters(url: URL, parameters: [String: String]) -> URL {
+    func urlWithQuery(url: URL, query: [String: String]) -> URL {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else { return url }
-        if !parameters.isEmpty {
+        if !query.isEmpty {
             var queryItems = components.queryItems ?? []
-            parameters.forEach { key, value in
+            query.forEach { key, value in
                 queryItems.append(URLQueryItem(name: key, value: value))
             }
             components.queryItems = queryItems
@@ -143,16 +152,10 @@ public extension Http {
         return components.url ?? url
     }
 
-    func request(
-        method: HttpMethod,
-        url: URL,
-        urlParameters: [String: String] = [:],
-        headers: [String: String] = [:],
-        body: HttpBody? = nil
-    ) -> URLRequest {
-        var request = URLRequest(url: urlWithParameters(url: url, parameters: urlParameters))
-        request.httpMethod = method.value
-        switch body {
+    func request(parameters: HttpRequestParameters) -> URLRequest {
+        var request = URLRequest(url: urlWithQuery(url: parameters.url, query: parameters.query))
+        request.httpMethod = parameters.method.value
+        switch parameters.body {
             case .data(let data):
                 request.httpBody = data
             case .stream(let stream):
@@ -160,7 +163,7 @@ public extension Http {
             case nil:
                 break
         }
-        headers.forEach { name, value in
+        parameters.headers.forEach { name, value in
             request.setValue(value, forHTTPHeaderField: name)
         }
         return request
@@ -168,44 +171,23 @@ public extension Http {
 
     @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
     func data(request: URLRequest) async -> HttpResult<Data> {
-        await withCheckedContinuation { continuation in
-            let task: HttpDataTask = data(request: request)
-            task.completion = continuation.resume(returning:)
-            task.resume()
-        }
+        let task: HttpDataTask = data(request: request)
+        return await task.await()
     }
 
     @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
     func download(request: URLRequest, destination: URL) async -> HttpResult<URL> {
-        await withCheckedContinuation { continuation in
-            let task: HttpDownloadTask = download(request: request, destination: destination)
-            task.completion = continuation.resume(returning:)
-            task.resume()
-        }
+        let task: HttpDownloadTask = download(request: request, destination: destination)
+        return await task.await()
     }
 
     @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
-    func data(
-        method: HttpMethod,
-        url: URL,
-        urlParameters: [String: String] = [:],
-        headers: [String: String] = [:],
-        body: HttpBody? = nil
-    ) async -> HttpResult<Data> {
-        let request = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        return await data(request: request)
+    func data(parameters: HttpRequestParameters) async -> HttpResult<Data> {
+        await data(request: request(parameters: parameters))
     }
 
     @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
-    func download(
-        method: HttpMethod,
-        url: URL,
-        urlParameters: [String: String] = [:],
-        headers: [String: String] = [:],
-        body: HttpBody? = nil,
-        destination: URL
-    ) async -> HttpResult<URL> {
-        let request = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: body)
-        return await download(request: request, destination: destination)
+    func download(parameters: HttpRequestParameters, destination: URL) async -> HttpResult<URL> {
+        await download(request: request(parameters: parameters), destination: destination)
     }
 }

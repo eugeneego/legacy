@@ -53,15 +53,94 @@ open class UrlSessionHttp: Http {
         return task
     }
 
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    open func data(request: URLRequest) async -> HttpResult<Data> {
+        if #available(iOS 15.0, tvOS 15.0, watchOS 8.0, macOS 12.0, *) {
+            do {
+                let data = try await session.data(for: request)
+                return Routines.process(response: data.1, data: data.0, error: nil)
+            } catch {
+                return Routines.process(response: nil, data: nil, error: error)
+            }
+        } else {
+            let task = TaskActor()
+            return await withTaskCancellationHandler(
+                operation: {
+                    await withCheckedContinuation { continuation in
+                        Task {
+                            await task.resume(task: session.dataTask(with: request) { data, response, error in
+                                let result = Routines.process(response: response, data: data, error: error)
+                                continuation.resume(returning: result)
+                            })
+                        }
+                    }
+                },
+                onCancel: {
+                    Task {
+                        await task.cancel()
+                    }
+                }
+            )
+        }
+    }
+
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    open func download(request: URLRequest, destination: URL) async -> HttpResult<URL> {
+        if #available(iOS 15.0, tvOS 15.0, watchOS 8.0, macOS 12.0, *) {
+            do {
+                let data = try await session.download(for: request)
+                var result = Routines.process(response: data.1, data: data.0, error: nil)
+                result = Routines.moveFile(result: result, destination: destination)
+                return Routines.process(response: data.1, data: data.0, error: nil)
+            } catch {
+                return Routines.process(response: nil, data: nil, error: error)
+            }
+        } else {
+            let task = TaskActor()
+            return await withTaskCancellationHandler(
+                operation: {
+                    await withCheckedContinuation { continuation in
+                        Task {
+                            await task.resume(task: session.downloadTask(with: request) { url, response, error in
+                                var result = Routines.process(response: response, data: url, error: error)
+                                result = Routines.moveFile(result: result, destination: destination)
+                                continuation.resume(returning: result)
+                            })
+                        }
+                    }
+                },
+                onCancel: {
+                    Task {
+                        await task.cancel()
+                    }
+                }
+            )
+        }
+    }
+
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    private actor TaskActor {
+        weak var task: URLSessionTask?
+
+        func resume(task: URLSessionTask) {
+            self.task = task
+            task.resume()
+        }
+
+        func cancel() {
+            task?.cancel()
+        }
+    }
+
     // MARK: - Task
 
     private class Progress: HttpProgress {
         var bytes: Int64?
         var totalBytes: Int64?
-        var callback: HttpProgressCallback?
+        var callback: ((HttpProgressData) -> Void)?
     }
 
-    private class Task {
+    private class InternalTask {
         var uploadProgress: HttpProgress { upload }
         var downloadProgress: HttpProgress { download }
 
@@ -74,8 +153,6 @@ open class UrlSessionHttp: Http {
         let queue: DispatchQueue
         let logger: UrlSessionHttpLogger?
 
-        var internalCompletion: (URLResponse?, Error?) -> Void { { _, _ in } }
-
         init(task: URLSessionTask, request: URLRequest, queue: DispatchQueue, logger: UrlSessionHttpLogger?) {
             self.task = task
             self.request = request
@@ -84,6 +161,50 @@ open class UrlSessionHttp: Http {
         }
 
         func process(response: URLResponse?, error: Error?) {
+        }
+    }
+
+    private class ResultTask<T>: InternalTask {
+        var completion: ((HttpResult<T>) -> Void)?
+        var result: T? { nil }
+        var error: Error?
+
+        @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+        lazy var continuation: CheckedContinuation<HttpResult<T>, Never>? = nil
+
+        @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+        func await() async -> HttpResult<T> {
+            await withTaskCancellationHandler(
+                operation: {
+                    await withCheckedContinuation { continuation in
+                        self.continuation = continuation
+                        resume()
+                    }
+                },
+                onCancel: {
+                    cancel()
+                }
+            )
+        }
+
+        override func process(response: URLResponse?, error: Error?) {
+            let error = error ?? self.error
+            let resultString = log(result: result, response: response)
+            logger?.log(response, request, resultString, error as NSError?, startDate: startDate, date: Date())
+
+            let result = Routines.process(response: response, data: result, error: error)
+            if #available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *), let continuation = continuation {
+                continuation.resume(returning: result)
+                self.continuation = nil
+            } else {
+                queue.async {
+                    self.completion?(result)
+                }
+            }
+        }
+
+        func log(result: T?, response: URLResponse?) -> String {
+            ""
         }
 
         func resume() {
@@ -96,32 +217,6 @@ open class UrlSessionHttp: Http {
 
         func cancel() {
             task.cancel()
-        }
-    }
-
-    private class ResultTask<T>: Task {
-        var completion: ((HttpResult<T>) -> Void)?
-        var result: T? { nil }
-        var error: Error?
-
-        override func process(response: URLResponse?, error: Error?) {
-            let error = error ?? self.error
-            let resultString = log(result: result, response: response)
-            logger?.log(response, request, resultString, error as NSError?, startDate: startDate, date: Date())
-
-            var result = HttpResult<T>(response: response as? HTTPURLResponse, data: result, error: error.map(Routines.processError))
-            if let httpResponse = result.response, httpResponse.statusCode >= 400 {
-                result.error = .status(code: httpResponse.statusCode, error: error)
-            } else if let response = response, result.response == nil {
-                result.error = .nonHttpResponse(response: response)
-            }
-            queue.async {
-                self.completion?(result)
-            }
-        }
-
-        func log(result: T?, response: URLResponse?) -> String {
-            ""
         }
     }
 
@@ -157,7 +252,7 @@ open class UrlSessionHttp: Http {
         var trustPolicies: [String: ServerTrustPolicy]
         let queue: OperationQueue = OperationQueue()
         private let responseQueue: DispatchQueue
-        private var tasks: [Task] = []
+        private var tasks: [InternalTask] = []
 
         init(responseQueue: DispatchQueue, trustPolicies: [String: ServerTrustPolicy]) {
             self.responseQueue = responseQueue
@@ -166,7 +261,7 @@ open class UrlSessionHttp: Http {
             queue.maxConcurrentOperationCount = 1
         }
 
-        func add(task: Task) {
+        func add(task: InternalTask) {
             queue.addOperation {
                 self.tasks.append(task)
             }
@@ -245,7 +340,7 @@ open class UrlSessionHttp: Http {
             didReceive response: URLResponse,
             completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
         ) {
-            guard let httpTask = tasks.first(where: { $0.task === dataTask }) as? DataTask else { return completionHandler(.cancel) }
+            guard let httpTask = tasks.first(where: { $0.task === dataTask }) as? DataTask else { return completionHandler(.allow) }
 
             let total = response.expectedContentLength != NSURLSessionTransferSizeUnknown ? response.expectedContentLength : nil
             httpTask.download.totalBytes = total
@@ -303,7 +398,17 @@ open class UrlSessionHttp: Http {
     // MARK: - Routines
 
     private enum Routines {
-        static func processError(_ error: Error) -> HttpError {
+        static func process<DataType>(response: URLResponse?, data: DataType?, error: Error?) -> HttpResult<DataType> {
+            var result = HttpResult<DataType>(response: response as? HTTPURLResponse, data: data, error: error.map(Routines.process))
+            if let httpResponse = result.response, httpResponse.statusCode >= 400 {
+                result.error = .status(code: httpResponse.statusCode, error: error)
+            } else if let response = response, result.response == nil {
+                result.error = .nonHttpResponse(response: response)
+            }
+            return result
+        }
+
+        static func process(error: Error) -> HttpError {
             let nsError = error as NSError
             guard nsError.domain == NSURLErrorDomain else { return .error(error) }
 
@@ -314,6 +419,19 @@ open class UrlSessionHttp: Http {
                 default:
                     return .error(error)
             }
+        }
+
+        static func moveFile(result: HttpResult<URL>, destination: URL) -> HttpResult<URL> {
+            var result = result
+            if let url = result.data {
+                do {
+                    try? FileManager.default.removeItem(at: destination)
+                    try FileManager.default.moveItem(at: url, to: destination)
+                } catch {
+                    result.error = .error(error)
+                }
+            }
+            return result
         }
     }
 }

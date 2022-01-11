@@ -28,6 +28,18 @@ public class HttpSerializedDataTask<T: HttpSerializer> {
     public var completion: Completion?
 
     private let task: HttpDataTask
+    private let serializer: T
+
+    init(task: HttpDataTask, serializer: T) {
+        self.task = task
+        self.serializer = serializer
+
+        task.completion = { result in
+            let serializedResult = Routines.process(result: result, serializer: serializer)
+            self.completion?(serializedResult)
+            self.task.completion = nil
+        }
+    }
 
     public func resume() {
         task.resume()
@@ -37,10 +49,24 @@ public class HttpSerializedDataTask<T: HttpSerializer> {
         task.cancel()
     }
 
-    init(task: HttpDataTask, serializer: T) {
-        self.task = task
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    public func await() async -> Result {
+        task.completion = nil
+        let result = await task.await()
+        let deserializer = Deserializer()
+        let serializedResult = await deserializer.deserialize(result: result, serializer: serializer)
+        return serializedResult
+    }
 
-        task.completion = { result in
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    actor Deserializer {
+        func deserialize(result: HttpResult<Data>, serializer: T) -> Result {
+            Routines.process(result: result, serializer: serializer)
+        }
+    }
+
+    enum Routines {
+        static func process(result: HttpResult<Data>, serializer: T) -> Result {
             var serializedResult = Result(response: result.response, object: nil, data: result.data, error: result.error)
             if result.error == nil {
                 switch serializer.deserialize(result.data) {
@@ -50,8 +76,7 @@ public class HttpSerializedDataTask<T: HttpSerializer> {
                         serializedResult.error = .error(error)
                 }
             }
-            self.completion?(serializedResult)
-            self.task.completion = nil
+            return serializedResult
         }
     }
 }
@@ -62,21 +87,26 @@ public extension Http {
         HttpSerializedDataTask<T>(task: data(request: request), serializer: serializer)
     }
 
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    func data<T: HttpSerializer>(request: URLRequest, serializer: T) async -> HttpSerializedResult<T.Value, Data> {
+        let result = await data(request: request)
+        let deserializer = HttpSerializedDataTask<T>.Deserializer()
+        let serializedResult = await deserializer.deserialize(result: result, serializer: serializer)
+        return serializedResult
+    }
+
     func request<T: HttpSerializer>(
-        method: HttpMethod,
-        url: URL,
-        urlParameters: [String: String] = [:],
-        headers: [String: String] = [:],
+        parameters: HttpRequestParameters,
         object: T.Value? = nil,
         serializer: T
     ) -> Result<URLRequest, HttpError> {
         let body = serializer.serialize(object)
         return body.map(
             success: { body in
-                let data: HttpBody? = !body.isEmpty ? .data(body) : nil
-                var req = request(method: method, url: url, urlParameters: urlParameters, headers: headers, body: data)
-                req.setValue(serializer.contentType, forHTTPHeaderField: "Content-Type")
-                return .success(req)
+                var parameters = parameters
+                parameters.body = !body.isEmpty ? .data(body) : nil
+                parameters.headers["Content-Type"] = serializer.contentType
+                return .success(request(parameters: parameters))
             },
             failure: { .failure(.error($0)) }
         )

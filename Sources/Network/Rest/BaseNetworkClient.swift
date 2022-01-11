@@ -46,7 +46,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         responseSerializer: ResponseSerializer,
         completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
     ) -> NetworkTask {
-        let task = Task<ResponseSerializer>()
+        let task = InternalTask<ResponseSerializer>()
 
         let requestCompletion = { [completionQueue] (result: Result<ResponseSerializer.Value, NetworkError>) in
             completionQueue.async {
@@ -64,10 +64,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         let createRequest = { [http, workQueue] (createCompletion: @escaping (Result<URLRequest, HttpError>) -> Void) -> Void in
             workQueue.async {
                 let request = http.request(
-                    method: method,
-                    url: url,
-                    urlParameters: parameters,
-                    headers: headers,
+                    parameters: .init(method: method, url: url, query: parameters, headers: headers),
                     object: object,
                     serializer: requestSerializer
                 )
@@ -234,29 +231,22 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     private class Progress: HttpProgress {
         var bytes: Int64? { progress?.bytes }
         var totalBytes: Int64? { progress?.totalBytes }
-        var callback: HttpProgressCallback?
+        var callback: ((HttpProgressData) -> Void)?
 
         var progress: HttpProgress? {
             didSet {
                 progress?.callback = callback
             }
         }
-
-        func setCallback(_ callback: HttpProgressCallback?) {
-            self.callback = callback
-        }
     }
 
-    private class Task<T: HttpSerializer>: NetworkTask {
+    private class InternalTask<T: HttpSerializer>: NetworkTask {
         var httpTask: HttpSerializedDataTask<T>?
         var uploadProgress: HttpProgress { upload }
         var downloadProgress: HttpProgress { download }
 
         var upload: Progress = Progress()
         var download: Progress = Progress()
-
-        init() {
-        }
 
         func cancel() {
             httpTask?.cancel()
