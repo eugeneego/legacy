@@ -128,6 +128,51 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         return task
     }
 
+    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    open func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: RequestSerializer.Value?,
+        headers: [String: String],
+        requestSerializer: RequestSerializer,
+        responseSerializer: ResponseSerializer
+    ) async -> Result<ResponseSerializer.Value, NetworkError> {
+        let pathUrl = URL(string: path)
+        let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
+        guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else { return .failure(.badUrl) }
+
+        let requestResult = await http.request(
+            parameters: .init(method: method, url: url, query: parameters, headers: headers),
+            object: object,
+            serializer: requestSerializer
+        )
+
+        guard case .success(var request) = requestResult else {
+            return .failure(.error(result: HttpResult(response: nil, data: nil, error: requestResult.error)))
+        }
+
+        var isPostAuth = false
+        repeat {
+            if let requestAuthorizer = requestAuthorizer {
+                let authResult = await requestAuthorizer.authorize(request: request)
+                guard case .success(let authorizedRequest) = authResult else { return .failure(.auth(error: authResult.error)) }
+                request = authorizedRequest
+            }
+
+            let result = await http.data(request: request, serializer: responseSerializer)
+            if case .status(let code, _)? = result.error {
+                if code == 401 && requestAuthorizer != nil && !isPostAuth {
+                    isPostAuth = true
+                } else {
+                    return .failure(.http(code: code, result: result.httpResult))
+                }
+            } else {
+                return Result(result.object, .error(result: result.httpResult))
+            }
+        } while true
+    }
+
     // Transformers
 
     @discardableResult
