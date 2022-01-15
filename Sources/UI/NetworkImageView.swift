@@ -6,9 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-#if canImport(UIKit)
-
-#if !os(watchOS)
+#if canImport(UIKit) && !os(watchOS)
 
 import UIKit
 
@@ -33,28 +31,51 @@ open class NetworkImageView: UIImageView {
         }
     }
 
-    private var loading: Bool = false
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    private lazy var task: Task<Void, Never>? = nil
+    private var imageLoaderTask: ImageLoaderTask?
+
+    private var loading: Bool {
+        if #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *) {
+            return task != nil
+        } else {
+            return imageLoaderTask != nil
+        }
+    }
 
     private func update() {
+        if #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *) {
+            task?.cancel()
+            task = nil
+        } else {
+            imageLoaderTask?.cancel()
+            imageLoaderTask = nil
+        }
+
         image = placeholder
 
         guard bounds.width > 0.1 && bounds.height > 0.1 else { return }
         guard let imageLoader = imageLoader, let imageUrl = imageUrl else { return }
 
-        loading = true
+        if #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *) {
+            task = Task {
+                let result = await imageLoader.load(url: imageUrl, size: frame.size, mode: resizeMode)
+                task = nil
+                guard let image = result.value?.1 else { return }
 
-        imageLoader.load(url: imageUrl, size: frame.size, mode: resizeMode) { [weak self] result in
-            guard let self = self, imageUrl == self.imageUrl else { return }
+                addFadeTransition()
+                self.image = image
+            }
+        } else {
+            imageLoaderTask = imageLoader.load(url: imageUrl, size: frame.size, mode: resizeMode) { [weak self] result in
+                self?.imageLoaderTask = nil
+                guard let self = self, imageUrl == self.imageUrl, let image = result.value?.1 else { return }
 
-            self.loading = false
-            guard let image = result.value?.1 else { return }
-
-            self.addFadeTransition()
-            self.image = image
+                self.addFadeTransition()
+                self.image = image
+            }
         }
     }
 }
-
-#endif
 
 #endif

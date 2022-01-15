@@ -6,94 +6,161 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-import Foundation
-
 public protocol LightRestClient: RestClient, LightNetworkClient {
     @discardableResult
-    func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    func create<Request: LightTransformer, Response: LightTransformer>(
         path: String,
         id: String?,
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func create<ResponseTransformer: LightTransformer>(
+    func create<Response: LightTransformer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func read<ResponseTransformer: LightTransformer>(
+    func read<Response: LightTransformer>(
         path: String,
         id: String?,
         parameters: [String: String],
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    func update<Request: LightTransformer, Response: LightTransformer>(
         path: String,
         id: String?,
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func update<ResponseTransformer: LightTransformer>(
+    func update<Response: LightTransformer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func partialUpdate<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    func partialUpdate<Request: LightTransformer, Response: LightTransformer>(
         path: String,
         id: String?,
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func delete<ResponseTransformer: LightTransformer>(
+    func delete<Response: LightTransformer>(
         path: String,
         id: String?,
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask
+
+    // MARK: - Async
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func create<Request: LightTransformer, Response: LightTransformer>(
+        path: String,
+        id: String?,
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func create<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func read<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func update<Request: LightTransformer, Response: LightTransformer>(
+        path: String,
+        id: String?,
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func update<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func partialUpdate<Request: LightTransformer, Response: LightTransformer>(
+        path: String,
+        id: String?,
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func delete<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
 }
 
 public extension LightRestClient {
     @discardableResult
-    func create<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    func create<Request: LightTransformer, Response: LightTransformer>(
         path: String,
         id: String?,
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .post,
@@ -108,14 +175,14 @@ public extension LightRestClient {
     }
 
     @discardableResult
-    func create<ResponseTransformer: LightTransformer>(
+    func create<Response: LightTransformer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .post,
@@ -130,13 +197,13 @@ public extension LightRestClient {
     }
 
     @discardableResult
-    func read<ResponseTransformer: LightTransformer>(
+    func read<Response: LightTransformer>(
         path: String,
         id: String?,
         parameters: [String: String],
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .get,
@@ -151,14 +218,14 @@ public extension LightRestClient {
     }
 
     @discardableResult
-    func update<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    func update<Request: LightTransformer, Response: LightTransformer>(
         path: String,
         id: String?,
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .put,
@@ -173,14 +240,14 @@ public extension LightRestClient {
     }
 
     @discardableResult
-    func update<ResponseTransformer: LightTransformer>(
+    func update<Response: LightTransformer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .put,
@@ -195,14 +262,14 @@ public extension LightRestClient {
     }
 
     @discardableResult
-    func partialUpdate<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    func partialUpdate<Request: LightTransformer, Response: LightTransformer>(
         path: String,
         id: String?,
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .patch,
@@ -217,12 +284,12 @@ public extension LightRestClient {
     }
 
     @discardableResult
-    func delete<ResponseTransformer: LightTransformer>(
+    func delete<Response: LightTransformer>(
         path: String,
         id: String?,
         headers: [String: String],
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .delete,
@@ -233,6 +300,139 @@ public extension LightRestClient {
             requestTransformer: VoidLightTransformer(),
             responseTransformer: responseTransformer,
             completion: completion
+        )
+    }
+}
+
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+public extension LightRestClient {
+    func create<Request: LightTransformer, Response: LightTransformer>(
+        path: String,
+        id: String?,
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: .post,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestTransformer: requestTransformer,
+            responseTransformer: responseTransformer
+        )
+    }
+
+    func create<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: .post,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: data,
+            headers: headers,
+            requestSerializer: DataHttpSerializer(contentType: contentType),
+            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer)
+        )
+    }
+
+    func read<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: .get,
+            path: pathWithId(path: path, id: id),
+            parameters: parameters,
+            object: nil,
+            headers: headers,
+            requestTransformer: VoidLightTransformer(),
+            responseTransformer: responseTransformer
+        )
+    }
+
+    func update<Request: LightTransformer, Response: LightTransformer>(
+        path: String,
+        id: String?,
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: .put,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestTransformer: requestTransformer,
+            responseTransformer: responseTransformer
+        )
+    }
+
+    func update<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: .put,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: data,
+            headers: headers,
+            requestSerializer: DataHttpSerializer(contentType: contentType),
+            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer)
+        )
+    }
+
+    func partialUpdate<Request: LightTransformer, Response: LightTransformer>(
+        path: String,
+        id: String?,
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: .patch,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestTransformer: requestTransformer,
+            responseTransformer: responseTransformer
+        )
+    }
+
+    func delete<Response: LightTransformer>(
+        path: String,
+        id: String?,
+        headers: [String: String],
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: .delete,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: nil,
+            headers: headers,
+            requestTransformer: VoidLightTransformer(),
+            responseTransformer: responseTransformer
         )
     }
 }

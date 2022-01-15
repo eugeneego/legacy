@@ -15,10 +15,10 @@ public protocol Http {
     @discardableResult
     func download(request: URLRequest, destination: URL) -> HttpDownloadTask
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func data(request: URLRequest) async -> HttpResult<Data>
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func download(request: URLRequest, destination: URL) async -> HttpResult<URL>
 }
 
@@ -33,14 +33,14 @@ public protocol HttpTask: AnyObject {
 public protocol HttpDataTask: HttpTask {
     var completion: ((HttpResult<Data>) -> Void)? { get set }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func await() async -> HttpResult<Data>
 }
 
 public protocol HttpDownloadTask: HttpTask {
     var completion: ((HttpResult<URL>) -> Void)? { get set }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func await() async -> HttpResult<URL>
 }
 
@@ -169,24 +169,24 @@ public extension Http {
         return request
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func data(request: URLRequest) async -> HttpResult<Data> {
         let task: HttpDataTask = data(request: request)
         return await task.await()
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func download(request: URLRequest, destination: URL) async -> HttpResult<URL> {
         let task: HttpDownloadTask = download(request: request, destination: destination)
         return await task.await()
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func data(parameters: HttpRequestParameters) async -> HttpResult<Data> {
         await data(request: request(parameters: parameters))
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func download(parameters: HttpRequestParameters, destination: URL) async -> HttpResult<URL> {
         await download(request: request(parameters: parameters), destination: destination)
     }

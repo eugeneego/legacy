@@ -10,78 +10,133 @@ import Foundation
 
 public protocol CodableRestClient: RestClient, CodableNetworkClient {
     @discardableResult
-    func create<RequestObject: Encodable, ResponseObject: Decodable>(
+    func create<Request: Encodable, Response: Decodable>(
         path: String,
         id: String?,
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func create<ResponseObject: Decodable>(
+    func create<Response: Decodable>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func read<ResponseObject: Decodable>(
+    func read<Response: Decodable>(
         path: String,
         id: String?,
         parameters: [String: String],
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func update<RequestObject: Encodable, ResponseObject: Decodable>(
+    func update<Request: Encodable, Response: Decodable>(
         path: String,
         id: String?,
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func update<ResponseObject: Decodable>(
+    func update<Response: Decodable>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func partialUpdate<RequestObject: Encodable, ResponseObject: Decodable>(
+    func partialUpdate<Request: Encodable, Response: Decodable>(
         path: String,
         id: String?,
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask
 
     @discardableResult
-    func delete<ResponseObject: Decodable>(
+    func delete<Response: Decodable>(
         path: String,
         id: String?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask
+
+    // MARK: - Async
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func create<Request: Encodable, Response: Decodable>(
+        path: String,
+        id: String?,
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func create<Response: Decodable>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func read<Response: Decodable>(
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func update<Request: Encodable, Response: Decodable>(
+        path: String,
+        id: String?,
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func update<Response: Decodable>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func partialUpdate<Request: Encodable, Response: Decodable>(
+        path: String,
+        id: String?,
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError>
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    func delete<Response: Decodable>(path: String, id: String?, headers: [String: String]) async -> Result<Response, NetworkError>
 }
 
 public extension CodableRestClient {
     @discardableResult
-    func create<RequestObject: Encodable, ResponseObject: Decodable>(
+    func create<Request: Encodable, Response: Decodable>(
         path: String,
         id: String?,
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .post,
@@ -94,13 +149,13 @@ public extension CodableRestClient {
     }
 
     @discardableResult
-    func create<ResponseObject: Decodable>(
+    func create<Response: Decodable>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .post,
@@ -109,18 +164,18 @@ public extension CodableRestClient {
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: JsonModelDecodableHttpSerializer<ResponseObject>(decoder: decoder),
+            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder),
             completion: completion
         )
     }
 
     @discardableResult
-    func read<ResponseObject: Decodable>(
+    func read<Response: Decodable>(
         path: String,
         id: String?,
         parameters: [String: String],
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .get,
@@ -133,12 +188,12 @@ public extension CodableRestClient {
     }
 
     @discardableResult
-    func update<RequestObject: Encodable, ResponseObject: Decodable>(
+    func update<Request: Encodable, Response: Decodable>(
         path: String,
         id: String?,
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .put,
@@ -151,13 +206,13 @@ public extension CodableRestClient {
     }
 
     @discardableResult
-    func update<ResponseObject: Decodable>(
+    func update<Response: Decodable>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .put,
@@ -166,18 +221,18 @@ public extension CodableRestClient {
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: JsonModelDecodableHttpSerializer<ResponseObject>(decoder: decoder),
+            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder),
             completion: completion
         )
     }
 
     @discardableResult
-    func partialUpdate<RequestObject: Encodable, ResponseObject: Decodable>(
+    func partialUpdate<Request: Encodable, Response: Decodable>(
         path: String,
         id: String?,
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .patch,
@@ -190,11 +245,11 @@ public extension CodableRestClient {
     }
 
     @discardableResult
-    func delete<ResponseObject: Decodable>(
+    func delete<Response: Decodable>(
         path: String,
         id: String?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: .delete,
@@ -204,5 +259,84 @@ public extension CodableRestClient {
             headers: headers,
             completion: completion
         )
+    }
+}
+
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+public extension CodableRestClient {
+    func create<Request: Encodable, Response: Decodable>(
+        path: String,
+        id: String?,
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError> {
+        await request(method: .post, path: pathWithId(path: path, id: id), parameters: [:], object: object, headers: headers)
+    }
+
+    func create<Response: Decodable>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError> {
+        await request(
+            method: .post,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: data,
+            headers: headers,
+            requestSerializer: DataHttpSerializer(contentType: contentType),
+            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder)
+        )
+    }
+
+    func read<Response: Decodable>(
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError> {
+        await request(method: .get, path: pathWithId(path: path, id: id), parameters: parameters, object: Nil?.none, headers: headers)
+    }
+
+    func update<Request: Encodable, Response: Decodable>(
+        path: String,
+        id: String?,
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError> {
+        await request(method: .put, path: pathWithId(path: path, id: id), parameters: [:], object: object, headers: headers)
+    }
+
+    func update<Response: Decodable>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError> {
+        await request(
+            method: .put,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: data,
+            headers: headers,
+            requestSerializer: DataHttpSerializer(contentType: contentType),
+            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder)
+        )
+    }
+
+    func partialUpdate<Request: Encodable, Response: Decodable>(
+        path: String,
+        id: String?,
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError> {
+        await request(method: .patch, path: pathWithId(path: path, id: id), parameters: [:], object: object, headers: headers)
+    }
+
+    func delete<Response: Decodable>(path: String, id: String?, headers: [String: String]) async -> Result<Response, NetworkError> {
+        await request(method: .delete, path: pathWithId(path: path, id: id), parameters: [:], object: Nil?.none, headers: headers)
     }
 }

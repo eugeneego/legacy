@@ -17,6 +17,13 @@ public struct HttpSerializedResult<ObjectType, DataType> {
     public var httpResult: HttpResult<DataType> {
         HttpResult(response: response, data: data, error: error)
     }
+
+    public init(response: HTTPURLResponse?, object: ObjectType?, data: DataType?, error: HttpError?) {
+        self.response = response
+        self.object = object
+        self.data = data
+        self.error = error
+    }
 }
 
 public class HttpSerializedDataTask<T: HttpSerializer> {
@@ -49,7 +56,7 @@ public class HttpSerializedDataTask<T: HttpSerializer> {
         task.cancel()
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     public func await() async -> Result {
         task.completion = nil
         let result = await task.await()
@@ -71,7 +78,7 @@ public class HttpSerializedDataTask<T: HttpSerializer> {
             return serializedResult
         }
 
-        @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+        @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
         static func process(result: HttpResult<Data>, serializer: T) async -> Result {
             var serializedResult = Result(response: result.response, object: nil, data: result.data, error: result.error)
             guard result.error == nil else { return serializedResult }
@@ -93,7 +100,7 @@ public extension Http {
         HttpSerializedDataTask<T>(task: data(request: request), serializer: serializer)
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func data<T: HttpSerializer>(request: URLRequest, serializer: T) async -> HttpSerializedResult<T.Value, Data> {
         let result = await data(request: request)
         return await HttpSerializedDataTask<T>.Routines.process(result: result, serializer: serializer)
@@ -115,7 +122,7 @@ public extension Http {
         )
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func request<T: HttpSerializer>(
         parameters: HttpRequestParameters,
         object: T.Value? = nil,

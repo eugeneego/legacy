@@ -53,13 +53,17 @@ open class UrlSessionHttp: Http {
         return task
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func data(request: URLRequest) async -> HttpResult<Data> {
+        let startDate = Date()
+        logger?.log(request, date: startDate)
         if #available(iOS 15.0, tvOS 15.0, watchOS 8.0, macOS 12.0, *) {
             do {
                 let data = try await session.data(for: request)
+                logger?.log(data.1, request, logger?.log(data.0, data.1) ?? "", nil, startDate: startDate, date: Date())
                 return Routines.process(response: data.1, data: data.0, error: nil)
             } catch {
+                logger?.log(nil, request, "", error as NSError?, startDate: startDate, date: Date())
                 return Routines.process(response: nil, data: nil, error: error)
             }
         } else {
@@ -68,7 +72,9 @@ open class UrlSessionHttp: Http {
                 operation: {
                     await withCheckedContinuation { continuation in
                         Task {
-                            await task.resume(task: session.dataTask(with: request) { data, response, error in
+                            await task.resume(task: session.dataTask(with: request) { [logger] data, response, error in
+                                let content = logger?.log(data, response) ?? ""
+                                logger?.log(response, request, content, error as NSError?, startDate: startDate, date: Date())
                                 let result = Routines.process(response: response, data: data, error: error)
                                 continuation.resume(returning: result)
                             })
@@ -84,15 +90,19 @@ open class UrlSessionHttp: Http {
         }
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func download(request: URLRequest, destination: URL) async -> HttpResult<URL> {
+        let startDate = Date()
+        logger?.log(request, date: startDate)
         if #available(iOS 15.0, tvOS 15.0, watchOS 8.0, macOS 12.0, *) {
             do {
                 let data = try await session.download(for: request)
+                logger?.log(data.1, request, logger?.log(data.0) ?? "", nil, startDate: startDate, date: Date())
                 var result = Routines.process(response: data.1, data: data.0, error: nil)
                 result = Routines.moveFile(result: result, destination: destination)
                 return Routines.process(response: data.1, data: data.0, error: nil)
             } catch {
+                logger?.log(nil, request, "", error as NSError?, startDate: startDate, date: Date())
                 return Routines.process(response: nil, data: nil, error: error)
             }
         } else {
@@ -101,7 +111,9 @@ open class UrlSessionHttp: Http {
                 operation: {
                     await withCheckedContinuation { continuation in
                         Task {
-                            await task.resume(task: session.downloadTask(with: request) { url, response, error in
+                            await task.resume(task: session.downloadTask(with: request) { [logger] url, response, error in
+                                let content = logger?.log(url) ?? ""
+                                logger?.log(response, request, content, error as NSError?, startDate: startDate, date: Date())
                                 var result = Routines.process(response: response, data: url, error: error)
                                 result = Routines.moveFile(result: result, destination: destination)
                                 continuation.resume(returning: result)
@@ -118,7 +130,7 @@ open class UrlSessionHttp: Http {
         }
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     private actor TaskActor {
         weak var task: URLSessionTask?
 
@@ -169,10 +181,10 @@ open class UrlSessionHttp: Http {
         var result: T? { nil }
         var error: Error?
 
-        @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+        @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
         lazy var continuation: CheckedContinuation<HttpResult<T>, Never>? = nil
 
-        @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+        @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
         func await() async -> HttpResult<T> {
             await withTaskCancellationHandler(
                 operation: {
@@ -193,7 +205,7 @@ open class UrlSessionHttp: Http {
             logger?.log(response, request, resultString, error as NSError?, startDate: startDate, date: Date())
 
             let result = Routines.process(response: response, data: result, error: error)
-            if #available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *), let continuation = continuation {
+            if #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *), let continuation = continuation {
                 continuation.resume(returning: result)
                 self.continuation = nil
             } else {

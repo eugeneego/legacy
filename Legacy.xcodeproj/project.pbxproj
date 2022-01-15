@@ -254,6 +254,7 @@
 		B2FA80BE99FEA726346474EF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8DD5ABEAA50B53F4DF26 /* User.swift */; };
 		B2FA80DD943B1C1D6DA042BE /* VoidLightTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA89A74F51868729D4A3DE /* VoidLightTransformer.swift */; };
 		B2FA80E636301F3B6FC58894 /* UrlSessionHttpLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA867774CB13826A36AB29 /* UrlSessionHttpLogger.swift */; };
+		B2FA80FBEEA0D74DF8803CCD /* NetworkCodableAsyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA81780AAAB7D8958F3F8D /* NetworkCodableAsyncTests.swift */; };
 		B2FA80FE38D10C0181E895AF /* UIImage+Render.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA866E83813F89EB53BD2A /* UIImage+Render.swift */; };
 		B2FA818DE6070E8290B55A94 /* Hpkp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8893A8CD2BA5BA83FB3A /* Hpkp.swift */; };
 		B2FA81ACC6E0BCA7D5AB481C /* Transformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FA877C4F8708E00C9D6F1B /* Transformer.swift */; };
@@ -421,6 +422,7 @@
 		B2FA80F793DA118167478D54 /* NumberTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberTransformer.swift; sourceTree = "<group>"; };
 		B2FA8114F6C4DC5F55A323F1 /* DateTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTransformer.swift; sourceTree = "<group>"; };
 		B2FA81162D4B1737884BE158 /* CastLightTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastLightTransformer.swift; sourceTree = "<group>"; };
+		B2FA81780AAAB7D8958F3F8D /* NetworkCodableAsyncTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCodableAsyncTests.swift; sourceTree = "<group>"; };
 		B2FA819BC0CC25D4D2E17AE8 /* TransformerStringConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformerStringConvertible.swift; sourceTree = "<group>"; };
 		B2FA81AED0579250AA3BBBBA /* UserCompanyTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCompanyTransformer.swift; sourceTree = "<group>"; };
 		B2FA81C3C6CFE9B879F44CBF /* ShadowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
@@ -837,6 +839,7 @@
 				B2FA84EF1A00858D8ECBDB41 /* NetworkLightTransformerTests.swift */,
 				B2FA8C7BA23DC92203EDB8E0 /* NetworkTransformerTests.swift */,
 				B2FA8FFA8D01E28A684145D6 /* NetworkTestCase.swift */,
+				B2FA81780AAAB7D8958F3F8D /* NetworkCodableAsyncTests.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1596,6 +1599,7 @@
 				B2FA80417518D90CEF83190E /* NetworkTestCase.swift in Sources */,
 				B2FA8A2C408DD67029593136 /* PartialPostLightTransformer.swift in Sources */,
 				B2FA8C6045EEBAB3A0B046DE /* PartialPostTransformer.swift in Sources */,
+				B2FA80FBEEA0D74DF8803CCD /* NetworkCodableAsyncTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

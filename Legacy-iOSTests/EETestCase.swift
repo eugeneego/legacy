@@ -73,6 +73,7 @@ func EEAssertError(
 }
 
 /// Asserts the result is success.
+@discardableResult
 func EEAssertSuccess<T, E>(
     _ result: Result<T, E>,
     _ description: String,
@@ -91,6 +92,7 @@ func EEAssertSuccess<T, E>(
 }
 
 /// Asserts the variable has non nil value.
+@discardableResult
 func EEAssertNotNil<T>(
     _ value: T?,
     _ description: String,
@@ -106,6 +108,7 @@ func EEAssertNotNil<T>(
 }
 
 /// Asserts the result is failure.
+@discardableResult
 func EEAssertFailure<T, E>(
     _ result: Result<T, E>,
     _ description: String,

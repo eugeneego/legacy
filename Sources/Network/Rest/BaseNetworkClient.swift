@@ -128,7 +128,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         return task
     }
 
-    @available(iOS 13, tvOS 13, watchOS 6.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         method: HttpMethod,
         path: String,
@@ -142,12 +142,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
         guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else { return .failure(.badUrl) }
 
-        let requestResult = await http.request(
-            parameters: .init(method: method, url: url, query: parameters, headers: headers),
-            object: object,
-            serializer: requestSerializer
-        )
-
+        let requestParameters = HttpRequestParameters(method: method, url: url, query: parameters, headers: headers)
+        let requestResult = await http.request(parameters: requestParameters, object: object, serializer: requestSerializer)
         guard case .success(var request) = requestResult else {
             return .failure(.error(result: HttpResult(response: nil, data: nil, error: requestResult.error)))
         }
@@ -176,90 +172,126 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     // Transformers
 
     @discardableResult
-    open func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    open func request<Request: LightTransformer, Response: LightTransformer>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.T, NetworkError>) -> Void
     ) -> NetworkTask {
-        let requestSerializer = JsonModelLightTransformerHttpSerializer(transformer: requestTransformer)
-        let responseSerializer = JsonModelLightTransformerHttpSerializer(transformer: responseTransformer)
-        return request(
+        request(
             method: method,
             path: path,
             parameters: parameters,
             object: object,
             headers: headers,
-            requestSerializer: requestSerializer,
-            responseSerializer: responseSerializer,
+            requestSerializer: JsonModelLightTransformerHttpSerializer(transformer: requestTransformer),
+            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer),
             completion: completion
         )
     }
 
     @discardableResult
-    open func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    open func request<Request: Transformer, Response: Transformer>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
-        object: RequestTransformer.Destination?,
+        object: Request.Destination?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
-    ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any {
-        let requestSerializer = JsonModelTransformerHttpSerializer(transformer: requestTransformer)
-        let responseSerializer = JsonModelTransformerHttpSerializer(transformer: responseTransformer)
-        return request(
+        requestTransformer: Request,
+        responseTransformer: Response,
+        completion: @escaping (Result<Response.Destination, NetworkError>) -> Void
+    ) -> NetworkTask where Request.Source == Any, Response.Source == Any {
+        request(
             method: method,
             path: path,
             parameters: parameters,
             object: object,
             headers: headers,
-            requestSerializer: requestSerializer,
-            responseSerializer: responseSerializer,
+            requestSerializer: JsonModelTransformerHttpSerializer(transformer: requestTransformer),
+            responseSerializer: JsonModelTransformerHttpSerializer(transformer: responseTransformer),
             completion: completion
+        )
+    }
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    open func request<Request: LightTransformer, Response: LightTransformer>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError> {
+        await request(
+            method: method,
+            path: path,
+            parameters: parameters,
+            object: object,
+            headers: headers,
+            requestSerializer: JsonModelLightTransformerHttpSerializer(transformer: requestTransformer),
+            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer)
+        )
+    }
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    open func request<Request: Transformer, Response: Transformer>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request.Destination?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.Destination, NetworkError> where Request.Source == Any, Response.Source == Any {
+        await request(
+            method: method,
+            path: path,
+            parameters: parameters,
+            object: object,
+            headers: headers,
+            requestSerializer: JsonModelTransformerHttpSerializer(transformer: requestTransformer),
+            responseSerializer: JsonModelTransformerHttpSerializer(transformer: responseTransformer)
         )
     }
 
     // Codable
 
     @discardableResult
-    open func request<RequestObject: Encodable, ResponseObject: Decodable>(
+    open func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
         decoder: JSONDecoder,
         encoder: JSONEncoder,
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
-        let requestSerializer = JsonModelEncodableHttpSerializer<RequestObject>(encoder: encoder)
-        let responseSerializer = JsonModelDecodableHttpSerializer<ResponseObject>(decoder: decoder)
-        return request(
+        request(
             method: method,
             path: path,
             parameters: parameters,
             object: object,
             headers: headers,
-            requestSerializer: requestSerializer,
-            responseSerializer: responseSerializer,
+            requestSerializer: JsonModelEncodableHttpSerializer<Request>(encoder: encoder),
+            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder),
             completion: completion
         )
     }
 
     @discardableResult
-    open func request<RequestObject: Encodable, ResponseObject: Decodable>(
+    open func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
-        object: RequestObject?,
+        object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
+        completion: @escaping (Result<Response, NetworkError>) -> Void
     ) -> NetworkTask {
         request(
             method: method,
@@ -272,6 +304,48 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             completion: completion
         )
     }
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    open func request<Request: Encodable, Response: Decodable>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request?,
+        headers: [String: String],
+        decoder: JSONDecoder,
+        encoder: JSONEncoder
+    ) async -> Result<Response, NetworkError> {
+        await request(
+            method: method,
+            path: path,
+            parameters: parameters,
+            object: object,
+            headers: headers,
+            requestSerializer: JsonModelEncodableHttpSerializer<Request>(encoder: encoder),
+            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder)
+        )
+    }
+
+    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+    open func request<Request: Encodable, Response: Decodable>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError> {
+        await request(
+            method: method,
+            path: path,
+            parameters: parameters,
+            object: object,
+            headers: headers,
+            decoder: decoder,
+            encoder: encoder
+        )
+    }
+
+    // MARK: - Private
 
     private class Progress: HttpProgress {
         var bytes: Int64? { progress?.bytes }
