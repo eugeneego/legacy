@@ -1,5 +1,5 @@
 //
-// NetworkTests
+// NetworkCodableTests
 // Legacy
 //
 // Copyright (c) 2018 Eugene Egorov.

@@ -2,7 +2,8 @@
 // NetworkCodableAsyncTests
 // Legacy
 //
-// Created by Eugene Egorov on 16 January 2022.
+// Copyright (c) 2022 Eugene Egorov.
+// License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
 #if !os(watchOS)

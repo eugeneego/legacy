@@ -63,28 +63,24 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
 
         let createRequest = { [http, workQueue] (createCompletion: @escaping (Result<URLRequest, HttpError>) -> Void) -> Void in
             workQueue.async {
-                let request = http.request(
-                    parameters: .init(method: method, url: url, query: parameters, headers: headers),
-                    object: object,
-                    serializer: requestSerializer
-                )
+                let requestParameters = HttpRequestParameters(method: method, url: url, query: parameters, headers: headers)
+                let request = http.request(parameters: requestParameters, object: object, serializer: requestSerializer)
                 DispatchQueue.main.async {
                     createCompletion(request)
                 }
             }
         }
 
-        let authorizeAndRunRequest = { [http] (authorizer: RequestAuthorizer, request: URLRequest, authCompletion: (() -> Void)?) in
+        let authorizeAndRunRequest = { [http] (authorizer: RequestAuthorizer, request: URLRequest, authFailure: (() -> Void)?) in
             authorizer.authorize(request: request) { result in
                 switch result {
                     case .success(let request):
                         let httpTask = http.data(request: request, serializer: responseSerializer)
                         httpTask.completion = { result in
                             task.httpTask = nil
-
                             if case .status(let code, _)? = result.error {
-                                if code == 401, let authCompletion = authCompletion {
-                                    authCompletion()
+                                if code == 401, let authFailure = authFailure {
+                                    authFailure()
                                 } else {
                                     requestCompletion(.failure(.http(code: code, result: result.httpResult)))
                                 }
@@ -100,26 +96,12 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             }
         }
 
-        createRequest { [http, requestAuthorizer] result in
+        createRequest { [requestAuthorizer] result in
             switch result {
                 case .success(let request):
-                    if let requestAuthorizer = requestAuthorizer {
-                        authorizeAndRunRequest(requestAuthorizer, request) {
-                            authorizeAndRunRequest(requestAuthorizer, request, nil)
-                        }
-                    } else {
-                        let httpTask = http.data(request: request, serializer: responseSerializer)
-                        httpTask.completion = { result in
-                            task.httpTask = nil
-                            if case .status(let code, _)? = result.error {
-                                requestCompletion(.failure(.http(code: code, result: result.httpResult)))
-                            } else {
-                                requestCompletion(Result(result.object, .error(result: result.httpResult)))
-                            }
-                        }
-                        task.httpTask = httpTask
-                        httpTask.resume()
-                    }
+                    authorizeAndRunRequest(requestAuthorizer ?? EmptyRequestAuthorizer(), request, requestAuthorizer.map { authorizer in
+                        { authorizeAndRunRequest(authorizer, request, nil) } // swiftlint:disable:this opening_brace
+                    })
                 case .failure(let error):
                     requestCompletion(.failure(.error(result: HttpResult(response: nil, data: nil, error: error))))
             }
@@ -346,6 +328,12 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     }
 
     // MARK: - Private
+
+    private struct EmptyRequestAuthorizer: RequestAuthorizer {
+        func authorize(request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+            completion(.success(request))
+        }
+    }
 
     private class Progress: HttpProgress {
         var bytes: Int64? { progress?.bytes }
