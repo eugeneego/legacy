@@ -90,6 +90,8 @@ public class ElasticLogger: Logger {
                 return "warn"
             case .error:
                 return "err"
+            case .critical:
+                return "crit"
         }
     }
 

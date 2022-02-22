@@ -15,18 +15,7 @@ public class NSLogLogger: Logger {
     }
 
     private func name(for level: LoggingLevel) -> String {
-        switch level {
-            case .verbose:
-                return "💬️"
-            case .debug:
-                return "🔬"
-            case .info:
-                return "🌵"
-            case .warning:
-                return "🖖"
-            case .error:
-                return "⛑"
-        }
+        level.emoji
     }
 
     public func log(

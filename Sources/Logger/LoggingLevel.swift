@@ -23,8 +23,26 @@ public enum LoggingLevel: Int {
     case info = 2
     case warning = 3
     case error = 4
+    case critical = 5
 
     public func isEnabled(for configurationLevel: LoggingConfigurationLevel) -> Bool {
         rawValue >= configurationLevel.rawValue
+    }
+
+    public var emoji: String {
+        switch self {
+            case .verbose:
+                return "💬️"
+            case .debug:
+                return "🔬"
+            case .info:
+                return "🌵"
+            case .warning:
+                return "🖖"
+            case .error:
+                return "🌶"
+            case .critical:
+                return "🚨"
+        }
     }
 }

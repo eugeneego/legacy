@@ -2,7 +2,6 @@
 // FilteringLogger
 // Legacy
 //
-// Created by Alexander Babaev.
 // Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
@@ -11,14 +10,21 @@
 /// Levels can be specified for each tag separately.
 public class FilteringLogger: Logger {
     private let logger: Logger
+    private let tagLevels: [String: Level]
+    private let defaultLevel: Level
 
-    private let tagLoggingLevels: [String: LoggingConfigurationLevel]
-    private let defaultLoggingLevel: LoggingConfigurationLevel
+    public struct Level {
+        public var value: LoggingLevel?
 
-    public init(logger: Logger, tagLoggingLevels: [String: LoggingConfigurationLevel], defaultLoggingLevel: LoggingConfigurationLevel) {
+        public init(_ value: LoggingLevel?) {
+            self.value = value
+        }
+    }
+
+    public init(logger: Logger, tagLevels: [String: Level], defaultLevel: Level) {
         self.logger = logger
-        self.tagLoggingLevels = tagLoggingLevels
-        self.defaultLoggingLevel = defaultLoggingLevel
+        self.tagLevels = tagLevels
+        self.defaultLevel = defaultLevel
     }
 
     public func log(
@@ -30,8 +36,8 @@ public class FilteringLogger: Logger {
         function: StaticString = #function,
         line: UInt = #line
     ) {
-        let configLevel = tagLoggingLevels[tag] ?? defaultLoggingLevel
-        guard level.isEnabled(for: configLevel) else { return }
+        let filteringLevel = tagLevels[tag] ?? defaultLevel
+        guard let filteringLoggingLevel = filteringLevel.value, level.rawValue >= filteringLoggingLevel.rawValue  else { return }
 
         logger.log(message(), meta: meta(), level: level, tag: tag, file: file, function: function, line: line)
     }
