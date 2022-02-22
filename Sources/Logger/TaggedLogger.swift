@@ -2,7 +2,6 @@
 // TaggedLogger
 // Legacy
 //
-// Created by Alex Babaev on 03 May 2018.
 // Copyright (c) 2018 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
