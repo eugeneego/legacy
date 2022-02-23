@@ -10,32 +10,25 @@ import Foundation
 
 open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetworkClient {
     public let http: Http
-    public let baseURL: URL
-    public let workQueue: DispatchQueue
-    public let completionQueue: DispatchQueue
+    public let baseUrl: URL
     public let requestAuthorizer: RequestAuthorizer?
     public let decoder: JSONDecoder
     public let encoder: JSONEncoder
 
     public init(
         http: Http,
-        baseURL: URL,
-        workQueue: DispatchQueue,
-        completionQueue: DispatchQueue,
+        baseUrl: URL,
         requestAuthorizer: RequestAuthorizer? = nil,
         decoder: JSONDecoder = JSONDecoder(),
         encoder: JSONEncoder = JSONEncoder()
     ) {
         self.http = http
-        self.baseURL = baseURL
-        self.workQueue = workQueue
-        self.completionQueue = completionQueue
+        self.baseUrl = baseUrl
         self.requestAuthorizer = requestAuthorizer
         self.decoder = decoder
         self.encoder = encoder
     }
 
-    @discardableResult
     open func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         method: HttpMethod,
         path: String,
@@ -43,74 +36,44 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         object: RequestSerializer.Value?,
         headers: [String: String],
         requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
-        let task = InternalTask<ResponseSerializer>()
+        responseSerializer: ResponseSerializer
+    ) -> NetworkTask<ResponseSerializer.Value> {
+        let task = InternalTask<ResponseSerializer> { [baseUrl, http, requestAuthorizer] task in
+            let pathUrl = URL(string: path)
+            let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
+            guard let url = pathUrlIsFull ? pathUrl : baseUrl.appendingPathComponent(path) else { return .failure(.badUrl) }
 
-        let requestCompletion = { [completionQueue] (result: Result<ResponseSerializer.Value, NetworkError>) in
-            completionQueue.async {
-                completion(result)
+            let requestParameters = HttpRequestParameters(method: method, url: url, query: parameters, headers: headers)
+            let requestResult = await http.request(parameters: requestParameters, object: object, serializer: requestSerializer)
+            guard case .success(var request) = requestResult else {
+                return .failure(.error(result: HttpResult(response: nil, data: nil, error: requestResult.error)))
             }
-        }
 
-        let pathUrl = URL(string: path)
-        let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
-        guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else {
-            requestCompletion(.failure(.badUrl))
-            return task
-        }
-
-        let createRequest = { [http, workQueue] (createCompletion: @escaping (Result<URLRequest, HttpError>) -> Void) -> Void in
-            workQueue.async {
-                let requestParameters = HttpRequestParameters(method: method, url: url, query: parameters, headers: headers)
-                let request = http.request(parameters: requestParameters, object: object, serializer: requestSerializer)
-                DispatchQueue.main.async {
-                    createCompletion(request)
+            var isPostAuth = false
+            repeat {
+                if let requestAuthorizer = requestAuthorizer {
+                    let authResult = await requestAuthorizer.authorize(request: request, mode: isPostAuth ? .authError : .normal)
+                    guard case .success(let authorizedRequest) = authResult else { return .failure(.auth(error: authResult.error)) }
+                    request = authorizedRequest
                 }
-            }
-        }
 
-        let authorizeAndRunRequest = { [http] (authorizer: RequestAuthorizer, request: URLRequest, authFailure: (() -> Void)?) in
-            authorizer.authorize(request: request) { result in
-                switch result {
-                    case .success(let request):
-                        let httpTask = http.data(request: request, serializer: responseSerializer)
-                        httpTask.completion = { result in
-                            task.httpTask = nil
-                            if case .status(let code, _)? = result.error {
-                                if code == 401, let authFailure = authFailure {
-                                    authFailure()
-                                } else {
-                                    requestCompletion(.failure(.http(code: code, result: result.httpResult)))
-                                }
-                            } else {
-                                requestCompletion(Result(result.object, .error(result: result.httpResult)))
-                            }
-                        }
-                        task.httpTask = httpTask
-                        httpTask.resume()
-                    case .failure(let error):
-                        requestCompletion(.failure(.auth(error: error)))
+                let dataTask: HttpSerializedDataTask<ResponseSerializer> = http.data(request: request, serializer: responseSerializer)
+                task.httpTask = dataTask
+                let result = await dataTask.run()
+                if case .status(let code, _)? = result.error {
+                    if code == 401 && requestAuthorizer != nil && !isPostAuth {
+                        isPostAuth = true
+                    } else {
+                        return .failure(.http(code: code, result: result.httpResult))
+                    }
+                } else {
+                    return Result(result.object, .error(result: result.httpResult))
                 }
-            }
+            } while true
         }
-
-        createRequest { [requestAuthorizer] result in
-            switch result {
-                case .success(let request):
-                    authorizeAndRunRequest(requestAuthorizer ?? EmptyRequestAuthorizer(), request, requestAuthorizer.map { authorizer in
-                        { authorizeAndRunRequest(authorizer, request, nil) } // swiftlint:disable:this opening_brace
-                    })
-                case .failure(let error):
-                    requestCompletion(.failure(.error(result: HttpResult(response: nil, data: nil, error: error))))
-            }
-        }
-
         return task
     }
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         method: HttpMethod,
         path: String,
@@ -122,7 +85,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     ) async -> Result<ResponseSerializer.Value, NetworkError> {
         let pathUrl = URL(string: path)
         let pathUrlIsFull = !(pathUrl?.scheme?.isEmpty ?? true)
-        guard let url = pathUrlIsFull ? pathUrl : baseURL.appendingPathComponent(path) else { return .failure(.badUrl) }
+        guard let url = pathUrlIsFull ? pathUrl : baseUrl.appendingPathComponent(path) else { return .failure(.badUrl) }
 
         let requestParameters = HttpRequestParameters(method: method, url: url, query: parameters, headers: headers)
         let requestResult = await http.request(parameters: requestParameters, object: object, serializer: requestSerializer)
@@ -133,7 +96,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         var isPostAuth = false
         repeat {
             if let requestAuthorizer = requestAuthorizer {
-                let authResult = await requestAuthorizer.authorize(request: request)
+                let authResult = await requestAuthorizer.authorize(request: request, mode: isPostAuth ? .authError : .normal)
                 guard case .success(let authorizedRequest) = authResult else { return .failure(.auth(error: authResult.error)) }
                 request = authorizedRequest
             }
@@ -153,7 +116,6 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
 
     // Transformers
 
-    @discardableResult
     open func request<Request: LightTransformer, Response: LightTransformer>(
         method: HttpMethod,
         path: String,
@@ -161,9 +123,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         object: Request.T?,
         headers: [String: String],
         requestTransformer: Request,
-        responseTransformer: Response,
-        completion: @escaping (Result<Response.T, NetworkError>) -> Void
-    ) -> NetworkTask {
+        responseTransformer: Response
+    ) -> NetworkTask<Response.T> {
         request(
             method: method,
             path: path,
@@ -171,12 +132,10 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             object: object,
             headers: headers,
             requestSerializer: JsonModelLightTransformerHttpSerializer(transformer: requestTransformer),
-            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer),
-            completion: completion
+            responseSerializer: JsonModelLightTransformerHttpSerializer(transformer: responseTransformer)
         )
     }
 
-    @discardableResult
     open func request<Request: Transformer, Response: Transformer>(
         method: HttpMethod,
         path: String,
@@ -184,9 +143,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         object: Request.Destination?,
         headers: [String: String],
         requestTransformer: Request,
-        responseTransformer: Response,
-        completion: @escaping (Result<Response.Destination, NetworkError>) -> Void
-    ) -> NetworkTask where Request.Source == Any, Response.Source == Any {
+        responseTransformer: Response
+    ) -> NetworkTask<Response.Destination> where Request.Source == Any, Response.Source == Any {
         request(
             method: method,
             path: path,
@@ -194,12 +152,10 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             object: object,
             headers: headers,
             requestSerializer: JsonModelTransformerHttpSerializer(transformer: requestTransformer),
-            responseSerializer: JsonModelTransformerHttpSerializer(transformer: responseTransformer),
-            completion: completion
+            responseSerializer: JsonModelTransformerHttpSerializer(transformer: responseTransformer)
         )
     }
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func request<Request: LightTransformer, Response: LightTransformer>(
         method: HttpMethod,
         path: String,
@@ -220,7 +176,6 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         )
     }
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func request<Request: Transformer, Response: Transformer>(
         method: HttpMethod,
         path: String,
@@ -243,7 +198,6 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
 
     // Codable
 
-    @discardableResult
     open func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
@@ -251,9 +205,8 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         object: Request?,
         headers: [String: String],
         decoder: JSONDecoder,
-        encoder: JSONEncoder,
-        completion: @escaping (Result<Response, NetworkError>) -> Void
-    ) -> NetworkTask {
+        encoder: JSONEncoder
+    ) -> NetworkTask<Response> {
         request(
             method: method,
             path: path,
@@ -261,20 +214,17 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             object: object,
             headers: headers,
             requestSerializer: JsonModelEncodableHttpSerializer<Request>(encoder: encoder),
-            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder),
-            completion: completion
+            responseSerializer: JsonModelDecodableHttpSerializer<Response>(decoder: decoder)
         )
     }
 
-    @discardableResult
     open func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
         object: Request?,
-        headers: [String: String],
-        completion: @escaping (Result<Response, NetworkError>) -> Void
-    ) -> NetworkTask {
+        headers: [String: String]
+    ) -> NetworkTask<Response> {
         request(
             method: method,
             path: path,
@@ -282,12 +232,10 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
             object: object,
             headers: headers,
             decoder: decoder,
-            encoder: encoder,
-            completion: completion
+            encoder: encoder
         )
     }
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
@@ -308,7 +256,6 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         )
     }
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
@@ -330,14 +277,13 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
     // MARK: - Private
 
     private struct EmptyRequestAuthorizer: RequestAuthorizer {
-        func authorize(request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-            completion(.success(request))
+        func authorize(request: URLRequest, mode: RequestAuthorizerMode) async -> Result<URLRequest, Error> {
+            .success(request)
         }
     }
 
-    private class Progress: HttpProgress {
-        var bytes: Int64? { progress?.bytes }
-        var totalBytes: Int64? { progress?.totalBytes }
+    private class TaskProgress: HttpProgress {
+        var data: HttpProgressData { progress?.data ?? HttpProgressData(bytes: nil, totalBytes: nil) }
         var callback: ((HttpProgressData) -> Void)?
 
         var progress: HttpProgress? {
@@ -347,16 +293,27 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         }
     }
 
-    private class InternalTask<T: HttpSerializer>: NetworkTask {
-        var httpTask: HttpSerializedDataTask<T>?
-        var uploadProgress: HttpProgress { upload }
-        var downloadProgress: HttpProgress { download }
+    private class InternalTask<T: HttpSerializer>: NetworkTask<T.Value> {
+        override var uploadProgress: HttpProgress { upload }
+        override var downloadProgress: HttpProgress { download }
 
-        var upload: Progress = Progress()
-        var download: Progress = Progress()
+        var httpTask: HttpSerializedDataTask<T>? {
+            didSet {
+                upload.progress = httpTask?.uploadProgress
+                download.progress = httpTask?.downloadProgress
+            }
+        }
 
-        func cancel() {
-            httpTask?.cancel()
+        private var action: (InternalTask<T>) async -> Result<T.Value, NetworkError>
+        private var upload: TaskProgress = TaskProgress()
+        private var download: TaskProgress = TaskProgress()
+
+        init(action: @escaping (InternalTask<T>) async -> Result<T.Value, NetworkError>) {
+            self.action = action
+        }
+
+        override func run() async -> Result<T.Value, NetworkError> {
+            await action(self)
         }
     }
 }

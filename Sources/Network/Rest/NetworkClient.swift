@@ -15,18 +15,19 @@ public enum NetworkError: Error {
     case error(result: HttpResult<Data>)
 }
 
-public protocol NetworkTask: AnyObject {
-    var uploadProgress: HttpProgress { get }
-    var downloadProgress: HttpProgress { get }
+public class NetworkTask<Value> {
+    public var uploadProgress: HttpProgress { fatalError("Should be overridden") }
+    public var downloadProgress: HttpProgress { fatalError("Should be overridden") }
 
-    func cancel()
+    public func run() async -> Result<Value, NetworkError> { fatalError("Should be overridden") }
+
+    public init() {}
 }
 
 public protocol NetworkClient {
     var http: Http { get }
-    var baseURL: URL { get }
+    var baseUrl: URL { get }
 
-    @discardableResult
     func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         method: HttpMethod,
         path: String,
@@ -34,11 +35,9 @@ public protocol NetworkClient {
         object: RequestSerializer.Value?,
         headers: [String: String],
         requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        responseSerializer: ResponseSerializer
+    ) -> NetworkTask<ResponseSerializer.Value>
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         method: HttpMethod,
         path: String,
@@ -53,7 +52,6 @@ public protocol NetworkClient {
 // Transformers
 
 public protocol LightNetworkClient: NetworkClient {
-    @discardableResult
     func request<Request: LightTransformer, Response: LightTransformer>(
         method: HttpMethod,
         path: String,
@@ -61,11 +59,9 @@ public protocol LightNetworkClient: NetworkClient {
         object: Request.T?,
         headers: [String: String],
         requestTransformer: Request,
-        responseTransformer: Response,
-        completion: @escaping (Result<Response.T, NetworkError>) -> Void
-    ) -> NetworkTask
+        responseTransformer: Response
+    ) -> NetworkTask<Response.T>
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func request<Request: LightTransformer, Response: LightTransformer>(
         method: HttpMethod,
         path: String,
@@ -78,7 +74,6 @@ public protocol LightNetworkClient: NetworkClient {
 }
 
 public protocol FullNetworkClient: NetworkClient {
-    @discardableResult
     func request<Request: Transformer, Response: Transformer>(
         method: HttpMethod,
         path: String,
@@ -86,11 +81,9 @@ public protocol FullNetworkClient: NetworkClient {
         object: Request.Destination?,
         headers: [String: String],
         requestTransformer: Request,
-        responseTransformer: Response,
-        completion: @escaping (Result<Response.Destination, NetworkError>) -> Void
-    ) -> NetworkTask where Request.Source == Any, Response.Source == Any
+        responseTransformer: Response
+    ) -> NetworkTask<Response.Destination> where Request.Source == Any, Response.Source == Any
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func request<Request: Transformer, Response: Transformer>(
         method: HttpMethod,
         path: String,
@@ -108,29 +101,24 @@ public protocol CodableNetworkClient: NetworkClient {
     var decoder: JSONDecoder { get }
     var encoder: JSONEncoder { get }
 
-    @discardableResult
+    func request<Request: Encodable, Response: Decodable>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request?,
+        headers: [String: String]
+    ) -> NetworkTask<Response>
+
     func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
         object: Request?,
         headers: [String: String],
-        completion: @escaping (Result<Response, NetworkError>) -> Void
-    ) -> NetworkTask
-
-    @discardableResult
-    func request<RequestObject: Encodable, ResponseObject: Decodable>(
-        method: HttpMethod,
-        path: String,
-        parameters: [String: String],
-        object: RequestObject?,
-        headers: [String: String],
         decoder: JSONDecoder,
-        encoder: JSONEncoder,
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
-    ) -> NetworkTask
+        encoder: JSONEncoder
+    ) -> NetworkTask<Response>
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
@@ -139,7 +127,6 @@ public protocol CodableNetworkClient: NetworkClient {
         headers: [String: String]
     ) async -> Result<Response, NetworkError>
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func request<RequestObject: Encodable, ResponseObject: Decodable>(
         method: HttpMethod,
         path: String,

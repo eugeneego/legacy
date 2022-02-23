@@ -8,18 +8,11 @@
 
 import Foundation
 
-public protocol RequestAuthorizer {
-    func authorize(request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void)
-
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
-    func authorize(request: URLRequest) async -> Result<URLRequest, Error>
+public enum RequestAuthorizerMode {
+    case normal
+    case authError
 }
 
-extension RequestAuthorizer {
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
-    func authorize(request: URLRequest) async -> Result<URLRequest, Error> {
-        await withCheckedContinuation { continuation in
-            authorize(request: request, completion: continuation.resume(returning:))
-        }
-    }
+public protocol RequestAuthorizer {
+    func authorize(request: URLRequest, mode: RequestAuthorizerMode) async -> Result<URLRequest, Error>
 }

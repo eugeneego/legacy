@@ -14,51 +14,16 @@ import AppKit
 
 open class HttpImageLoader: ImageLoader {
     public let http: Http
-    public let completionQueue: DispatchQueue
     public let prerendered: Bool
 
-    public init(http: Http, completionQueue: DispatchQueue = .main, prerendered: Bool = true) {
+    public init(http: Http, prerendered: Bool = true) {
         self.http = http
-        self.completionQueue = completionQueue
         self.prerendered = prerendered
     }
 
-    open func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> ImageLoaderTask {
-        let task = Task(url: url, size: size, mode: mode)
-        let httpTask = http.data(request: http.request(parameters: .init(method: .get, url: url)))
-        httpTask.completion = { [completionQueue, prerendered] result in
-            let processImage = { (data: Data) -> EEImage? in
-                let image = EEImage(data: data)
-                #if os(iOS) || os(tvOS)
-                return prerendered ? image?.prerenderedImage() : image
-                #else
-                return image
-                #endif
-            }
-
-            let imageResult: ImageLoaderResult
-            if let error = result.error {
-                imageResult = .failure(.http(error))
-            } else if let data = result.data, let image = processImage(data) {
-                imageResult = .success((data, image))
-            } else {
-                imageResult = .failure(.creating)
-            }
-            completionQueue.async {
-                completion(imageResult)
-                task.httpTask = nil
-            }
-        }
-        task.httpTask = httpTask
-        httpTask.resume()
-
-        return task
-    }
-
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     open func load(url: URL, size: CGSize, mode: ResizeMode) async -> ImageLoaderResult {
         actor Render {
-            func render(data: Data, prerender: Bool) -> UIImage? {
+            func render(data: Data, prerender: Bool) -> EEImage? {
                 guard let image = EEImage(data: data) else { return nil }
                 #if os(iOS) || os(tvOS)
                 return prerender ? image.prerenderedImage() : image
@@ -76,23 +41,5 @@ open class HttpImageLoader: ImageLoader {
             return .failure(.creating)
         }
         return .success((data, image))
-    }
-
-    private class Task: ImageLoaderTask {
-        let url: URL
-        let size: CGSize
-        let mode: ResizeMode
-
-        var httpTask: HttpDataTask?
-
-        init(url: URL, size: CGSize, mode: ResizeMode) {
-            self.url = url
-            self.size = size
-            self.mode = mode
-        }
-
-        func cancel() {
-            httpTask?.cancel()
-        }
     }
 }

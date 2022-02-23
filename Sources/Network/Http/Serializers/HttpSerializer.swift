@@ -21,14 +21,10 @@ public protocol HttpSerializer {
     func serialize(_ value: Value?) -> Result<Data, HttpSerializationError>
     func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError>
 
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func serialize(_ value: Value?) async -> Result<Data, HttpSerializationError>
-
-    @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     func deserialize(_ data: Data?) async -> Result<Value, HttpSerializationError>
 }
 
-@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 public extension HttpSerializer {
     func serialize(_ value: Value?) async -> Result<Data, HttpSerializationError> {
         await HttpSerializerActor(serializer: self).serialize(value)
@@ -39,7 +35,6 @@ public extension HttpSerializer {
     }
 }
 
-@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 private actor HttpSerializerActor<Serializer: HttpSerializer> {
     private let serializer: Serializer
 
