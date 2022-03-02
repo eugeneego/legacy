@@ -17,7 +17,6 @@ public typealias EEImage = NSImage
 public enum ImageLoaderError: Error {
     case http(HttpError)
     case creating
-    case unknown(Error?)
 }
 
 public protocol ImageLoaderTask: AnyObject {
@@ -34,14 +33,8 @@ public enum ResizeMode {
     case fill
 }
 
-public typealias ImageLoaderCompletion = (Result<(data: Data, image: EEImage), ImageLoaderError>) -> Void
+public typealias ImageLoaderResult = Result<(data: Data, image: EEImage), ImageLoaderError>
 
 public protocol ImageLoader {
-    @discardableResult
-    func load(
-        url: URL,
-        size: CGSize,
-        mode: ResizeMode,
-        completion: @escaping ImageLoaderCompletion
-    ) -> ImageLoaderTask
+    func load(url: URL, size: CGSize, mode: ResizeMode) async -> ImageLoaderResult
 }

@@ -21,9 +21,9 @@ public extension UIImage {
     }
 
     func prerender() {
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: 1, height: 1), true, 0)
-        draw(at: .zero)
-        UIGraphicsEndImageContext()
+        _ = Self.image(size: CGSize(width: 1, height: 1)) { _, _ in
+            draw(at: .zero)
+        }
     }
 
     func prerenderedImage() -> UIImage {

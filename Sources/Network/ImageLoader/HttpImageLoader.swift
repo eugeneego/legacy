@@ -14,61 +14,32 @@ import AppKit
 
 open class HttpImageLoader: ImageLoader {
     public let http: Http
+    public let prerendered: Bool
 
-    public init(http: Http) {
+    public init(http: Http, prerendered: Bool = true) {
         self.http = http
+        self.prerendered = prerendered
     }
 
-    open func load(url: URL, size: CGSize, mode: ResizeMode, completion: @escaping ImageLoaderCompletion) -> ImageLoaderTask {
-        let task = Task(url: url, size: size, mode: mode)
-
-        let request = http.request(method: .get, url: url, urlParameters: [:], headers: [:], body: nil)
-        let httpTask = http.data(request: request)
-        httpTask.completion = { _, data, error in
-            let asyncCompletion = { (result: Result<(data: Data, image: EEImage), ImageLoaderError>) in
-                DispatchQueue.main.async {
-                    completion(result)
-                    task.httpTask = nil
-                }
-            }
-
-            let processImage = { (data: Data) -> EEImage? in
+    open func load(url: URL, size: CGSize, mode: ResizeMode) async -> ImageLoaderResult {
+        actor Render {
+            func render(data: Data, prerender: Bool) -> EEImage? {
+                guard let image = EEImage(data: data) else { return nil }
                 #if os(iOS) || os(tvOS)
-                return EEImage(data: data)?.prerenderedImage()
+                return prerender ? image.prerenderedImage() : image
                 #else
-                return EEImage(data: data)
+                return image
                 #endif
             }
-
-            if let error = error {
-                asyncCompletion(.failure(.http(error)))
-            } else if let data = data, let image = processImage(data) {
-                asyncCompletion(.success((data, image)))
-            } else {
-                asyncCompletion(.failure(.creating))
-            }
-        }
-        task.httpTask = httpTask
-        httpTask.resume()
-
-        return task
-    }
-
-    private class Task: ImageLoaderTask {
-        let url: URL
-        let size: CGSize
-        let mode: ResizeMode
-
-        var httpTask: HttpDataTask?
-
-        init(url: URL, size: CGSize, mode: ResizeMode) {
-            self.url = url
-            self.size = size
-            self.mode = mode
         }
 
-        func cancel() {
-            httpTask?.cancel()
+        let httpResult = await http.data(request: http.request(parameters: .init(method: .get, url: url)))
+        if let error = httpResult.error {
+            return .failure(.http(error))
         }
+        guard let data = httpResult.data, let image = await Render().render(data: data, prerender: prerendered) else {
+            return .failure(.creating)
+        }
+        return .success((data, image))
     }
 }

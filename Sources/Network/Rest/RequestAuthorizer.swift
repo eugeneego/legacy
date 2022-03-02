@@ -8,6 +8,11 @@
 
 import Foundation
 
+public enum RequestAuthorizerMode {
+    case normal
+    case authError
+}
+
 public protocol RequestAuthorizer {
-    func authorize(request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void)
+    func authorize(request: URLRequest, mode: RequestAuthorizerMode) async -> Result<URLRequest, Error>
 }

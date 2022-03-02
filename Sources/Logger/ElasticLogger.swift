@@ -14,38 +14,20 @@ import UIKit
 
 /// Logger that sends data to the backend using Elastic Search API.
 public class ElasticLogger: Logger {
-    private let restClient: LightRestClient
-    private let token: String
-    private let type: String
-
     private let environment: String
-
     private let userParameters: () -> [String: String]
-
-    private var logsToSend: [[String: String]] = []
-
-    private var sendLogsTimer: Timer?
-    private let sendLogsTimerDelay: TimeInterval = 5.0
-    private let maxNumberOfLogs: Int = 1000
-    private let maxNumberOfLogsToSendInBulk: Int = 20
-
     private let appAndSystemParameters: [String: String]
-
-    private let queue: DispatchQueue
+    private let sender: Sender
 
     public init(
-        restClient: LightRestClient,
-        queue: DispatchQueue,
+        http: Http,
+        baseUrl: URL,
         token: String,
         type: String,
         environment: String,
         deviceInfo: DeviceInfo,
         userParameters: @escaping () -> [String: String] = { [:] }
     ) {
-        self.restClient = restClient
-        self.queue = queue
-        self.token = token
-        self.type = type
         self.environment = environment
         self.userParameters = userParameters
 
@@ -57,16 +39,20 @@ public class ElasticLogger: Logger {
             "app_build": deviceInfo.bundleBuild,
             "environment": environment,
         ]
+
+        sender = Sender(http: http, baseUrl: baseUrl, token: token, type: type)
     }
 
     public func start() {
-        if !logsToSend.isEmpty {
-            startSendLogsTimer()
+        Task {
+            await sender.start()
         }
     }
 
     public func stop() {
-        stopSendLogsTimer()
+        Task {
+            await sender.stop()
+        }
     }
 
     private static let timestampFormatter: DateFormatter = {
@@ -90,6 +76,8 @@ public class ElasticLogger: Logger {
                 return "warn"
             case .error:
                 return "err"
+            case .critical:
+                return "crit"
         }
     }
 
@@ -117,110 +105,122 @@ public class ElasticLogger: Logger {
         appAndSystemParameters.forEach { logData[$0.key] = $0.value }
         userParameters().forEach { logData[$0.key] = $0.value }
 
-        queue.async {
-            self.add(logData: logData)
+        Task { [logData] in
+            await sender.add(logData: logData)
         }
     }
 
-    private func add(logData: [String: String]) {
-        logsToSend.append(logData)
+    private actor Sender {
+        private let http: Http
+        private let baseUrl: URL
+        private let token: String
+        private let type: String
 
-        if logsToSend.count > maxNumberOfLogs {
-            NSLog("Ⓛ Exceeded maximum log messages: \(maxNumberOfLogs)")
-            logsToSend.removeSubrange(0 ..< (logsToSend.count - maxNumberOfLogs))
+        private var sendLogsTimer: Timer?
+        private let sendLogsTimerDelay: TimeInterval = 5.0
+        private let maxNumberOfLogs: Int = 1000
+        private let maxNumberOfLogsToSendInBulk: Int = 20
+
+        private var logsToSend: [[String: String]] = []
+        private var sending: Bool = false
+
+        init(http: Http, baseUrl: URL, token: String, type: String) {
+            self.http = http
+            self.baseUrl = baseUrl
+            self.token = token
+            self.type = type
         }
 
-        if !logsToSend.isEmpty && sendLogsTimer == nil {
-            startSendLogsTimer()
-        }
-    }
-
-    private var sending: Bool = false
-
-    @objc private func onSendLogs() {
-        queue.async {
-            self.sendLogs()
-        }
-    }
-
-    @objc private func sendLogs() {
-        guard !sending else { return }
-        guard !logsToSend.isEmpty else { return stopSendLogsTimer() }
-
-        sending = true
-
-        let logs = Array(logsToSend.prefix(maxNumberOfLogsToSendInBulk))
-        logsToSend = Array(logsToSend.dropFirst(maxNumberOfLogsToSendInBulk))
-
-        let path = logs.count == 1
-            ? "/\(token)/\(type)"
-            : "/_bulk"
-        let string = logs.count == 1
-            ? serialize(log: logs[0])
-            : serialize(logs: logs)
-
-        guard let data = string?.data(using: .utf8) else {
-            sending = false
-            return
+        func start() {
+            if !logsToSend.isEmpty {
+                startSendLogsTimer()
+            }
         }
 
-        #if os(iOS) || os(tvOS)
-        let taskId = UIApplication.shared.beginBackgroundTask(withName: String(describing: Swift.type(of: self)))
-        #endif
+        func stop() {
+            stopSendLogsTimer()
+        }
 
-        restClient.create(
-            path: path,
-            id: nil,
-            data: data,
-            contentType: "",
-            headers: [:],
-            responseTransformer: VoidLightTransformer()
-        ) { result in
-            self.sending = false
+        func add(logData: [String: String]) {
+            logsToSend.append(logData)
 
-            if result.error != nil {
-                self.logsToSend.insert(contentsOf: logs, at: 0)
+            if logsToSend.count > maxNumberOfLogs {
+                NSLog("Ⓛ Exceeded maximum log messages: \(maxNumberOfLogs)")
+                logsToSend.removeSubrange(0 ..< (logsToSend.count - maxNumberOfLogs))
+            }
+
+            if !logsToSend.isEmpty && sendLogsTimer == nil {
+                startSendLogsTimer()
+            }
+        }
+
+        private func sendLogs() async {
+            guard !sending else { return }
+            guard !logsToSend.isEmpty else { return stopSendLogsTimer() }
+
+            sending = true
+
+            let logs = Array(logsToSend.prefix(maxNumberOfLogsToSendInBulk))
+            logsToSend = Array(logsToSend.dropFirst(maxNumberOfLogsToSendInBulk))
+
+            let path = logs.count == 1 ? "/\(token)/\(type)" : "/_bulk"
+            let string = logs.count == 1 ? serialize(log: logs[0]) : serialize(logs: logs)
+            let url = baseUrl.appendingPathComponent(path)
+
+            guard let data = string?.data(using: .utf8) else {
+                sending = false
+                return
             }
 
             #if os(iOS) || os(tvOS)
-            UIApplication.shared.endBackgroundTask(taskId)
+            let taskId = await UIApplication.shared.beginBackgroundTask(withName: String(describing: Swift.type(of: self)))
+            #endif
+
+            let result = await http.data(parameters: .init(method: .post, url: url, body: .data(data)))
+
+            sending = false
+
+            if result.error != nil {
+                logsToSend.insert(contentsOf: logs, at: 0)
+            }
+
+            #if os(iOS) || os(tvOS)
+            await UIApplication.shared.endBackgroundTask(taskId)
             #endif
         }
-    }
 
-    private func serialize(logs: [[String: String]]) -> String {
-        let metaInfo = [
-            "index": [
-                "_index": token,
-                "_type": type,
+        private func serialize(logs: [[String: String]]) -> String {
+            let metaInfo = [
+                "index": [
+                    "_index": token,
+                    "_type": type,
+                ]
             ]
-        ]
 
-        guard let metaInfoLine = Json(value: metaInfo).string else { fatalError("Can't create meta info for elastic logs bulk update") }
+            guard let metaInfoLine = Json(value: metaInfo).string else { fatalError("Can't create meta info for elastic logs bulk update") }
 
-        let result = logs.reduce("") { result, log in
-            result + (serialize(log: log).map { "\(metaInfoLine)\n\($0)\n" } ?? "")
+            let result = logs.reduce("") { result, log in
+                result + (serialize(log: log).map { "\(metaInfoLine)\n\($0)\n" } ?? "")
+            }
+
+            return result
         }
 
-        return result
-    }
+        private func serialize(log: [String: String]) -> String? {
+            Json(value: log).string
+        }
 
-    private func serialize(log: [String: String]) -> String? {
-        Json(value: log).string
-    }
+        private func startSendLogsTimer() {
+            sendLogsTimer = Timer.scheduledTimer(withTimeInterval: sendLogsTimerDelay, repeats: true) { _ in
+                Task { [weak self] in
+                    await self?.sendLogs()
+                }
+            }
+        }
 
-    private func startSendLogsTimer() {
-        sendLogsTimer = Timer.scheduledTimer(
-            timeInterval: sendLogsTimerDelay,
-            target: self,
-            selector: #selector(onSendLogs),
-            userInfo: nil,
-            repeats: true
-        )
-    }
-
-    private func stopSendLogsTimer() {
-        sendLogsTimer?.invalidate()
-        sendLogsTimer = nil
+        private func stopSendLogsTimer() {
+            sendLogsTimer?.invalidate()
+            sendLogsTimer = nil
+        }
     }
 }

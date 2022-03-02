@@ -2,7 +2,6 @@
 // NSLogLogger
 // Legacy
 //
-// Created by Alexander Babaev.
 // Copyright (c) 2016 Eugene Egorov.
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
@@ -15,18 +14,7 @@ public class NSLogLogger: Logger {
     }
 
     private func name(for level: LoggingLevel) -> String {
-        switch level {
-            case .verbose:
-                return "💬️"
-            case .debug:
-                return "🔬"
-            case .info:
-                return "🌵"
-            case .warning:
-                return "🖖"
-            case .error:
-                return "⛑"
-        }
+        level.emoji
     }
 
     public func log(

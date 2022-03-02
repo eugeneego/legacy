@@ -15,140 +15,108 @@ import XCTest
 class NetworkLightTransformerTests: NetworkTestCase {
     // MARK: - Posts
 
-    func testPostsRead() {
-        expect("Read Posts") { description, expectation in
-            rest.read(
-                path: Constants.posts,
-                id: nil,
-                parameters: [:],
-                headers: [:],
-                responseTransformer: ArrayLightTransformer(transformer: PostLightTransformer())
-            ) { result in
-                guard let posts = EEAssertSuccess(result, description, expectation) else { return }
-
-                XCTAssert(posts.count == 100)
-                expectation.fulfill()
-            }
-        }
+    func testPostsRead() async {
+        let task: NetworkTask<[Post]> = rest.read(
+            path: Constants.posts,
+            id: nil,
+            parameters: [:],
+            headers: [:],
+            responseTransformer: ArrayLightTransformer(transformer: PostLightTransformer())
+        )
+        let result = await task.run()
+        guard let posts = EEAssertSuccess(result, "Read Posts") else { return }
+        XCTAssert(posts.count == 100)
     }
 
-    func testPostRead() {
-        expect("Read Post") { description, expectation in
-            rest.read(
-                path: Constants.posts,
-                id: "1",
-                parameters: [:],
-                headers: [:],
-                responseTransformer: PostLightTransformer()
-            ) { result in
-                guard EEAssertSuccess(result, description, expectation) != nil else { return }
-
-                expectation.fulfill()
-            }
-        }
+    func testPostRead() async {
+        let task: NetworkTask<Post> = rest.read(
+            path: Constants.posts,
+            id: "1",
+            parameters: [:],
+            headers: [:],
+            responseTransformer: PostLightTransformer()
+        )
+        let result = await task.run()
+        guard EEAssertSuccess(result, "Read Post") != nil else { return }
     }
 
-    func testPostCreate() {
-        expect("Create Post") { description, expectation in
-            var object = Constants.post
-            object.id = 0
-            rest.create(
-                path: Constants.posts,
-                id: nil,
-                object: object,
-                headers: [:],
-                requestTransformer: PostLightTransformer(),
-                responseTransformer: PostLightTransformer()
-            ) { result in
-                guard let post = EEAssertSuccess(result, description, expectation) else { return }
-
-                XCTAssert(post.userId == object.userId && post.title == object.title && post.body == object.body)
-                expectation.fulfill()
-            }
-        }
+    func testPostCreate() async {
+        var object = Constants.post
+        object.id = 0
+        let task: NetworkTask<Post> = rest.create(
+            path: Constants.posts,
+            id: nil,
+            object: object,
+            headers: [:],
+            requestTransformer: PostLightTransformer(),
+            responseTransformer: PostLightTransformer()
+        )
+        let result = await task.run()
+        guard let post = EEAssertSuccess(result, "Create Post") else { return }
+        XCTAssert(post.userId == object.userId && post.title == object.title && post.body == object.body)
     }
 
-    func testPostUpdate() {
-        expect("Update Post") { description, expectation in
-            let object = Constants.post
-            rest.update(
-                path: Constants.posts,
-                id: "1",
-                object: object,
-                headers: [:],
-                requestTransformer: PostLightTransformer(),
-                responseTransformer: PostLightTransformer()
-            ) { result in
-                guard let post = EEAssertSuccess(result, description, expectation) else { return }
-
-                XCTAssert(post.userId == object.userId && post.title == object.title && post.body == object.body)
-                expectation.fulfill()
-            }
-        }
+    func testPostUpdate() async {
+        let object = Constants.post
+        let task: NetworkTask<Post> = rest.update(
+            path: Constants.posts,
+            id: "1",
+            object: object,
+            headers: [:],
+            requestTransformer: PostLightTransformer(),
+            responseTransformer: PostLightTransformer()
+        )
+        let result = await task.run()
+        guard let post = EEAssertSuccess(result, "Update Post") else { return }
+        XCTAssert(post.userId == object.userId && post.title == object.title && post.body == object.body)
     }
 
-    func testPostPartialUpdate() {
-        expect("Update Partial Post") { description, expectation in
-            let object = Constants.partialPost
-            rest.partialUpdate(
-                path: Constants.posts,
-                id: "1",
-                object: object,
-                headers: [:],
-                requestTransformer: PartialPostLightTransformer(),
-                responseTransformer: PostLightTransformer()
-            ) { result in
-                guard let post = EEAssertSuccess(result, description, expectation) else { return }
-
-                XCTAssert(post.title == object.title)
-                expectation.fulfill()
-            }
-        }
+    func testPostPartialUpdate() async {
+        let object = Constants.partialPost
+        let task: NetworkTask<Post> = rest.partialUpdate(
+            path: Constants.posts,
+            id: "1",
+            object: object,
+            headers: [:],
+            requestTransformer: PartialPostLightTransformer(),
+            responseTransformer: PostLightTransformer()
+        )
+        let result = await task.run()
+        guard let post = EEAssertSuccess(result, "Update Partial Post") else { return }
+        XCTAssert(post.title == object.title)
     }
 
-    func testPostDelete() {
-        expect("Delete Post") { description, expectation in
-            rest.delete(path: Constants.posts, id: "1", headers: [:], responseTransformer: VoidLightTransformer()) { result in
-                guard EEAssertSuccess(result, description, expectation) != nil else { return }
-
-                expectation.fulfill()
-            }
-        }
+    func testPostDelete() async {
+        let task: NetworkTask<Void> = rest.delete(path: Constants.posts, id: "1", headers: [:], responseTransformer: VoidLightTransformer())
+        let result = await task.run()
+        guard EEAssertSuccess(result, "Delete Post") != nil else { return }
     }
 
     // MARK: - Users
 
-    func testUsersRead() {
-        expect("Read Users") { description, expectation in
-            rest.read(
-                path: Constants.users,
-                id: nil,
-                parameters: [:],
-                headers: [:],
-                responseTransformer: ArrayLightTransformer(transformer: UserLightTransformer())
-            ) { result in
-                guard let users = EEAssertSuccess(result, description, expectation) else { return }
-
-                XCTAssert(users.count == 10)
-                expectation.fulfill()
-            }
-        }
+    func testUsersRead() async {
+        let task: NetworkTask<[User]> = rest.read(
+            path: Constants.users,
+            id: nil,
+            parameters: [:],
+            headers: [:],
+            responseTransformer: ArrayLightTransformer(transformer: UserLightTransformer())
+        )
+        let result = await task.run()
+        guard let users = EEAssertSuccess(result, "Read Users") else { return }
+        XCTAssert(users.count == 10)
     }
 
-    func testUserRead() {
-        expect("Read User") { description, expectation in
-            rest.read(
-                path: Constants.users,
-                id: "1",
-                parameters: [:],
-                headers: [:],
-                responseTransformer: UserLightTransformer()
-            ) { result in
-                guard EEAssertSuccess(result, description, expectation) != nil else { return }
-
-                expectation.fulfill()
-            }
-        }
+    func testUserRead() async {
+        let task: NetworkTask<User> = rest.read(
+            path: Constants.users,
+            id: "1",
+            parameters: [:],
+            headers: [:],
+            responseTransformer: UserLightTransformer()
+        )
+        let result = await task.run()
+        guard EEAssertSuccess(result, "Read User") != nil else { return }
     }
 }
 

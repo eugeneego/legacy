@@ -26,7 +26,7 @@ public struct JsonHttpSerializer: HttpSerializer {
 
         return Result(
             catching: { try JSONSerialization.data(withJSONObject: value, options: []) },
-            unknown: { HttpSerializationError.error(Error.serialization($0)) }
+            unknown: { .error(Error.serialization($0)) }
         )
     }
 
@@ -35,7 +35,7 @@ public struct JsonHttpSerializer: HttpSerializer {
 
         return Result(
             catching: { try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) },
-            unknown: { HttpSerializationError.error(Error.deserialization($0)) }
+            unknown: { .error(Error.deserialization($0)) }
         )
     }
 }

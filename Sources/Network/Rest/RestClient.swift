@@ -6,86 +6,131 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-import Foundation
-
 public protocol RestClient: NetworkClient {
-    @discardableResult
-    func create<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+    func create<Request: HttpSerializer, Response: HttpSerializer>(
         path: String,
         id: String?,
-        object: RequestSerializer.Value?,
+        object: Request.Value?,
         headers: [String: String],
-        requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value>
 
-    @discardableResult
-    func create<ResponseSerializer: HttpSerializer>(
+    func create<Response: HttpSerializer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value>
 
-    @discardableResult
-    func read<ResponseSerializer: HttpSerializer>(
+    func read<Response: HttpSerializer>(
         path: String,
         id: String?,
         parameters: [String: String],
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value>
 
-    @discardableResult
-    func update<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+    func update<Request: HttpSerializer, Response: HttpSerializer>(
         path: String,
         id: String?,
-        object: RequestSerializer.Value?,
+        object: Request.Value?,
         headers: [String: String],
-        requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value>
 
-    @discardableResult
-    func update<ResponseSerializer: HttpSerializer>(
+    func update<Response: HttpSerializer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value>
 
-    @discardableResult
-    func partialUpdate<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+    func partialUpdate<Request: HttpSerializer, Response: HttpSerializer>(
         path: String,
         id: String?,
-        object: RequestSerializer.Value?,
+        object: Request.Value?,
         headers: [String: String],
-        requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value>
 
-    @discardableResult
-    func delete<ResponseSerializer: HttpSerializer>(
+    func delete<Response: HttpSerializer>(
         path: String,
         id: String?,
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value>
+
+    // MARK: - Async
+
+    func create<Request: HttpSerializer, Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        object: Request.Value?,
+        headers: [String: String],
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError>
+
+    func create<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError>
+
+    func read<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError>
+
+    func update<Request: HttpSerializer, Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        object: Request.Value?,
+        headers: [String: String],
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError>
+
+    func update<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError>
+
+    func partialUpdate<Request: HttpSerializer, Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        object: Request.Value?,
+        headers: [String: String],
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError>
+
+    func delete<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError>
 }
 
 public extension RestClient {
-    @discardableResult
     func pathWithId(path: String, id: String?) -> String {
         let path = path.first == "/" ? String(path.dropFirst()) : path
         if let id = id {
@@ -96,16 +141,14 @@ public extension RestClient {
         }
     }
 
-    @discardableResult
-    func create<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+    func create<Request: HttpSerializer, Response: HttpSerializer>(
         path: String,
         id: String?,
-        object: RequestSerializer.Value?,
+        object: Request.Value?,
         headers: [String: String],
-        requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value> {
         request(
             method: .post,
             path: pathWithId(path: path, id: id),
@@ -113,21 +156,18 @@ public extension RestClient {
             object: object,
             headers: headers,
             requestSerializer: requestSerializer,
-            responseSerializer: responseSerializer,
-            completion: completion
+            responseSerializer: responseSerializer
         )
     }
 
-    @discardableResult
-    func create<ResponseSerializer: HttpSerializer>(
+    func create<Response: HttpSerializer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value> {
         request(
             method: .post,
             path: pathWithId(path: path, id: id),
@@ -135,20 +175,17 @@ public extension RestClient {
             object: data,
             headers: headers,
             requestSerializer: VoidHttpSerializer(),
-            responseSerializer: responseSerializer,
-            completion: completion
+            responseSerializer: responseSerializer
         )
     }
 
-    @discardableResult
-    func read<ResponseSerializer: HttpSerializer>(
+    func read<Response: HttpSerializer>(
         path: String,
         id: String?,
         parameters: [String: String],
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value> {
         request(
             method: .get,
             path: pathWithId(path: path, id: id),
@@ -156,21 +193,18 @@ public extension RestClient {
             object: nil,
             headers: headers,
             requestSerializer: VoidHttpSerializer(),
-            responseSerializer: responseSerializer,
-            completion: completion
+            responseSerializer: responseSerializer
         )
     }
 
-    @discardableResult
-    func update<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+    func update<Request: HttpSerializer, Response: HttpSerializer>(
         path: String,
         id: String?,
-        object: RequestSerializer.Value?,
+        object: Request.Value?,
         headers: [String: String],
-        requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value> {
         request(
             method: .put,
             path: pathWithId(path: path, id: id),
@@ -178,21 +212,18 @@ public extension RestClient {
             object: object,
             headers: headers,
             requestSerializer: requestSerializer,
-            responseSerializer: responseSerializer,
-            completion: completion
+            responseSerializer: responseSerializer
         )
     }
 
-    @discardableResult
-    func update<ResponseSerializer: HttpSerializer>(
+    func update<Response: HttpSerializer>(
         path: String,
         id: String?,
         data: Data?,
         contentType: String,
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value> {
         request(
             method: .put,
             path: pathWithId(path: path, id: id),
@@ -200,21 +231,18 @@ public extension RestClient {
             object: data,
             headers: headers,
             requestSerializer: DataHttpSerializer(contentType: contentType),
-            responseSerializer: responseSerializer,
-            completion: completion
+            responseSerializer: responseSerializer
         )
     }
 
-    @discardableResult
-    func partialUpdate<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+    func partialUpdate<Request: HttpSerializer, Response: HttpSerializer>(
         path: String,
         id: String?,
-        object: RequestSerializer.Value?,
+        object: Request.Value?,
         headers: [String: String],
-        requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value> {
         request(
             method: .patch,
             path: pathWithId(path: path, id: id),
@@ -222,19 +250,16 @@ public extension RestClient {
             object: object,
             headers: headers,
             requestSerializer: requestSerializer,
-            responseSerializer: responseSerializer,
-            completion: completion
+            responseSerializer: responseSerializer
         )
     }
 
-    @discardableResult
-    func delete<ResponseSerializer: HttpSerializer>(
+    func delete<Response: HttpSerializer>(
         path: String,
         id: String?,
         headers: [String: String],
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask {
+        responseSerializer: Response
+    ) -> NetworkTask<Response.Value> {
         request(
             method: .delete,
             path: pathWithId(path: path, id: id),
@@ -242,8 +267,139 @@ public extension RestClient {
             object: nil,
             headers: headers,
             requestSerializer: VoidHttpSerializer(),
-            responseSerializer: responseSerializer,
-            completion: completion
+            responseSerializer: responseSerializer
+        )
+    }
+}
+
+public extension RestClient {
+    func create<Request: HttpSerializer, Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        object: Request.Value?,
+        headers: [String: String],
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError> {
+        await request(
+            method: .post,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestSerializer: requestSerializer,
+            responseSerializer: responseSerializer
+        )
+    }
+
+    func create<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError> {
+        await request(
+            method: .post,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: data,
+            headers: headers,
+            requestSerializer: VoidHttpSerializer(),
+            responseSerializer: responseSerializer
+        )
+    }
+
+    func read<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        parameters: [String: String],
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError> {
+        await request(
+            method: .get,
+            path: pathWithId(path: path, id: id),
+            parameters: parameters,
+            object: nil,
+            headers: headers,
+            requestSerializer: VoidHttpSerializer(),
+            responseSerializer: responseSerializer
+        )
+    }
+
+    func update<Request: HttpSerializer, Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        object: Request.Value?,
+        headers: [String: String],
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError> {
+        await request(
+            method: .put,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestSerializer: requestSerializer,
+            responseSerializer: responseSerializer
+        )
+    }
+
+    func update<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        data: Data?,
+        contentType: String,
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError> {
+        await request(
+            method: .put,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: data,
+            headers: headers,
+            requestSerializer: DataHttpSerializer(contentType: contentType),
+            responseSerializer: responseSerializer
+        )
+    }
+
+    func partialUpdate<Request: HttpSerializer, Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        object: Request.Value?,
+        headers: [String: String],
+        requestSerializer: Request,
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError> {
+        await request(
+            method: .patch,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: object,
+            headers: headers,
+            requestSerializer: requestSerializer,
+            responseSerializer: responseSerializer
+        )
+    }
+
+    func delete<Response: HttpSerializer>(
+        path: String,
+        id: String?,
+        headers: [String: String],
+        responseSerializer: Response
+    ) async -> Result<Response.Value, NetworkError> {
+        await request(
+            method: .delete,
+            path: pathWithId(path: path, id: id),
+            parameters: [:],
+            object: nil,
+            headers: headers,
+            requestSerializer: VoidHttpSerializer(),
+            responseSerializer: responseSerializer
         )
     }
 }

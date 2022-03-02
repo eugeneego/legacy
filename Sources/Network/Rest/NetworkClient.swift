@@ -11,22 +11,23 @@ import Foundation
 public enum NetworkError: Error {
     case badUrl
     case auth(error: Error?)
-    case http(code: Int, error: Error?, response: HTTPURLResponse?, data: Data?)
-    case error(error: HttpError?, response: HTTPURLResponse?, data: Data?)
+    case http(code: Int, result: HttpResult<Data>)
+    case error(result: HttpResult<Data>)
 }
 
-public protocol NetworkTask: AnyObject {
-    var uploadProgress: HttpProgress { get }
-    var downloadProgress: HttpProgress { get }
+public class NetworkTask<Value> {
+    public var uploadProgress: HttpProgress { fatalError("Should be overridden") }
+    public var downloadProgress: HttpProgress { fatalError("Should be overridden") }
 
-    func cancel()
+    public func run() async -> Result<Value, NetworkError> { fatalError("Should be overridden") }
+
+    public init() {}
 }
 
 public protocol NetworkClient {
     var http: Http { get }
-    var baseURL: URL { get }
+    var baseUrl: URL { get }
 
-    @discardableResult
     func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
         method: HttpMethod,
         path: String,
@@ -34,39 +35,64 @@ public protocol NetworkClient {
         object: RequestSerializer.Value?,
         headers: [String: String],
         requestSerializer: RequestSerializer,
-        responseSerializer: ResponseSerializer,
-        completion: @escaping (Result<ResponseSerializer.Value, NetworkError>) -> Void
-    ) -> NetworkTask
+        responseSerializer: ResponseSerializer
+    ) -> NetworkTask<ResponseSerializer.Value>
+
+    func request<RequestSerializer: HttpSerializer, ResponseSerializer: HttpSerializer>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: RequestSerializer.Value?,
+        headers: [String: String],
+        requestSerializer: RequestSerializer,
+        responseSerializer: ResponseSerializer
+    ) async -> Result<ResponseSerializer.Value, NetworkError>
 }
 
 // Transformers
 
 public protocol LightNetworkClient: NetworkClient {
-    @discardableResult
-    func request<RequestTransformer: LightTransformer, ResponseTransformer: LightTransformer>(
+    func request<Request: LightTransformer, Response: LightTransformer>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
-        object: RequestTransformer.T?,
+        object: Request.T?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.T, NetworkError>) -> Void
-    ) -> NetworkTask
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) -> NetworkTask<Response.T>
+
+    func request<Request: LightTransformer, Response: LightTransformer>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request.T?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.T, NetworkError>
 }
 
 public protocol FullNetworkClient: NetworkClient {
-    @discardableResult
-    func request<RequestTransformer: Transformer, ResponseTransformer: Transformer>(
+    func request<Request: Transformer, Response: Transformer>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
-        object: RequestTransformer.Destination?,
+        object: Request.Destination?,
         headers: [String: String],
-        requestTransformer: RequestTransformer,
-        responseTransformer: ResponseTransformer,
-        completion: @escaping (Result<ResponseTransformer.Destination, NetworkError>) -> Void
-    ) -> NetworkTask where RequestTransformer.Source == Any, ResponseTransformer.Source == Any
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) -> NetworkTask<Response.Destination> where Request.Source == Any, Response.Source == Any
+
+    func request<Request: Transformer, Response: Transformer>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request.Destination?,
+        headers: [String: String],
+        requestTransformer: Request,
+        responseTransformer: Response
+    ) async -> Result<Response.Destination, NetworkError> where Request.Source == Any, Response.Source == Any
 }
 
 // Codable
@@ -75,17 +101,32 @@ public protocol CodableNetworkClient: NetworkClient {
     var decoder: JSONDecoder { get }
     var encoder: JSONEncoder { get }
 
-    @discardableResult
-    func request<RequestObject: Encodable, ResponseObject: Decodable>(
+    func request<Request: Encodable, Response: Decodable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
-        object: RequestObject?,
-        headers: [String: String],
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
-    ) -> NetworkTask
+        object: Request?,
+        headers: [String: String]
+    ) -> NetworkTask<Response>
 
-    @discardableResult
+    func request<Request: Encodable, Response: Decodable>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request?,
+        headers: [String: String],
+        decoder: JSONDecoder,
+        encoder: JSONEncoder
+    ) -> NetworkTask<Response>
+
+    func request<Request: Encodable, Response: Decodable>(
+        method: HttpMethod,
+        path: String,
+        parameters: [String: String],
+        object: Request?,
+        headers: [String: String]
+    ) async -> Result<Response, NetworkError>
+
     func request<RequestObject: Encodable, ResponseObject: Decodable>(
         method: HttpMethod,
         path: String,
@@ -93,7 +134,6 @@ public protocol CodableNetworkClient: NetworkClient {
         object: RequestObject?,
         headers: [String: String],
         decoder: JSONDecoder,
-        encoder: JSONEncoder,
-        completion: @escaping (Result<ResponseObject, NetworkError>) -> Void
-    ) -> NetworkTask
+        encoder: JSONEncoder
+    ) async -> Result<ResponseObject, NetworkError>
 }

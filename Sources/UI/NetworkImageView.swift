@@ -6,9 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-#if canImport(UIKit)
-
-#if !os(watchOS)
+#if canImport(UIKit) && !os(watchOS)
 
 import UIKit
 
@@ -28,33 +26,31 @@ open class NetworkImageView: UIImageView {
     override open func layoutSubviews() {
         super.layoutSubviews()
 
-        if !loading && image == nil {
+        if task == nil && image == nil {
             update()
         }
     }
 
-    private var loading: Bool = false
+    private var task: Task<Void, Never>?
 
     private func update() {
+        task?.cancel()
+        task = nil
+
         image = placeholder
 
         guard bounds.width > 0.1 && bounds.height > 0.1 else { return }
         guard let imageLoader = imageLoader, let imageUrl = imageUrl else { return }
 
-        loading = true
-
-        imageLoader.load(url: imageUrl, size: frame.size, mode: resizeMode) { [weak self] result in
-            guard let self = self, imageUrl == self.imageUrl else { return }
-
-            self.loading = false
+        task = Task {
+            let result = await imageLoader.load(url: imageUrl, size: frame.size, mode: resizeMode)
+            task = nil
             guard let image = result.value?.1 else { return }
 
-            self.addFadeTransition()
+            addFadeTransition()
             self.image = image
         }
     }
 }
-
-#endif
 
 #endif
