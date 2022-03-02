@@ -10,18 +10,10 @@
 /// Levels can be specified for each tag separately.
 public class FilteringLogger: Logger {
     private let logger: Logger
-    private let tagLevels: [String: Level]
-    private let defaultLevel: Level
+    private let tagLevels: [String: LoggingLevel?]
+    private let defaultLevel: LoggingLevel?
 
-    public struct Level {
-        public var value: LoggingLevel?
-
-        public init(_ value: LoggingLevel?) {
-            self.value = value
-        }
-    }
-
-    public init(logger: Logger, tagLevels: [String: Level], defaultLevel: Level) {
+    public init(logger: Logger, tagLevels: [String: LoggingLevel?], defaultLevel: LoggingLevel?) {
         self.logger = logger
         self.tagLevels = tagLevels
         self.defaultLevel = defaultLevel
@@ -36,9 +28,7 @@ public class FilteringLogger: Logger {
         function: StaticString = #function,
         line: UInt = #line
     ) {
-        let filteringLevel = tagLevels[tag] ?? defaultLevel
-        guard let filteringLoggingLevel = filteringLevel.value, level.rawValue >= filteringLoggingLevel.rawValue  else { return }
-
+        guard let filteringLevel = tagLevels[tag] ?? defaultLevel, level.rawValue >= filteringLevel.rawValue  else { return }
         logger.log(message(), meta: meta(), level: level, tag: tag, file: file, function: function, line: line)
     }
 }
