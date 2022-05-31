@@ -680,10 +680,10 @@
 			isa = PBXGroup;
 			children = (
 				B2FA898504F1E69BB9458637 /* Serializers */,
+				B2FA8D3250B0332A2002392F /* ServerTrust */,
 				B2FA84BBE47AB20628675CBD /* Http.swift */,
 				B2FA85D4956ADEAF7B13BFD8 /* UrlSessionHttp.swift */,
 				B2FA88E2CFA8BD28CDAA2EC5 /* Http+Serialization.swift */,
-				B2FA8D3250B0332A2002392F /* ServerTrust */,
 				B2FA867774CB13826A36AB29 /* UrlSessionHttpLogger.swift */,
 			);
 			path = Http;
@@ -939,9 +939,9 @@
 			buildConfigurationList = 44073FD3227E429F0090545A /* Build configuration list for PBXNativeTarget "Legacy-macOS" */;
 			buildPhases = (
 				44073F6D227E429F0090545A /* Swiftlint */,
+				44073FD0227E429F0090545A /* Headers */,
 				44073F6E227E429F0090545A /* Sources */,
 				44073FCF227E429F0090545A /* Frameworks */,
-				44073FD0227E429F0090545A /* Headers */,
 				44073FD2227E429F0090545A /* Resources */,
 			);
 			buildRules = (
@@ -958,9 +958,9 @@
 			buildConfigurationList = 44074033227E4C0D0090545A /* Build configuration list for PBXNativeTarget "Legacy-tvOS" */;
 			buildPhases = (
 				44073FD9227E4C0D0090545A /* Swiftlint */,
+				44074030227E4C0D0090545A /* Headers */,
 				44073FDA227E4C0D0090545A /* Sources */,
 				4407402F227E4C0D0090545A /* Frameworks */,
-				44074030227E4C0D0090545A /* Headers */,
 				44074032227E4C0D0090545A /* Resources */,
 			);
 			buildRules = (
@@ -977,9 +977,9 @@
 			buildConfigurationList = 44074093227E4DB40090545A /* Build configuration list for PBXNativeTarget "Legacy-watchOS" */;
 			buildPhases = (
 				44074039227E4DB40090545A /* Swiftlint */,
+				44074090227E4DB40090545A /* Headers */,
 				4407403A227E4DB40090545A /* Sources */,
 				4407408F227E4DB40090545A /* Frameworks */,
-				44074090227E4DB40090545A /* Headers */,
 				44074092227E4DB40090545A /* Resources */,
 			);
 			buildRules = (
@@ -1015,9 +1015,9 @@
 			buildConfigurationList = 447729E61D7B121200D63FE7 /* Build configuration list for PBXNativeTarget "Legacy-iOS" */;
 			buildPhases = (
 				447729E91D7B13E600D63FE7 /* Swiftlint */,
+				447729DB1D7B121200D63FE7 /* Headers */,
 				447729D91D7B121200D63FE7 /* Sources */,
 				447729DA1D7B121200D63FE7 /* Frameworks */,
-				447729DB1D7B121200D63FE7 /* Headers */,
 				447729DC1D7B121200D63FE7 /* Resources */,
 			);
 			buildRules = (

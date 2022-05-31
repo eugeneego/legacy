@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+import Foundation
+
 public protocol LightRestClient: RestClient, LightNetworkClient {
     func create<Request: LightTransformer, Response: LightTransformer>(
         path: String,

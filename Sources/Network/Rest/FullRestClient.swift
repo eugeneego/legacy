@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+import Foundation
+
 public protocol FullRestClient: RestClient, FullNetworkClient {
     func create<Request: Transformer, Response: Transformer>(
         path: String,

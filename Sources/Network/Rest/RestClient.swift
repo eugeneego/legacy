@@ -6,6 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
+import Foundation
+
 public protocol RestClient: NetworkClient {
     func create<Request: HttpSerializer, Response: HttpSerializer>(
         path: String,
