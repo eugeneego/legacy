@@ -27,7 +27,7 @@ public extension UIImage {
     }
 
     func prerenderedImage() -> UIImage {
-        if #available(iOS 15.0, *), let image = preparingForDisplay() {
+        if #available(iOS 15.0, tvOS 15.0, *), let image = preparingForDisplay() {
             return image
         }
         return Self.image(size: size) { _, bounds in
