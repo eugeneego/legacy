@@ -27,7 +27,10 @@ public extension UIImage {
     }
 
     func prerenderedImage() -> UIImage {
-        Self.image(size: size) { _, bounds in
+        if #available(iOS 15.0, *), let image = preparingForDisplay() {
+            return image
+        }
+        return Self.image(size: size) { _, bounds in
             draw(in: bounds)
         }
     }
