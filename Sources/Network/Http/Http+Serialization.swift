@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct HttpSerializedResult<ObjectType, DataType> {
+public struct HttpSerializedResult<ObjectType, DataType: Sendable> {
     public var response: HTTPURLResponse?
     public var object: ObjectType?
     public var data: DataType?
@@ -52,10 +52,10 @@ public class HttpSerializedDataTask<T: HttpSerializer> {
             guard result.error == nil else { return serializedResult }
 
             switch await serializer.deserialize(result.data) {
-                case .success(let value):
-                    serializedResult.object = value
-                case .failure(let error):
-                    serializedResult.error = .serialization(error)
+            case .success(let value):
+                serializedResult.object = value
+            case .failure(let error):
+                serializedResult.error = .serialization(error)
             }
             return serializedResult
         }

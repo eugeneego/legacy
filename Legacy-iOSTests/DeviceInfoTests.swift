@@ -11,6 +11,7 @@
 import XCTest
 @testable import Legacy
 
+@MainActor
 class DeviceInfoTests: XCTestCase {
     func testMain() {
         let deviceInfo = DeviceInfo.main

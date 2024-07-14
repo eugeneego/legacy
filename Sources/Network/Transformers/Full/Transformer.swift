@@ -17,9 +17,9 @@ public indirect enum TransformerError: Error {
 public typealias TransformerResult<T> = Result<T, TransformerError>
 public typealias TransformerValidator<T> = (T) -> Error?
 
-public protocol Transformer {
+public protocol Transformer: Sendable {
     associatedtype Source
-    associatedtype Destination
+    associatedtype Destination: Sendable
 
     func transform(source value: Source) -> TransformerResult<Destination>
     func transform(destination value: Destination) -> TransformerResult<Source>

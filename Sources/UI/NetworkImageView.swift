@@ -42,7 +42,7 @@ open class NetworkImageView: UIImageView {
         guard bounds.width > 0.1 && bounds.height > 0.1 else { return }
         guard let imageLoader = imageLoader, let imageUrl = imageUrl else { return }
 
-        task = Task {
+        task = Task { @MainActor [resizeMode] in
             let result = await imageLoader.load(url: imageUrl, size: frame.size, mode: resizeMode)
             task = nil
             guard let image = result.value?.1 else { return }

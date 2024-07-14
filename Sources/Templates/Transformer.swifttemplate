@@ -101,6 +101,7 @@ struct <%= name %>: Transformer {
         }
     }
 }
+// swiftlint:enable all
 
 // sourcery:end
 <% } -%>
@@ -222,6 +223,7 @@ struct <%= name %>: Transformer {
         return .success(dictionary)
     }
 }
+// swiftlint:enable all
 
 // sourcery:end
 <% } -%>

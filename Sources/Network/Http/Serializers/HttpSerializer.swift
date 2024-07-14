@@ -13,8 +13,8 @@ public enum HttpSerializationError: Error {
     case error(Error)
 }
 
-public protocol HttpSerializer {
-    associatedtype Value
+public protocol HttpSerializer: Sendable {
+    associatedtype Value: Sendable
 
     var contentType: String { get }
 

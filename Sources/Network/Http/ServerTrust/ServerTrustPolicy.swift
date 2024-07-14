@@ -11,71 +11,64 @@
 
 import Foundation
 
-public enum ServerTrustPolicy {
+public enum ServerTrustPolicy: Sendable {
     case `default`(checkHost: Bool)
     case certificates(certificates: [SecCertificate], checkChain: Bool, checkHost: Bool)
     case publicKeys(keys: [SecKey], checkChain: Bool, checkHost: Bool)
     case hpkp(hashes: Set<Data>, algorithms: [Hpkp.PublicKeyAlgorithm], checkChain: Bool, checkHost: Bool)
-    case custom((_ serverTrust: SecTrust, _ host: String) -> Bool)
+    case custom(@Sendable (_ serverTrust: SecTrust, _ host: String) -> Bool)
     case disabled
 
-    public func evaluate(serverTrust: SecTrust, host: String) -> Bool {
+    public func evaluate(serverTrust: SecTrust, host: String) async -> Bool {
         switch self {
-            case .default(let checkHost):
+        case .default(let checkHost):
+            let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
+            SecTrustSetPolicies(serverTrust, policy)
+            return SecHelper.evaluate(trust: serverTrust)
+        case .certificates(let certificates, let checkChain, let checkHost):
+            if checkChain {
                 let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
                 SecTrustSetPolicies(serverTrust, policy)
+                SecTrustSetAnchorCertificates(serverTrust, certificates as CFArray)
+                SecTrustSetAnchorCertificatesOnly(serverTrust, true)
                 return SecHelper.evaluate(trust: serverTrust)
-            case .certificates(let certificates, let checkChain, let checkHost):
-                if checkChain {
-                    let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
-                    SecTrustSetPolicies(serverTrust, policy)
-
-                    SecTrustSetAnchorCertificates(serverTrust, certificates as CFArray)
-                    SecTrustSetAnchorCertificatesOnly(serverTrust, true)
-
-                    return SecHelper.evaluate(trust: serverTrust)
-                } else {
-                    let serverDataArray = dataForTrust(serverTrust)
-                    let pinnedDataArray = dataForCertificates(certificates)
-
-                    for serverData in serverDataArray {
-                        for pinnedData in pinnedDataArray where serverData == pinnedData {
-                            return true
-                        }
-                    }
-
-                    return false
-                }
-            case .publicKeys(let keys, let checkChain, let checkHost):
-                if checkChain {
-                    let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
-                    SecTrustSetPolicies(serverTrust, policy)
-                    if !SecHelper.evaluate(trust: serverTrust) {
-                        return false
-                    }
-                }
-
-                for serverKey in publicKeysForTrust(serverTrust) as [AnyObject] {
-                    for key in keys as [AnyObject] where serverKey.isEqual(key) {
+            } else {
+                let serverDataArray = dataForTrust(serverTrust)
+                let pinnedDataArray = dataForCertificates(certificates)
+                for serverData in serverDataArray {
+                    for pinnedData in pinnedDataArray where serverData == pinnedData {
                         return true
                     }
                 }
-
                 return false
-            case .hpkp(let hashes, let algorithms, let checkChain, let checkHost):
-                guard #available(iOS 10.0, macOS 10.12, *) else { return false }
-                return Hpkp.check(
-                    serverTrust: serverTrust,
-                    host: host,
-                    hashes: hashes,
-                    algorithms: algorithms,
-                    checkChain: checkChain,
-                    checkHost: checkHost
-                )
-            case let .custom(closure):
-                return closure(serverTrust, host)
-            case .disabled:
-                return true
+            }
+        case .publicKeys(let keys, let checkChain, let checkHost):
+            if checkChain {
+                let policy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
+                SecTrustSetPolicies(serverTrust, policy)
+                if !SecHelper.evaluate(trust: serverTrust) {
+                    return false
+                }
+            }
+            for serverKey in publicKeysForTrust(serverTrust) as [AnyObject] {
+                for key in keys as [AnyObject] where serverKey.isEqual(key) {
+                    return true
+                }
+            }
+            return false
+        case .hpkp(let hashes, let algorithms, let checkChain, let checkHost):
+            return await Hpkp.check(
+                serverTrust: serverTrust,
+                host: host,
+                hashes: hashes,
+                algorithms: algorithms,
+                checkChain: checkChain,
+                checkHost: checkHost
+            )
+        case .custom(let closure):
+            return closure(serverTrust, host)
+        case .disabled:
+            return true
         }
     }
 
@@ -105,3 +98,6 @@ public enum ServerTrustPolicy {
         return keys
     }
 }
+
+extension SecKey: @unchecked @retroactive Sendable {}
+extension SecTrust: @unchecked @retroactive Sendable {}

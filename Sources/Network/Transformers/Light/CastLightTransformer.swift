@@ -6,7 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-public struct CastLightTransformer<Object>: LightTransformer {
+public struct CastLightTransformer<Object: Sendable>: LightTransformer {
     public typealias T = Object
 
     public init() {}

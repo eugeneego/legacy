@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol UrlSessionHttpLogger {
+public protocol UrlSessionHttpLogger: Sendable {
     func log(_ request: URLRequest, date: Date)
 
     func log(
@@ -25,7 +25,7 @@ public protocol UrlSessionHttpLogger {
     func log(_ url: URL?) -> String
 }
 
-open class DefaultUrlSessionHttpLogger: UrlSessionHttpLogger {
+open class DefaultUrlSessionHttpLogger: UrlSessionHttpLogger, @unchecked Sendable {
     public let logger: Logger
     public let loggerTag: String
 
@@ -40,7 +40,7 @@ open class DefaultUrlSessionHttpLogger: UrlSessionHttpLogger {
         let tag = "←"
         let body = request.httpBody.flatMap { data -> String? in
             if let type = request.allHTTPHeaderFields?["Content-Type"], isText(type: type) && data.count <= maxBodySize {
-                return String(data: data, encoding: .utf8) ?? String(data: data, encoding: .ascii)
+                return String(decoding: data, as: UTF8.self)
             } else {
                 return "\(data.count) bytes"
             }
@@ -85,7 +85,7 @@ open class DefaultUrlSessionHttpLogger: UrlSessionHttpLogger {
         let urlResponse = response as? HTTPURLResponse
         let body = data.flatMap { data -> String? in
             if let type = urlResponse?.allHeaderFields["Content-Type"] as? String, isText(type: type) && data.count <= maxBodySize {
-                return String(data: data, encoding: .utf8) ?? String(data: data, encoding: .ascii)
+                return String(decoding: data, as: UTF8.self)
             } else {
                 return "\(data.count) bytes"
             }

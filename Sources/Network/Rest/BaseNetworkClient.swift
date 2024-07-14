@@ -198,7 +198,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
 
     // Codable
 
-    open func request<Request: Encodable, Response: Decodable>(
+    open func request<Request: Encodable & Sendable, Response: Decodable & Sendable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
@@ -218,7 +218,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         )
     }
 
-    open func request<Request: Encodable, Response: Decodable>(
+    open func request<Request: Encodable & Sendable, Response: Decodable & Sendable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
@@ -236,7 +236,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         )
     }
 
-    open func request<Request: Encodable, Response: Decodable>(
+    open func request<Request: Encodable & Sendable, Response: Decodable & Sendable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],
@@ -256,7 +256,7 @@ open class BaseNetworkClient: LightNetworkClient, FullNetworkClient, CodableNetw
         )
     }
 
-    open func request<Request: Encodable, Response: Decodable>(
+    open func request<Request: Encodable & Sendable, Response: Decodable & Sendable>(
         method: HttpMethod,
         path: String,
         parameters: [String: String],

@@ -6,9 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-#if canImport(UIKit)
-
-#if !os(watchOS)
+#if canImport(UIKit) && !os(watchOS)
 
 import UIKit
 
@@ -39,7 +37,5 @@ public extension UIStoryboard {
         return typedController
     }
 }
-
-#endif
 
 #endif

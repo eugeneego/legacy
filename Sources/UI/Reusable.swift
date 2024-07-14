@@ -6,9 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-#if canImport(UIKit)
-
-#if !os(watchOS)
+#if canImport(UIKit) && !os(watchOS)
 
 import UIKit
 
@@ -18,12 +16,12 @@ public enum Reusable<CellType> {
 
     public var id: String {
         switch self {
-            case .class(let id), .nib(let id, _, _):
-                return id
+        case .class(let id), .nib(let id, _, _):
+            return id
         }
     }
 
-    public static func fromClass<CellType>(id: String = String(describing: CellType.self)) -> Reusable<CellType> {
+    public static func fromClass(id: String = String(describing: CellType.self)) -> Reusable<CellType> {
         .class(id: id)
     }
 
@@ -41,11 +39,11 @@ public extension UITableView {
 
     func registerReusableCell<CellType: UITableViewCell>(_ reusable: Reusable<CellType>) {
         switch reusable {
-            case .class(let id):
-                register(CellType.self, forCellReuseIdentifier: id)
-            case .nib(let id, let name, let bundle):
-                let nib = UINib(nibName: name, bundle: bundle)
-                register(nib, forCellReuseIdentifier: id)
+        case .class(let id):
+            register(CellType.self, forCellReuseIdentifier: id)
+        case .nib(let id, let name, let bundle):
+            let nib = UINib(nibName: name, bundle: bundle)
+            register(nib, forCellReuseIdentifier: id)
         }
     }
 
@@ -69,11 +67,11 @@ public extension UITableView {
 
     func registerReusableHeaderFooter<CellType: UITableViewHeaderFooterView>(_ reusable: Reusable<CellType>) {
         switch reusable {
-            case .class(let id):
-                register(CellType.self, forHeaderFooterViewReuseIdentifier: id)
-            case .nib(let id, let name, let bundle):
-                let nib = UINib(nibName: name, bundle: bundle)
-                register(nib, forHeaderFooterViewReuseIdentifier: id)
+        case .class(let id):
+            register(CellType.self, forHeaderFooterViewReuseIdentifier: id)
+        case .nib(let id, let name, let bundle):
+            let nib = UINib(nibName: name, bundle: bundle)
+            register(nib, forHeaderFooterViewReuseIdentifier: id)
         }
     }
 
@@ -89,22 +87,22 @@ public extension UITableView {
 public extension UICollectionView {
     func registerReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>) {
         switch reusable {
-            case .class(let id):
-                register(CellType.self, forCellWithReuseIdentifier: id)
-            case .nib(let id, let name, let bundle):
-                let nib = UINib(nibName: name, bundle: bundle)
-                register(nib, forCellWithReuseIdentifier: id)
-            }
+        case .class(let id):
+            register(CellType.self, forCellWithReuseIdentifier: id)
+        case .nib(let id, let name, let bundle):
+            let nib = UINib(nibName: name, bundle: bundle)
+            register(nib, forCellWithReuseIdentifier: id)
+        }
     }
 
     func registerReusableSupplementaryView<CellType: UICollectionReusableView>(_ reusable: Reusable<CellType>, kind: String) {
         switch reusable {
-            case .class(let id):
-                register(CellType.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: id)
-            case .nib(let id, let name, let bundle):
-                let nib = UINib(nibName: name, bundle: bundle)
-                register(nib, forSupplementaryViewOfKind: kind, withReuseIdentifier: id)
-            }
+        case .class(let id):
+            register(CellType.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: id)
+        case .nib(let id, let name, let bundle):
+            let nib = UINib(nibName: name, bundle: bundle)
+            register(nib, forSupplementaryViewOfKind: kind, withReuseIdentifier: id)
+        }
     }
 
     func dequeueReusableCell<CellType: UICollectionViewCell>(_ reusable: Reusable<CellType>, indexPath: IndexPath) -> CellType {
@@ -127,7 +125,5 @@ public extension UICollectionView {
         return cell
     }
 }
-
-#endif
 
 #endif

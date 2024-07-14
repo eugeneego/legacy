@@ -6,7 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-public struct CastTransformer<From, To>: Transformer {
+public struct CastTransformer<From, To: Sendable>: Transformer {
     public typealias Source = From
     public typealias Destination = To
 

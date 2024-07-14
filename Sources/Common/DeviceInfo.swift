@@ -19,6 +19,7 @@ public struct DeviceInfo: CustomStringConvertible {
     /// Static instance with device and application information.
     /// - note:
     /// Application information is extracted from the main bundle.
+    @MainActor
     public static let main: DeviceInfo = DeviceInfo(bundle: Bundle.main)
 
     /// Machine name. Example: `iPhone10,6`
@@ -61,11 +62,13 @@ public struct DeviceInfo: CustomStringConvertible {
     public let identifierForVendor: UUID?
 
     /// Initializes with a bundle with a reference class.
+    @MainActor
     public init(class: AnyClass) {
         self.init(bundle: Bundle(for: `class`))
     }
 
     /// Initializes with a bundle.
+    @MainActor
     public init(bundle: Bundle) {
         let processInfo = ProcessInfo.processInfo
 
@@ -157,8 +160,9 @@ public struct DeviceInfo: CustomStringConvertible {
     }
 
     private static let machineDisplayNames: [String: String] = [
-        "i386": "iOS Simulator",
-        "x86_64": "iOS Simulator (x64)",
+        "i386": "iOS Simulator (x86)",
+        "x86_64": "iOS Simulator (x86_64)",
+        "arm64": "iOS Simulator (ARM)",
 
         "iPhone1,1": "iPhone",
         "iPhone1,2": "iPhone 3G",
@@ -205,6 +209,15 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPhone14,3": "iPhone 13 Pro Max",
         "iPhone14,4": "iPhone 13 Mini",
         "iPhone14,5": "iPhone 13",
+        "iPhone14,6": "iPhone SE (3rd Gen)",
+        "iPhone14,7": "iPhone 14",
+        "iPhone14,8": "iPhone 14 Plus",
+        "iPhone15,2": "iPhone 14 Pro",
+        "iPhone15,3": "iPhone 14 Pro Max",
+        "iPhone15,4": "iPhone 15",
+        "iPhone15,5": "iPhone 15 Plus",
+        "iPhone16,1": "iPhone 15 Pro",
+        "iPhone16,2": "iPhone 15 Pro Max",
 
         "iPad1,1": "iPad",
         "iPad2,1": "iPad 2 (Wi-Fi)",
@@ -278,8 +291,24 @@ public struct DeviceInfo: CustomStringConvertible {
         "iPad13,9": "iPad Pro (12.9\", 5th Gen, Wi-Fi, Cellular, US)",
         "iPad13,10": "iPad Pro (12.9\", 5th Gen, Wi-Fi, Cellular, Global)",
         "iPad13,11": "iPad Pro (12.9\", 5th Gen, Wi-Fi, Cellular, China)",
+        "iPad13,16": "iPad (Air, 5th Gen, Wi-Fi)",
+        "iPad13,17": "iPad (Air, 5th Gen, Wi-Fi, Cellular)",
+        "iPad13,18": "iPad (10.9\", 10th Gen, Wi-Fi)",
+        "iPad13,19": "iPad (10.9\", 10th Gen, Wi-Fi, Cellular)",
         "iPad14,1": "iPad mini 6 (Wi-Fi)",
         "iPad14,2": "iPad mini 6 (Wi-Fi, Cellular)",
+        "iPad14,3": "iPad Pro (11\", 4th Gen, Wi-Fi)",
+        "iPad14,4": "iPad Pro (11\", 4th Gen, Wi-Fi, Cellular)",
+        "iPad14,5": "iPad Pro (12.9\", 6th Gen, Wi-Fi)",
+        "iPad14,6": "iPad Pro (12.9\", 6th Gen, Wi-Fi, Cellular)",
+        "iPad14,8": "iPad Air (11\", 6th Gen, M2, Wi-Fi)",
+        "iPad14,9": "iPad Air (11\", 6th Gen, M2, Wi-Fi, Cellular)",
+        "iPad14,10": "iPad Air (13\", 6th Gen, M2, Wi-Fi)",
+        "iPad14,11": "iPad Air (13\", 6th Gen, M2, Wi-Fi, Cellular)",
+        "iPad16,3": "iPad Pro (11\", 5th Gen, M4, Wi-Fi)",
+        "iPad16,4": "iPad Pro (11\", 5th Gen, M4, Wi-Fi, Cellular)",
+        "iPad16,5": "iPad Pro (13\", 7th Gen, M4, Wi-Fi)",
+        "iPad16,6": "iPad Pro (13\", 7th Gen, M4, Wi-Fi, Cellular)",
 
         "iPod1,1": "iPod Touch",
         "iPod2,1": "iPod Touch (2nd Generation)",
@@ -319,8 +348,24 @@ public struct DeviceInfo: CustomStringConvertible {
         "Watch6,7": "Apple Watch Series 7 (45mm, GPS)",
         "Watch6,8": "Apple Watch Series 7 (41mm, GPS, Cellular)",
         "Watch6,9": "Apple Watch Series 7 (45mm, GPS, Cellular)",
+        "Watch6,10": "Apple Watch SE 2 (40mm, GPS)",
+        "Watch6,11": "Apple Watch SE 2 (44mm, GPS)",
+        "Watch6,12": "Apple Watch SE 2 (40mm, GPS, Cellular)",
+        "Watch6,13": "Apple Watch SE 2 (44mm, GPS, Cellular)",
+        "Watch6,14": "Apple Watch Series 8 (41mm, GPS)",
+        "Watch6,15": "Apple Watch Series 8 (45mm, GPS)",
+        "Watch6,16": "Apple Watch Series 8 (41mm, GPS, Cellular)",
+        "Watch6,17": "Apple Watch Series 8 (45mm, GPS, Cellular)",
+        "Watch6,18": "Apple Watch Ultra",
+        "Watch7,1": "Apple Watch Series 9 (41mm, GPS)",
+        "Watch7,2": "Apple Watch Series 9 (45mm, GPS)",
+        "Watch7,3": "Apple Watch Series 9 (41mm, GPS, Cellular)",
+        "Watch7,4": "Apple Watch Series 9 (45mm, GPS, Cellular)",
+        "Watch7,5": "Apple Watch Ultra 2",
 
-        "AppleTV5,3": "Apple TV (4th Generation)",
+        "AppleTV5,3": "Apple TV (4th Gen)",
         "AppleTV6,2": "Apple TV 4K",
+        "AppleTV11,1": "Apple TV 4K (2nd Gen)",
+        "AppleTV14,1": "Apple TV 4K (3rd Gen)",
     ]
 }

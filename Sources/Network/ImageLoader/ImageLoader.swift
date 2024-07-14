@@ -27,7 +27,7 @@ public protocol ImageLoaderTask: AnyObject {
     func cancel()
 }
 
-public enum ResizeMode {
+public enum ResizeMode: Sendable {
     case original
     case fit
     case fill

@@ -56,7 +56,7 @@ public class Odin: DependencyInjectionContainer {
     ///
     ///       container.resolve(object)
     public func resolve(_ object: Any?) {
-        guard let object = object else { return }
+        guard let object else { return }
 
         parentContainer?.resolve(object)
 

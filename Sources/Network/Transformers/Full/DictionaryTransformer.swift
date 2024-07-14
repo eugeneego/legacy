@@ -6,9 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-public struct DictionaryTransformer
-        <From, KeyTransformer: Transformer, ValueTransformer: Transformer>
-        : Transformer where KeyTransformer.Source: Hashable, KeyTransformer.Destination: Hashable {
+public struct DictionaryTransformer<From, KeyTransformer: Transformer, ValueTransformer: Transformer>: Transformer
+where KeyTransformer.Source: Hashable, KeyTransformer.Destination: Hashable {
     public typealias Source = From
     public typealias Destination = [KeyTransformer.Destination: ValueTransformer.Destination]
 
@@ -38,10 +37,10 @@ public struct DictionaryTransformer
             let valueResult = valueTransformer.transform(source: value)
 
             switch (keyResult, valueResult) {
-                case (.success(let key), .success(let value)):
-                    destination[key] = value
-                default:
-                    errors.append((String(describing: key), .transform))
+            case (.success(let key), .success(let value)):
+                destination[key] = value
+            default:
+                errors.append((String(describing: key), .transform))
             }
         }
 
@@ -61,10 +60,10 @@ public struct DictionaryTransformer
             let valueResult = valueTransformer.transform(destination: value)
 
             switch (keyResult, valueResult) {
-                case (.success(let key), .success(let value)):
-                    source[key] = value
-                default:
-                    errors.append((String(describing: key), .transform))
+            case (.success(let key), .success(let value)):
+                source[key] = value
+            default:
+                errors.append((String(describing: key), .transform))
             }
         }
 
