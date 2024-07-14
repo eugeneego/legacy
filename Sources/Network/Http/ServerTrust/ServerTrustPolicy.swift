@@ -99,5 +99,12 @@ public enum ServerTrustPolicy: Sendable {
     }
 }
 
+#if hasFeature(RetroactiveAttribute)
 extension SecKey: @unchecked @retroactive Sendable {}
 extension SecTrust: @unchecked @retroactive Sendable {}
+extension SecCertificate: @unchecked @retroactive Sendable {}
+#else
+extension SecKey: @unchecked Sendable {}
+extension SecTrust: @unchecked Sendable {}
+extension SecCertificate: @unchecked Sendable {}
+#endif

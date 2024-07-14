@@ -46,7 +46,6 @@ public actor Hpkp {
     }
 
     private actor Cache {
-        private let lockQueue: DispatchQueue = DispatchQueue(label: "HPKPCache")
         private var hashes: [PublicKeyAlgorithm: [Data: Data]] = [:]
 
         static let instance: Cache = Cache()
@@ -184,5 +183,3 @@ public actor Hpkp {
         return Data(digest)
     }
 }
-
-extension SecCertificate: @unchecked @retroactive Sendable {}

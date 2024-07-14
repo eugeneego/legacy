@@ -28,8 +28,7 @@ class NetworkTestCase: XCTestCase {
         let configuration = URLSessionConfiguration.default
         configuration.urlCache = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        let logger = DefaultUrlSessionHttpLogger(logger: PrintLogger())
-        let http = UrlSessionHttp(configuration: configuration, logger: logger)
+        let http = UrlSessionHttp(configuration: configuration, logger: nil)
         let rest = BaseRestClient(http: http, baseUrl: baseUrl)
         return rest
     }()

@@ -172,4 +172,8 @@ public extension Http {
     }
 }
 
+#if hasFeature(RetroactiveAttribute)
 extension InputStream: @unchecked @retroactive Sendable {}
+#else
+extension InputStream: @unchecked Sendable {}
+#endif

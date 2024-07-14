@@ -11,8 +11,8 @@
 import XCTest
 @testable import Legacy
 
-@MainActor
 class DeviceInfoTests: XCTestCase {
+    @MainActor
     func testMain() {
         let deviceInfo = DeviceInfo.main
 
@@ -20,8 +20,16 @@ class DeviceInfoTests: XCTestCase {
         XCTAssert(!deviceInfo.machineDisplayName.isEmpty)
         XCTAssert(!deviceInfo.system.isEmpty)
         XCTAssert(!deviceInfo.systemVersion.isEmpty)
+
+        XCTAssert(!deviceInfo.bundleName.isEmpty)
+        XCTAssert(!deviceInfo.bundleDisplayName.isEmpty)
+        XCTAssert(!deviceInfo.bundleIdentifier.isEmpty)
+        XCTAssert(!deviceInfo.bundleVersion.isEmpty)
+        XCTAssert(!deviceInfo.bundleBuild.isEmpty)
     }
 
+    #if os(iOS)
+    @MainActor
     func testBundle() {
         let deviceInfo = DeviceInfo(bundle: Bundle(for: DeviceInfoTests.self))
 
@@ -37,6 +45,7 @@ class DeviceInfoTests: XCTestCase {
         XCTAssert(!deviceInfo.bundleBuild.isEmpty)
     }
 
+    @MainActor
     func testClass() {
         let deviceInfo = DeviceInfo(class: Odin.self)
 
@@ -51,6 +60,7 @@ class DeviceInfoTests: XCTestCase {
         XCTAssert(!deviceInfo.bundleVersion.isEmpty)
         XCTAssert(!deviceInfo.bundleBuild.isEmpty)
     }
+    #endif
 }
 
 #endif
