@@ -13,7 +13,7 @@ import UIKit
 #endif
 
 /// Logger that sends data to the backend using Elastic Search API.
-public class ElasticLogger: Logger {
+public class ElasticLogger: Logger, @unchecked Sendable {
     private let environment: String
     private let userParameters: () -> [String: String]
     private let appAndSystemParameters: [String: String]
@@ -66,18 +66,18 @@ public class ElasticLogger: Logger {
 
     private func severity(for level: LoggingLevel) -> String {
         switch level {
-            case .verbose:
-                return "verbose"
-            case .debug:
-                return "debug"
-            case .info:
-                return "info"
-            case .warning:
-                return "warn"
-            case .error:
-                return "err"
-            case .critical:
-                return "crit"
+        case .verbose:
+            return "verbose"
+        case .debug:
+            return "debug"
+        case .info:
+            return "info"
+        case .warning:
+            return "warn"
+        case .error:
+            return "err"
+        case .critical:
+            return "crit"
         }
     }
 

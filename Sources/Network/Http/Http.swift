@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol Http {
+public protocol Http: Sendable {
     func data(request: URLRequest) -> HttpDataTask
     func download(request: URLRequest, destination: URL) -> HttpDownloadTask
 
@@ -16,7 +16,7 @@ public protocol Http {
     func download(request: URLRequest, destination: URL) async -> HttpResult<URL>
 }
 
-public protocol HttpTask: AnyObject {
+public protocol HttpTask {
     var uploadProgress: HttpProgress { get }
     var downloadProgress: HttpProgress { get }
 }
@@ -44,7 +44,7 @@ public protocol HttpProgress: AnyObject {
     var callback: ((HttpProgressData) -> Void)? { get set }
 }
 
-public struct HttpResult<DataType> {
+public struct HttpResult<DataType: Sendable>: Sendable {
     public var response: HTTPURLResponse?
     public var data: DataType?
     public var error: HttpError?
@@ -66,7 +66,7 @@ public enum HttpError: Error {
     case error(Error)
 }
 
-public struct HttpRequestParameters {
+public struct HttpRequestParameters: Sendable {
     var method: HttpMethod
     var url: URL
     var query: [String: String]
@@ -82,7 +82,7 @@ public struct HttpRequestParameters {
     }
 }
 
-public enum HttpMethod {
+public enum HttpMethod: Sendable {
     case get
     case head
     case post
@@ -96,21 +96,21 @@ public enum HttpMethod {
 
     public var value: String {
         switch self {
-            case .get: return "GET"
-            case .head: return "HEAD"
-            case .post: return "POST"
-            case .put: return "PUT"
-            case .patch: return "PATCH"
-            case .delete: return "DELETE"
-            case .trace: return "TRACE"
-            case .options: return "OPTIONS"
-            case .connect: return "CONNECT"
-            case .custom(let value): return value
+        case .get: return "GET"
+        case .head: return "HEAD"
+        case .post: return "POST"
+        case .put: return "PUT"
+        case .patch: return "PATCH"
+        case .delete: return "DELETE"
+        case .trace: return "TRACE"
+        case .options: return "OPTIONS"
+        case .connect: return "CONNECT"
+        case .custom(let value): return value
         }
     }
 }
 
-public enum HttpBody {
+public enum HttpBody: Sendable {
     case data(Data)
     case stream(InputStream)
 }
@@ -140,12 +140,12 @@ public extension Http {
         var request = URLRequest(url: urlWithQuery(url: parameters.url, query: parameters.query))
         request.httpMethod = parameters.method.value
         switch parameters.body {
-            case .data(let data):
-                request.httpBody = data
-            case .stream(let stream):
-                request.httpBodyStream = stream
-            case nil:
-                break
+        case .data(let data):
+            request.httpBody = data
+        case .stream(let stream):
+            request.httpBodyStream = stream
+        case nil:
+            break
         }
         parameters.headers.forEach { name, value in
             request.setValue(value, forHTTPHeaderField: name)
@@ -171,3 +171,9 @@ public extension Http {
         await download(request: request(parameters: parameters), destination: destination)
     }
 }
+
+#if hasFeature(RetroactiveAttribute)
+extension InputStream: @unchecked @retroactive Sendable {}
+#else
+extension InputStream: @unchecked Sendable {}
+#endif

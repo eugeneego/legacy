@@ -13,8 +13,8 @@
 import Foundation
 import CommonCrypto
 
-public class Hpkp {
-    public enum PublicKeyAlgorithm {
+public actor Hpkp {
+    public enum PublicKeyAlgorithm: Sendable {
         case rsa2048
         case rsa4096
         case ecDsaSecp256r1
@@ -28,8 +28,8 @@ public class Hpkp {
         algorithms: [PublicKeyAlgorithm],
         checkChain: Bool,
         checkHost: Bool
-    ) -> Bool {
-        let result = verifyPublicKeys(
+    ) async -> Bool {
+        let result = await verifyPublicKeys(
             serverTrust: serverTrust,
             host: host,
             algorithms: algorithms,
@@ -45,8 +45,7 @@ public class Hpkp {
         Set(hashes.compactMap { Data(base64Encoded: $0) })
     }
 
-    private class Cache {
-        private let lockQueue: DispatchQueue = DispatchQueue(label: "HPKPCache")
+    private actor Cache {
         private var hashes: [PublicKeyAlgorithm: [Data: Data]] = [:]
 
         static let instance: Cache = Cache()
@@ -55,22 +54,12 @@ public class Hpkp {
 
         func hashPublicKey(certificate: SecCertificate, algorithm: PublicKeyAlgorithm) -> Data? {
             let certificateData = SecCertificateCopyData(certificate) as Data
-
-            var cachedHash: Data?
-            lockQueue.sync {
-                cachedHash = hashes[algorithm]?[certificateData]
-            }
-
-            if let cachedHash = cachedHash {
+            let cachedHash = hashes[algorithm]?[certificateData]
+            if let cachedHash {
                 return cachedHash
             }
-
             let hash = Hpkp.hashPublicKey(certificate: certificate, publicKeyAlgorithm: algorithm)
-
-            lockQueue.sync {
-                hashes[algorithm, default: [:]][certificateData] = hash
-            }
-
+            hashes[algorithm, default: [:]][certificateData] = hash
             return hash
         }
     }
@@ -90,7 +79,7 @@ public class Hpkp {
         hashCache: Cache,
         checkChain: Bool,
         checkHost: Bool
-    ) -> Result {
+    ) async -> Result {
         if checkChain {
             let sslPolicy = SecPolicyCreateSSL(true, checkHost ? host as CFString : nil)
             SecTrustSetPolicies(serverTrust, sslPolicy)
@@ -107,7 +96,7 @@ public class Hpkp {
             }
 
             for savedAlgorithm in algorithms {
-                guard let hash = hashCache.hashPublicKey(certificate: certificate, algorithm: savedAlgorithm) else {
+                guard let hash = await hashCache.hashPublicKey(certificate: certificate, algorithm: savedAlgorithm) else {
                     return .couldNotGenerateSpkiHash
                 }
 
@@ -165,10 +154,10 @@ public class Hpkp {
 
     private static func asn1HeaderBytes(for publicKeyAlgorithm: PublicKeyAlgorithm) -> [UInt8] {
         switch publicKeyAlgorithm {
-            case .rsa2048: return rsa2048Asn1Header
-            case .rsa4096: return rsa4096Asn1Header
-            case .ecDsaSecp256r1: return ecDsaSecp256r1Asn1Header
-            case .ecDsaSecp384r1: return ecDsaSecp384r1Asn1Header
+        case .rsa2048: return rsa2048Asn1Header
+        case .rsa4096: return rsa4096Asn1Header
+        case .ecDsaSecp256r1: return ecDsaSecp256r1Asn1Header
+        case .ecDsaSecp384r1: return ecDsaSecp384r1Asn1Header
         }
     }
 
@@ -183,7 +172,7 @@ public class Hpkp {
         let asn1Header = asn1HeaderBytes(for: publicKeyAlgorithm)
         _ = CC_SHA256_Update(context, asn1Header, CC_LONG(asn1Header.count))
 
-        publicKeyData.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> Void in
+        publicKeyData.withUnsafeBytes { bytes in
             if let base = bytes.baseAddress {
                 _ = CC_SHA256_Update(context, base, CC_LONG(bytes.count))
             }

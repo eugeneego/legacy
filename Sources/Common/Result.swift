@@ -18,7 +18,7 @@ public extension Result {
     }
 
     init(_ value: Success?, _ error: @autoclosure () -> Failure) {
-        if let value = value {
+        if let value {
             self = .success(value)
         } else {
             self = .failure(error())
@@ -39,10 +39,10 @@ public extension Result {
 
     func map<NewResult>(success: (Success) -> NewResult, failure: (Failure) -> NewResult) -> NewResult {
         switch self {
-            case .success(let value):
-                return success(value)
-            case .failure(let error):
-                return failure(error)
+        case .success(let value):
+            return success(value)
+        case .failure(let error):
+            return failure(error)
         }
     }
 

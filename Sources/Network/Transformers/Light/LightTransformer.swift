@@ -6,8 +6,8 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-public protocol LightTransformer {
-    associatedtype T
+public protocol LightTransformer: Sendable {
+    associatedtype T: Sendable
 
     func from(any value: Any?) -> T?
 

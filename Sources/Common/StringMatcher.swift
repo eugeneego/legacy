@@ -14,15 +14,15 @@ public enum StringMatcher {
 
 public func ~= (pattern: StringMatcher, value: String) -> Bool {
     switch pattern {
-        case .equal(let string):
-            return value == string
-        case .prefix(let prefix):
-            return value.hasPrefix(prefix)
-        case .suffix(let suffix):
-            return value.hasSuffix(suffix)
+    case .equal(let string):
+        return value == string
+    case .prefix(let prefix):
+        return value.hasPrefix(prefix)
+    case .suffix(let suffix):
+        return value.hasSuffix(suffix)
     }
 }
 
-public func ~=<T> (pattern: (T) -> Bool, value: T) -> Bool {
+public func ~= <T>(pattern: (T) -> Bool, value: T) -> Bool {
     pattern(value)
 }

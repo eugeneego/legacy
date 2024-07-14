@@ -29,7 +29,7 @@ public final class TargetAction<Target: AnyObject>: Action {
     public let action: (Target) -> () -> Void
 
     public func perform() {
-        if let target = target {
+        if let target {
             action(target)()
         }
     }
@@ -46,7 +46,7 @@ public final class TargetSenderAction<Target: AnyObject, Sender: AnyObject>: Act
     public let action: (Target) -> (Sender) -> Void
 
     public func perform() {
-        if let target = target, let sender = sender {
+        if let target, let sender {
             action(target)(sender)
         }
     }

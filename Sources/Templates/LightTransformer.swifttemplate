@@ -102,6 +102,7 @@ struct <%= name %>: LightTransformer {
         }
     }
 }
+// swiftlint:enable all
 
 // sourcery:end
 <% } -%>
@@ -187,6 +188,7 @@ struct <%= name %>: LightTransformer {
         return dictionary
     }
 }
+// swiftlint:enable all
 
 // sourcery:end
 <% } -%>

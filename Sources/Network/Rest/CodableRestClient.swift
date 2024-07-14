@@ -114,7 +114,7 @@ public extension CodableRestClient {
         request(method: .post, path: pathWithId(path: path, id: id), parameters: [:], object: object, headers: headers)
     }
 
-    func create<Response: Decodable>(
+    func create<Response: Decodable & Sendable>(
         path: String,
         id: String?,
         data: Data?,
@@ -150,7 +150,7 @@ public extension CodableRestClient {
         request(method: .put, path: pathWithId(path: path, id: id), parameters: [:], object: object, headers: headers)
     }
 
-    func update<Response: Decodable>(
+    func update<Response: Decodable & Sendable>(
         path: String,
         id: String?,
         data: Data?,
@@ -192,7 +192,7 @@ public extension CodableRestClient {
         await request(method: .post, path: pathWithId(path: path, id: id), parameters: [:], object: object, headers: headers)
     }
 
-    func create<Response: Decodable>(
+    func create<Response: Decodable & Sendable>(
         path: String,
         id: String?,
         data: Data?,
@@ -228,7 +228,7 @@ public extension CodableRestClient {
         await request(method: .put, path: pathWithId(path: path, id: id), parameters: [:], object: object, headers: headers)
     }
 
-    func update<Response: Decodable>(
+    func update<Response: Decodable & Sendable>(
         path: String,
         id: String?,
         data: Data?,

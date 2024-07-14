@@ -6,9 +6,7 @@
 // License: MIT, https://github.com/eugeneego/legacy/blob/master/LICENSE
 //
 
-#if canImport(UIKit)
-
-#if !os(watchOS)
+#if canImport(UIKit) && !os(watchOS)
 
 import UIKit
 
@@ -43,7 +41,5 @@ public extension UIView {
         loadNib(name: name ?? String(describing: self), bundle: bundle ?? Bundle(for: self), owner: owner, options: options)
     }
 }
-
-#endif
 
 #endif

@@ -9,7 +9,7 @@
 import Foundation
 import CoreGraphics
 
-public protocol NumberConvertible {
+public protocol NumberConvertible: Sendable {
     static func fromNumber(_ number: NSNumber) -> Self
     func toNumber() -> NSNumber
 }

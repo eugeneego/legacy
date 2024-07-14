@@ -8,14 +8,8 @@
 
 import Foundation
 
-open class UrlSessionHttp: Http {
+open class UrlSessionHttp: Http, @unchecked Sendable {
     public let session: URLSession
-
-    open var trustPolicies: [String: ServerTrustPolicy] {
-        get { delegateObject.trustPolicies }
-        set { delegateObject.trustPolicies = newValue }
-    }
-
     private let delegateObject: Delegate
     private let logger: UrlSessionHttpLogger?
 
@@ -139,7 +133,7 @@ open class UrlSessionHttp: Http {
 
     // MARK: - Task
 
-    private class TaskProgress: HttpProgress {
+    private final class TaskProgress: HttpProgress, @unchecked Sendable {
         private(set) var data: HttpProgressData = .init(bytes: nil, totalBytes: nil)
         var callback: ((HttpProgressData) -> Void)?
 
@@ -163,7 +157,7 @@ open class UrlSessionHttp: Http {
         }
     }
 
-    private class InternalTask {
+    private class InternalTask: @unchecked Sendable {
         var uploadProgress: HttpProgress { upload }
         var downloadProgress: HttpProgress { download }
 
@@ -186,7 +180,7 @@ open class UrlSessionHttp: Http {
         }
     }
 
-    private class ResultTask<T>: InternalTask {
+    private class ResultTask<T: Sendable>: InternalTask, @unchecked Sendable {
         var result: T? { nil }
         var error: Error?
         var continuation: CheckedContinuation<HttpResult<T>, Never>?
@@ -209,7 +203,7 @@ open class UrlSessionHttp: Http {
             let resultString = log(result: result, response: response)
             logger?.log(response, request, resultString, error as NSError?, startDate: startDate, date: Date())
 
-            guard let continuation = continuation else { return }
+            guard let continuation else { return }
 
             let result = Routines.process(response: response, data: result, error: error)
             continuation.resume(returning: result)
@@ -236,7 +230,7 @@ open class UrlSessionHttp: Http {
         }
     }
 
-    private class DataTask: ResultTask<Data>, HttpDataTask {
+    private class DataTask: ResultTask<Data>, HttpDataTask, @unchecked Sendable {
         var data: Data = Data()
 
         override var result: Data? { data }
@@ -246,7 +240,7 @@ open class UrlSessionHttp: Http {
         }
     }
 
-    private class DownloadTask: ResultTask<URL>, HttpDownloadTask {
+    private class DownloadTask: ResultTask<URL>, HttpDownloadTask, @unchecked Sendable {
         var url: URL?
         let destination: URL
 
@@ -264,8 +258,8 @@ open class UrlSessionHttp: Http {
 
     // MARK: - Delegate
 
-    private class Delegate: NSObject, URLSessionDataDelegate, URLSessionDownloadDelegate {
-        var trustPolicies: [String: ServerTrustPolicy]
+    private final class Delegate: NSObject, URLSessionDataDelegate, URLSessionDownloadDelegate, @unchecked Sendable {
+        let trustPolicies: [String: ServerTrustPolicy]
         let queue: OperationQueue = OperationQueue()
         private var tasks: [InternalTask] = []
 
@@ -285,25 +279,20 @@ open class UrlSessionHttp: Http {
 
         func urlSession(
             _ session: URLSession,
-            didReceive challenge: URLAuthenticationChallenge,
-            completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
-        ) {
-            var disposition: URLSession.AuthChallengeDisposition = .performDefaultHandling
-            var credential: URLCredential?
-
+            didReceive challenge: URLAuthenticationChallenge
+        ) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
             let space = challenge.protectionSpace
             let host = space.host
             let isServerTrust = space.authenticationMethod == NSURLAuthenticationMethodServerTrust
             if isServerTrust, let serverTrust = space.serverTrust, let policy = trustPolicy(host: host) {
-                if policy.evaluate(serverTrust: serverTrust, host: host) {
-                    disposition = .useCredential
-                    credential = URLCredential(trust: serverTrust)
+                if await policy.evaluate(serverTrust: serverTrust, host: host) {
+                    return (.useCredential, URLCredential(trust: serverTrust))
                 } else {
-                    disposition = .cancelAuthenticationChallenge
+                    return (.cancelAuthenticationChallenge, nil)
                 }
+            } else {
+                return (.performDefaultHandling, nil)
             }
-
-            completionHandler(disposition, credential)
         }
 
         private func trustPolicy(host: String) -> ServerTrustPolicy? {
@@ -410,12 +399,12 @@ open class UrlSessionHttp: Http {
             guard nsError.domain == NSURLErrorDomain else { return .error(error) }
 
             switch nsError.code {
-                case NSURLErrorTimedOut, NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet:
-                    return .unreachable(error)
-                case NSURLErrorCannotFindHost, NSURLErrorCannotConnectToHost, NSURLErrorDNSLookupFailed:
-                    return .unreachable(error)
-                default:
-                    return .error(error)
+            case NSURLErrorTimedOut, NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet:
+                return .unreachable(error)
+            case NSURLErrorCannotFindHost, NSURLErrorCannotConnectToHost, NSURLErrorDNSLookupFailed:
+                return .unreachable(error)
+            default:
+                return .error(error)
             }
         }
 

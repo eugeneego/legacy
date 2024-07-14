@@ -16,6 +16,7 @@ extension XCTestCase {
     typealias ExpectationHandler = (_ desctiption: String, _ expectation: XCTestExpectation) -> Void
 
     /// Asynchronous expectation helper.
+    @MainActor
     func expect(
         _ description: String,
         timeout: TimeInterval = 15,
@@ -82,12 +83,12 @@ func EEAssertSuccess<T, E>(
     line: UInt = #line
 ) -> T? {
     switch result {
-        case .success(let value):
-            return value
-        case .failure(let error):
-            XCTFail("\(description): success expected, but got: \(errorDebugDescription(error))", file: file, line: line)
-            expectation?.fulfill()
-            return nil
+    case .success(let value):
+        return value
+    case .failure(let error):
+        XCTFail("\(description): success expected, but got: \(errorDebugDescription(error))", file: file, line: line)
+        expectation?.fulfill()
+        return nil
     }
 }
 
@@ -117,12 +118,12 @@ func EEAssertFailure<T, E>(
     line: UInt = #line
 ) -> E? {
     switch result {
-        case .success:
-            XCTFail("\(description): failure expected", file: file, line: line)
-            expectation?.fulfill()
-            return nil
-        case .failure(let error):
-            return error
+    case .success:
+        XCTFail("\(description): failure expected", file: file, line: line)
+        expectation?.fulfill()
+        return nil
+    case .failure(let error):
+        return error
     }
 }
 

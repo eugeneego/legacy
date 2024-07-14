@@ -23,9 +23,10 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        guard let data = data, !data.isEmpty else { return .success([:]) }
+        guard let data, !data.isEmpty else { return .success([:]) }
 
-        let value = String(data: data, encoding: String.Encoding.utf8).map(deserialize)
+        let string = String(decoding: data, as: UTF8.self)
+        let value = deserialize(string)
         return Result(value, HttpSerializationError.noData)
     }
 
@@ -52,7 +53,7 @@ public struct UrlEncodedHttpSerializer: HttpSerializer {
         return params
     }
 
-    private static var characters: CharacterSet = {
+    private static let characters: CharacterSet = {
         var characters = CharacterSet.alphanumerics
         characters.insert(charactersIn: "-_.")
         return characters

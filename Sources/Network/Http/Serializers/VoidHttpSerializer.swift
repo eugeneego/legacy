@@ -9,7 +9,7 @@
 import Foundation
 
 public struct VoidHttpSerializer: HttpSerializer {
-    public typealias Value = Any
+    public typealias Value = Any & Sendable
 
     public let contentType: String = "application/json"
 

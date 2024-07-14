@@ -28,10 +28,10 @@ public struct ArrayTransformer<From, ElementTransformer: Transformer>: Transform
 
         results.enumerated().forEach { index, result in
             switch result {
-                case .success(let value):
-                    destination.append(value)
-                case .failure(let error):
-                    errors.append((String(describing: index), error))
+            case .success(let value):
+                destination.append(value)
+            case .failure(let error):
+                errors.append((String(describing: index), error))
             }
         }
 
@@ -50,10 +50,10 @@ public struct ArrayTransformer<From, ElementTransformer: Transformer>: Transform
 
         results.enumerated().forEach { index, result in
             switch result {
-                case .success(let value):
-                    source.append(value)
-                case .failure(let error):
-                    errors.append((String(describing: index), error))
+            case .success(let value):
+                source.append(value)
+            case .failure(let error):
+                errors.append((String(describing: index), error))
             }
         }
 

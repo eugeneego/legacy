@@ -28,7 +28,6 @@ public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: Http
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
         guard let value = transformer.to(any: value) else { return .success(Data()) }
-
         return Result(
             catching: { try JSONSerialization.data(withJSONObject: value, options: []) },
             unknown: { HttpSerializationError.error(Error.serialization($0)) }
@@ -36,10 +35,9 @@ public struct JsonModelLightTransformerHttpSerializer<T: LightTransformer>: Http
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        guard let data = data, !data.isEmpty else {
+        guard let data, !data.isEmpty else {
             return Result(transformer.from(any: ()), HttpSerializationError.error(Error.transformation(nil)))
         }
-
         let json = Result(
             catching: { try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) },
             unknown: { HttpSerializationError.error(Error.deserialization($0)) }
@@ -63,7 +61,7 @@ public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer
     }
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        guard let value = value else { return .success(Data()) }
+        guard let value else { return .success(Data()) }
 
         let json = transformer.transform(destination: value)
         return json.map(
@@ -78,10 +76,9 @@ public struct JsonModelTransformerHttpSerializer<T: Transformer>: HttpSerializer
     }
 
     public func deserialize(_ data: Data?) -> Result<Value, HttpSerializationError> {
-        guard let data = data, !data.isEmpty else {
+        guard let data, !data.isEmpty else {
             return transformer.transform(source: ()).mapError { HttpSerializationError.error(Error.transformation($0)) }
         }
-
         let json = Result(
             catching: { try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) },
             unknown: { HttpSerializationError.error(Error.deserialization($0)) }
@@ -98,7 +95,7 @@ public enum JsonModelCodableHttpSerializerError: Error {
     case notSupported
 }
 
-public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
+public struct JsonModelCodableHttpSerializer<T: Codable & Sendable>: HttpSerializer {
     public typealias Value = T
     public typealias Error = JsonModelCodableHttpSerializerError
 
@@ -134,8 +131,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
     }
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        guard let value = value else { return .success(Data()) }
-
+        guard let value else { return .success(Data()) }
         return Result(
             catching: { try encoder.encode(value) },
             unknown: { HttpSerializationError.error(Error.encoding($0)) }
@@ -146,9 +142,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
         if let nilValue = Nil() as? Value {
             return .success(nilValue)
         }
-
-        guard let data = data else { return .failure(.noData) }
-
+        guard let data else { return .failure(.noData) }
         return Result(
             catching: { try decoder.decode(T.self, from: data) },
             unknown: { HttpSerializationError.error(Error.decoding($0)) }
@@ -156,7 +150,7 @@ public struct JsonModelCodableHttpSerializer<T: Codable>: HttpSerializer {
     }
 }
 
-public struct JsonModelDecodableHttpSerializer<T: Decodable>: HttpSerializer {
+public struct JsonModelDecodableHttpSerializer<T: Decodable & Sendable>: HttpSerializer {
     public typealias Value = T
     public typealias Error = JsonModelCodableHttpSerializerError
 
@@ -187,9 +181,7 @@ public struct JsonModelDecodableHttpSerializer<T: Decodable>: HttpSerializer {
         if let nilValue = Nil() as? Value {
             return .success(nilValue)
         }
-
-        guard let data = data else { return .failure(.noData) }
-
+        guard let data else { return .failure(.noData) }
         return Result(
             catching: { try decoder.decode(T.self, from: data) },
             unknown: { HttpSerializationError.error(Error.decoding($0)) }
@@ -197,7 +189,7 @@ public struct JsonModelDecodableHttpSerializer<T: Decodable>: HttpSerializer {
     }
 }
 
-public struct JsonModelEncodableHttpSerializer<T: Encodable>: HttpSerializer {
+public struct JsonModelEncodableHttpSerializer<T: Encodable & Sendable>: HttpSerializer {
     public typealias Value = T
     public typealias Error = JsonModelCodableHttpSerializerError
 
@@ -223,8 +215,7 @@ public struct JsonModelEncodableHttpSerializer<T: Encodable>: HttpSerializer {
     }
 
     public func serialize(_ value: Value?) -> Result<Data, HttpSerializationError> {
-        guard let value = value else { return .success(Data()) }
-
+        guard let value else { return .success(Data()) }
         return Result(
             catching: { try encoder.encode(value) },
             unknown: { HttpSerializationError.error(Error.encoding($0)) }
