@@ -12,6 +12,11 @@ public typealias EEImage = UIImage
 #elseif os(macOS)
 import AppKit
 public typealias EEImage = NSImage
+#if hasFeature(RetroactiveAttribute)
+extension NSImage: @unchecked @retroactive Sendable {}
+#else
+extension NSImage: @unchecked Sendable {}
+#endif
 #endif
 
 public enum ImageLoaderError: Error {
