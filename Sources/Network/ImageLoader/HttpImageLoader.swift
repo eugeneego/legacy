@@ -12,7 +12,7 @@ import UIKit
 import AppKit
 #endif
 
-open class HttpImageLoader: ImageLoader {
+public final class HttpImageLoader: ImageLoader {
     public let http: Http
     public let prerendered: Bool
 
@@ -21,7 +21,7 @@ open class HttpImageLoader: ImageLoader {
         self.prerendered = prerendered
     }
 
-    open func load(url: URL, size: CGSize, mode: ResizeMode) async -> ImageLoaderResult {
+    public func load(url: URL, size: CGSize, mode: ResizeMode) async -> ImageLoaderResult {
         actor Render {
             func render(data: Data, prerender: Bool) -> EEImage? {
                 guard let image = EEImage(data: data) else { return nil }

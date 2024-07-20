@@ -40,6 +40,6 @@ public enum ResizeMode: Sendable {
 
 public typealias ImageLoaderResult = Result<(data: Data, image: EEImage), ImageLoaderError>
 
-public protocol ImageLoader {
+public protocol ImageLoader: Sendable {
     func load(url: URL, size: CGSize, mode: ResizeMode) async -> ImageLoaderResult
 }
